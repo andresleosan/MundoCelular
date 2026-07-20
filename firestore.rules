@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function esAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+
+    match /productos/{id} {
+      allow read: if true;
+      allow write: if esAdmin();
+    }
+
+    match /categorias/{id} {
+      allow read: if true;
+      allow write: if esAdmin();
+    }
+
+    match /configuracion/{id} {
+      allow read: if true;
+      allow write: if esAdmin();
+    }
+
+    match /carritos/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    match /pedidos/{id} {
+      allow read: if request.auth != null
+        && (esAdmin() || resource.data.clienteUid == request.auth.uid);
+      allow create: if false; // solo el Worker (Admin SDK) crea pedidos
+      allow update: if esAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['estado', 'actualizadoEn']);
+      allow delete: if false;
+    }
+  }
+}
