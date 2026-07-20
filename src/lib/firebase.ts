@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, type Auth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -10,6 +10,9 @@ const firebaseConfig = {
 };
 
 export const app = getApps().length > 0 ? getApps()[0] : initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+// getAuth lanza auth/invalid-api-key al evaluar el módulo si falta la API key
+// (p. ej. prerender del build sin .env.local). Se degrada a null en ese caso:
+// auth solo se usa en el navegador (efectos y handlers), nunca en render servidor.
+export const auth = (firebaseConfig.apiKey ? getAuth(app) : null) as Auth;
 export const db = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
