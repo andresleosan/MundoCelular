@@ -53,3 +53,9 @@ Thumbs.db
 
 # Scratch de ejecucion de planes (superpowers)
 .superpowers/
+
+# Next.js
+/.next/
+*.tsbuildinfo
+next-env.d.ts
+.vercel/
