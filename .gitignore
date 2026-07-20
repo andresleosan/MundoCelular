@@ -50,3 +50,6 @@ Thumbs.db
 
 # Backups que dejan los scripts de la agencia al actualizar
 *.bak-*
+
+# Scratch de ejecucion de planes (superpowers)
+.superpowers/
