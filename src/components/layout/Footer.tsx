@@ -31,17 +31,17 @@ export function Footer() {
             <h4 className="text-[14px] font-semibold text-ink-navy">Enlaces</h4>
             <ul className="mt-3 space-y-2 text-[14px] text-steel-blue-gray">
               <li>
-                <Link href="/" className="hover:text-mundo-blue">
+                <Link href="/" className="hover:text-gray-900">
                   Categorías
                 </Link>
               </li>
               <li>
-                <Link href="/reparaciones" className="hover:text-mundo-blue">
+                <Link href="/reparaciones" className="hover:text-gray-900">
                   Reparaciones
                 </Link>
               </li>
               <li>
-                <Link href="/carrito" className="hover:text-mundo-blue">
+                <Link href="/carrito" className="hover:text-gray-900">
                   Carrito
                 </Link>
               </li>
@@ -56,7 +56,7 @@ export function Footer() {
                   href="https://instagram.com/mundo_celular_75"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-mundo-blue"
+                  className="hover:text-gray-900"
                 >
                   Instagram
                 </a>
@@ -66,7 +66,7 @@ export function Footer() {
                   href="https://facebook.com/Mundo.Celular.01"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-mundo-blue"
+                  className="hover:text-gray-900"
                 >
                   Facebook
                 </a>
@@ -76,7 +76,7 @@ export function Footer() {
                   href="https://tiktok.com/@mundocelular75"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-mundo-blue"
+                  className="hover:text-gray-900"
                 >
                   TikTok
                 </a>

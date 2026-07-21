@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { obtenerConfigTiendaServidor } from "@/lib/firestore/public";
 import { metadataReparaciones } from "@/lib/seo/metadata";
+import { jsonldReparaciones } from "@/lib/seo/jsonld";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
@@ -17,7 +19,22 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function ReparacionesPage() {
   return (
-    <main className="mx-auto max-w-[800px] px-4 py-14 text-center">
+    <>
+      <JsonLd data={jsonldReparaciones({
+        nombre: "Mundo Celular",
+        whatsapp: "573113554021",
+        direccion: "Cra 36 # 38 - 33, Barrio El Salvador",
+        ciudad: "Medellín",
+        departamento: "Antioquia",
+        pais: "Colombia",
+        horario: "Lun-Sáb 9:00 AM - 7:00 PM",
+        redes: {
+          instagram: "https://instagram.com/mundo_celular_75",
+          facebook: "https://facebook.com/Mundo.Celular.01",
+          tiktok: "https://tiktok.com/@mundocelular75",
+        },
+      })} />
+      <main className="mx-auto max-w-[800px] px-4 py-14 text-center">
       <h1 className="text-[28px] font-semibold tracking-[-0.03em] text-gray-900">
         Reparaciones
       </h1>
@@ -44,5 +61,6 @@ export default function ReparacionesPage() {
         </Link>
       </div>
     </main>
+    </>
   );
 }
