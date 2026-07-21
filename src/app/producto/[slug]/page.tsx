@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProductoPorId, getCategoriaPorId, getTodosLosProductos, obtenerConfigTiendaServidor } from "@/lib/firestore/public";
 import { metadataProducto } from "@/lib/seo/metadata";
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!prod) return { title: "Producto no encontrado" };
   const cat = await getCategoriaPorId(prod.categoriaId);
   const config = await obtenerConfigTiendaServidor();
-  return metadataProducto(prod, cat ?? undefined, config);
+  return metadataProducto(prod, cat, config);
 }
 
 export default async function PaginaProducto({ params }: PageProps) {
@@ -38,7 +39,7 @@ export default async function PaginaProducto({ params }: PageProps) {
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-10">
       <nav className="text-[12px] text-steel-blue-gray">
-        <a href="/">Inicio</a> /{" "}
+        <Link href="/">Inicio</Link> /{" "}
         {cat && <a href={`/categoria/${cat.slug}`}>{cat.nombre}</a>} /{" "}
         {prod.nombre}
       </nav>

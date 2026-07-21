@@ -23,14 +23,16 @@ export function metadataCategoria(cat: Categoria, config: ConfigTienda): Metadat
   };
 }
 
-export function metadataProducto(prod: Producto, cat: Categoria, config: ConfigTienda): Metadata {
-  const title = `${prod.nombre} | ${cat.nombre} en ${config.ciudad} | ${siteName(config)}`;
+export function metadataProducto(prod: Producto, cat: Categoria | null, config: ConfigTienda): Metadata {
+  const title = cat
+    ? `${prod.nombre} | ${cat.nombre} en ${config.ciudad} | ${siteName(config)}`
+    : `${prod.nombre} | ${siteName(config)}`;
   const description = prod.metaDescription?.trim()
     || `${prod.nombre} ${prod.marca ? `de ${prod.marca} ` : ""}por ${formatearCOP(prod.precio)} en ${config.ciudad}. Stock: ${prod.stock}.`;
   return {
     title: prod.metaTitle?.trim() || title,
     description,
-    alternates: { canonical: `/${cat.slug}/${prod.slug}` },
+    alternates: { canonical: cat ? `/${cat.slug}/${prod.slug}` : `/producto/${prod.slug}` },
     openGraph: {
       type: "website",
       title,
