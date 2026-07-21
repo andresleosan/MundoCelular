@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { ConfigTienda } from "@/types";
 
+const WHATSAPP_LINK = "https://wa.me/573113554021";
+
 export function Hero({ config }: { config: ConfigTienda }) {
   return (
     <section className="relative overflow-hidden rounded-cards bg-abyss-navy px-6 py-16 text-center text-pure-white">
@@ -12,9 +14,17 @@ export function Hero({ config }: { config: ConfigTienda }) {
       </p>
       <p className="mt-2 text-[12px] text-cool-frost">También reparamos celulares.</p>
       <div className="mt-6 flex flex-wrap justify-center gap-2">
+        <Link href={WHATSAPP_LINK} className="rounded-chips bg-mundo-blue px-4 py-2 text-[12px] font-semibold text-pure-white">
+          WhatsApp
+        </Link>
         <Link href="/reparaciones" className="rounded-chips bg-pure-white px-4 py-2 text-[12px] font-semibold text-ink-navy">
           Reparaciones
         </Link>
+      </div>
+      <div className="mt-6 flex flex-wrap justify-center gap-3 text-[12px] text-canvas-frost">
+        <span>🚚 Envío gratis</span>
+        <span>🛡️ Garantía 12 meses</span>
+        <span>💬 Soporte 24/7</span>
       </div>
     </section>
   );

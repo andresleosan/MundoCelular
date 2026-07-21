@@ -10,14 +10,15 @@ const config: ConfigTienda = {
 };
 
 describe("jsonldInicio", () => {
-  it("tiene Organization y WebSite con SearchAction", () => {
+  it("tiene LocalBusiness y WebSite con SearchAction", () => {
     const j = jsonldInicio(config);
     expect(j["@context"]).toBe("https://schema.org");
     const graph = j["@graph"] as any[];
-    const org = graph.find((n: any) => n["@type"] === "Organization");
+    const localBiz = graph.find((n: any) => n["@type"] === "LocalBusiness");
     const site = graph.find((n: any) => n["@type"] === "WebSite");
-    expect(org.name).toBe("Mundo Celular");
-    expect(org.sameAs).toContain("https://instagram.com/mundo_celular_75");
+    expect(localBiz.name).toBe("Mundo Celular");
+    expect(localBiz.sameAs).toContain("https://instagram.com/mundo_celular_75");
+    expect(localBiz.telephone).toBe("+573113554021");
     expect(site.potentialAction["@type"]).toBe("SearchAction");
   });
 });

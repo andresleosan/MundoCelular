@@ -10,9 +10,17 @@ export function jsonldInicio(config: ConfigTienda): JsonLdObject {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "Organization",
+        "@type": "LocalBusiness",
         name: config.nombre,
         url: url("/"),
+        telephone: `+${config.whatsapp}`,
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: config.direccion,
+          addressLocality: config.ciudad,
+          addressRegion: config.departamento,
+          addressCountry: config.pais,
+        },
         sameAs: [config.redes.instagram, config.redes.facebook, config.redes.tiktok].filter(Boolean),
       },
       {
