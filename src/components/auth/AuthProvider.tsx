@@ -19,6 +19,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
+    if (!auth) {
+      setCargando(false);
+      return;
+    }
     return onIdTokenChanged(auth, async (user) => {
       setUsuario(user);
       if (user) {
