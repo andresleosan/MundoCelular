@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!prod) return { title: "Producto no encontrado" };
   const cat = await getCategoriaPorId(prod.categoriaId);
   const config = await obtenerConfigTiendaServidor();
-  return metadataProducto(prod, cat!, config);
+  return metadataProducto(prod, cat ?? undefined, config);
 }
 
 export default async function PaginaProducto({ params }: PageProps) {
@@ -33,6 +33,7 @@ export default async function PaginaProducto({ params }: PageProps) {
   const prod = await getProductoPorId(slug);
   if (!prod) notFound();
   const cat = await getCategoriaPorId(prod.categoriaId);
+  if (!cat) notFound();
 
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-10">

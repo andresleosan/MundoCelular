@@ -24,7 +24,7 @@ export function CarritoItem({
         <h3 className="text-[14px] font-semibold text-gray-900 truncate">
           {nombre}
         </h3>
-        <p className="mt-0.5 font-jetbrains-mono text-[14px] text-mundo-blue">
+        <p className="mt-0.5 font-jetbrains-mono text-[14px] text-gray-900">
           {formatearCOP(precio)}
         </p>
       </div>
@@ -49,7 +49,7 @@ export function CarritoItem({
       </div>
       <button
         onClick={() => quitar(productoId)}
-        className="text-[12px] text-steel-blue-gray hover:text-mundo-blue"
+        className="text-[12px] text-steel-blue-gray hover:text-gray-900"
         aria-label="Quitar del carrito"
       >
         Quitar

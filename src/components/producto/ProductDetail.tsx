@@ -40,7 +40,7 @@ export function ProductDetail({
         {categoria && (
           <Link
             href={`/categoria/${categoria.slug}`}
-            className="inline-block rounded-full bg-blue-wash px-2 py-0.5 text-[11px] font-medium text-mundo-blue mb-2"
+            className="inline-block rounded-full bg-blue-wash px-2 py-0.5 text-[11px] font-medium text-steel-blue-gray mb-2"
           >
             {categoria.nombre}
           </Link>
@@ -48,7 +48,7 @@ export function ProductDetail({
         <h1 className="text-[24px] font-semibold tracking-[-0.03em] text-gray-900">
           {producto.nombre}
         </h1>
-        <p className="mt-2 font-jetbrains-mono text-[20px] text-mundo-blue">
+        <p className="mt-2 font-jetbrains-mono text-[20px] text-gray-900">
           {formatearCOP(producto.precio)}
         </p>
         {producto.marca && (
@@ -61,7 +61,7 @@ export function ProductDetail({
             Disponible: {producto.stock}
           </p>
         ) : (
-          <p className="mt-1 text-[12px] text-mundo-blue">Agotado</p>
+          <p className="mt-1 text-[12px] text-steel-blue-gray">Agotado</p>
         )}
       </div>
 
