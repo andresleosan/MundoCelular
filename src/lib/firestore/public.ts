@@ -52,6 +52,36 @@ export const getProductoPorSlug = unstable_cache(
   { tags: ["productos"] }
 );
 
+export const getProductoPorId = unstable_cache(
+  async (slug: string): Promise<Producto | null> => {
+    const db = getAdminDb();
+    const snap = await db.collection("productos").where("slug", "==", slug).where("activo", "==", true).limit(1).get();
+    return snap.empty ? null : toProducto(snap.docs[0]);
+  },
+  ["producto-por-id"],
+  { tags: ["productos"] }
+);
+
+export const getCategoriaPorId = unstable_cache(
+  async (id: string): Promise<Categoria | null> => {
+    const db = getAdminDb();
+    const snap = await db.doc(`categorias/${id}`).get();
+    return snap.exists ? toCategoria(snap as FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>) : null;
+  },
+  ["categoria-por-id"],
+  { tags: ["categorias"] }
+);
+
+export const getTodosLosProductos = unstable_cache(
+  async (): Promise<Producto[]> => {
+    const db = getAdminDb();
+    const snap = await db.collection("productos").where("activo", "==", true).orderBy("nombre").get();
+    return snap.docs.map(toProducto);
+  },
+  ["todos-productos"],
+  { tags: ["productos"] }
+);
+
 export const listarDestacados = unstable_cache(
   async (): Promise<Producto[]> => {
     const db = getAdminDb();
