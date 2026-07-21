@@ -103,6 +103,18 @@ export const obtenerConfigTiendaServidor = unstable_cache(
   { tags: ["config"] }
 );
 
+export const listarTodosLosProductosActivos = unstable_cache(
+  async (): Promise<Array<{ producto: Producto; categoriaSlug: string }>> => {
+    const db = getAdminDb();
+    const cats = await db.collection("categorias").where("activa", "==", true).get();
+    const catsMap = new Map(cats.docs.map((d) => [d.id, d.data().slug as string]));
+    const prods = await db.collection("productos").where("activo", "==", true).orderBy("nombre").get();
+    return prods.docs.map((d) => ({ producto: toProducto(d), categoriaSlug: catsMap.get(d.data().categoriaId) ?? "" }));
+  },
+  ["todos-productos-activos"],
+  { tags: ["productos", "categorias"] }
+);
+
 export async function listarTodosLosSlugsProducto(): Promise<Array<{ categoria: string; producto: string }>> {
   const db = getAdminDb();
   const cats = await db.collection("categorias").where("activa", "==", true).get();
