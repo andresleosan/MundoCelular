@@ -1,9 +1,11 @@
 import type { Categoria, Producto, ConfigTienda } from "@/types";
 
+type JsonLdObject = Record<string, unknown>;
+
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 const url = (path: string) => `${BASE_URL}${path}`;
 
-export function jsonldInicio(config: ConfigTienda): Record<string, any> {
+export function jsonldInicio(config: ConfigTienda): JsonLdObject {
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -27,12 +29,12 @@ export function jsonldInicio(config: ConfigTienda): Record<string, any> {
   };
 }
 
-export function jsonldCategoria(cat: Categoria, productos: Producto[]): Record<string, any> {
+export function jsonldCategoria(cat: Categoria, productos: Producto[]): JsonLdObject {
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: cat.nombre,
-    description: cat.descripcion || undefined,
+    description: cat.descripcion ?? undefined,
     numberOfItems: productos.length,
     itemListElement: productos.map((p, i) => ({
       "@type": "ListItem",
@@ -53,7 +55,7 @@ export function jsonldCategoria(cat: Categoria, productos: Producto[]): Record<s
   };
 }
 
-export function jsonldProducto(prod: Producto, cat: Categoria): Record<string, any> {
+export function jsonldProducto(prod: Producto, cat: Categoria): JsonLdObject {
   return {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -77,7 +79,7 @@ export function jsonldProducto(prod: Producto, cat: Categoria): Record<string, a
   };
 }
 
-export function jsonldReparaciones(config: ConfigTienda): Record<string, any> {
+export function jsonldReparaciones(config: ConfigTienda): JsonLdObject {
   return {
     "@context": "https://schema.org",
     "@type": "Service",
