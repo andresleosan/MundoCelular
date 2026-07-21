@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { obtenerConfigTiendaServidor } from "@/lib/firestore/public";
+import { metadataReparaciones } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Reparaciones | Mundo Celular",
-  description: "Reparación de celulares, tablets y consolas en Medellín.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const config = await obtenerConfigTiendaServidor();
+    return metadataReparaciones(config);
+  } catch {
+    return {
+      title: "Reparaciones | Mundo Celular",
+      description: "Reparación de celulares, tablets y consolas en Medellín.",
+    };
+  }
+}
 
 export default function ReparacionesPage() {
   return (

@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
+import { obtenerConfigTiendaServidor } from "@/lib/firestore/public";
+import { metadataCarrito } from "@/lib/seo/metadata";
 import { CarritoResumen } from "@/components/carrito/CarritoResumen";
 
-export const metadata: Metadata = {
-  title: "Carrito | Mundo Celular",
-  description: "Tu carrito de compras en Mundo Celular.",
-  robots: { index: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const config = await obtenerConfigTiendaServidor();
+    return metadataCarrito(config);
+  } catch {
+    return {
+      title: "Carrito | Mundo Celular",
+      robots: { index: false },
+    };
+  }
+}
 
 export default function PaginaCarrito() {
   return (
