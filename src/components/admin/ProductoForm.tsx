@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { crearProducto, actualizarProducto } from "@/lib/firestore/productos";
 import { validarProducto } from "@/lib/validacion";
-import type { Categoria, Producto } from "@/types";
+import { ImageUploader } from "./ImageUploader";
+import type { Categoria, Producto, ImagenProducto } from "@/types";
 
 export function ProductoForm({ categorias, producto }: { categorias: Categoria[]; producto?: Producto }) {
   const router = useRouter();
@@ -19,6 +20,7 @@ export function ProductoForm({ categorias, producto }: { categorias: Categoria[]
   );
   const [activo, setActivo] = useState(producto?.activo ?? true);
   const [destacado, setDestacado] = useState(producto?.destacado ?? false);
+  const [imagenes, setImagenes] = useState<ImagenProducto[]>(producto?.imagenes ?? []);
   const [errores, setErrores] = useState<string[]>([]);
   const [guardando, setGuardando] = useState(false);
 
@@ -40,6 +42,7 @@ export function ProductoForm({ categorias, producto }: { categorias: Categoria[]
       categoriaId, marca,
       specs: parsearSpecs(),
       activo, destacado,
+      imagenes,
     };
     const errs = validarProducto(input);
     if (errs.length > 0) {
@@ -110,10 +113,10 @@ export function ProductoForm({ categorias, producto }: { categorias: Categoria[]
           {errores.map((err) => <li key={err}>{err}</li>)}
         </ul>
       )}
+      <ImageUploader imagenes={imagenes} onChange={setImagenes} />
       <button type="submit" disabled={guardando} className="rounded-chips bg-mundo-blue px-6 py-3 text-[14px] font-semibold text-pure-white shadow-lg-2 disabled:opacity-50">
         {guardando ? "Guardando…" : "Guardar"}
       </button>
-      <p className="text-[11px] text-steel-blue-gray">Las imágenes se agregan en la Fase 4 del proyecto.</p>
     </form>
   );
 }

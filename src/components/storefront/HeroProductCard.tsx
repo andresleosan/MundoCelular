@@ -7,7 +7,7 @@ export function HeroProductCard({ producto, categoriaSlug }: { producto: Product
     <Link href={`/${categoriaSlug}/${producto.slug}`} className="block rounded-cards bg-pure-white shadow-sm-2">
       <div className="aspect-square overflow-hidden rounded-[20px] bg-canvas-frost">
         {producto.imagenes[0]?.url ? (
-          <img src={producto.imagenes[0].url} alt={producto.imagenes[0].alt} className="h-full w-full object-cover" width={400} height={400} loading="lazy" />
+          <img src={producto.imagenes[0].thumb || producto.imagenes[0].url} alt={producto.imagenes[0].alt} className="h-full w-full object-cover" width={400} height={400} loading="lazy" />
         ) : (
           <div className="flex h-full items-center justify-center text-steel-blue-gray text-[12px]">Sin imagen</div>
         )}

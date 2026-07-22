@@ -27,10 +27,17 @@ export async function crearProducto(input: ProductoInput): Promise<string> {
   if (esSlugReservado(base)) throw new Error("Ese nombre usa una URL reservada del sistema");
   const slug = asegurarSlugUnico(base, await slugsExistentes());
   const ref = await addDoc(collection(db, COL), {
-    ...input,
     nombre: input.nombre.trim(),
+    descripcion: input.descripcion,
+    precio: input.precio,
+    stock: input.stock,
+    categoriaId: input.categoriaId,
+    marca: input.marca,
+    specs: input.specs,
+    activo: input.activo,
+    destacado: input.destacado,
+    imagenes: input.imagenes ?? [],
     slug,
-    imagenes: [],
     creadoEn: serverTimestamp(),
     actualizadoEn: serverTimestamp(),
   });
@@ -42,8 +49,16 @@ export async function actualizarProducto(id: string, input: ProductoInput): Prom
   const errores = validarProducto(input);
   if (errores.length > 0) throw new Error(errores.join(". "));
   await updateDoc(doc(db, COL, id), {
-    ...input,
     nombre: input.nombre.trim(),
+    descripcion: input.descripcion,
+    precio: input.precio,
+    stock: input.stock,
+    categoriaId: input.categoriaId,
+    marca: input.marca,
+    specs: input.specs,
+    activo: input.activo,
+    destacado: input.destacado,
+    imagenes: input.imagenes ?? [],
     actualizadoEn: serverTimestamp(),
   });
   await avisarRevalidacion(["productos"]);

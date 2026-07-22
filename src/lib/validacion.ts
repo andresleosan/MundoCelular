@@ -1,3 +1,5 @@
+import type { ImagenProducto } from "@/types";
+
 export interface ProductoInput {
   nombre: string;
   descripcion: string;
@@ -8,6 +10,7 @@ export interface ProductoInput {
   specs: Record<string, string>;
   activo: boolean;
   destacado: boolean;
+  imagenes?: ImagenProducto[];
 }
 
 export function validarCategoria(input: { nombre: string }): string[] {

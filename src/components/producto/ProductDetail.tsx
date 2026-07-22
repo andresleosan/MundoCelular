@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatearCOP } from "@/lib/format";
@@ -15,25 +16,50 @@ export function ProductDetail({
   producto: Producto;
   categoria: Categoria | null;
 }) {
+  const [imgActiva, setImgActiva] = useState(0);
+  const imagenes = producto.imagenes ?? [];
   const mensajeWhatsApp = `Hola, me interesa ${producto.nombre}`;
   const urlWhatsApp = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensajeWhatsApp)}`;
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="rounded-2xl bg-canvas-frost aspect-square overflow-hidden">
-        {producto.imagenes[0]?.url ? (
-          <Image
-            src={producto.imagenes[0].url}
-            alt={producto.imagenes[0].alt}
-            className="h-full w-full object-cover"
-            width={800}
-            height={800}
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center text-steel-blue-gray text-[14px]">
-            Sin imagen
+      <div className="flex flex-col gap-3 sm:flex-row">
+        {imagenes.length > 1 && (
+          <div className="flex gap-2 sm:flex-col">
+            {imagenes.map((img, i) => (
+              <button
+                key={i}
+                onClick={() => setImgActiva(i)}
+                className={`h-16 w-16 overflow-hidden rounded-[12px] border-2 transition ${
+                  i === imgActiva ? "border-mundo-blue" : "border-faint-border"
+                }`}
+              >
+                <img
+                  src={img.thumb || img.url}
+                  alt={img.alt}
+                  className="h-full w-full object-cover"
+                />
+              </button>
+            ))}
           </div>
         )}
+
+        <div className="flex-1 rounded-2xl bg-canvas-frost aspect-square overflow-hidden">
+          {imagenes.length > 0 ? (
+            <Image
+              src={imagenes[imgActiva]?.url || ""}
+              alt={imagenes[imgActiva]?.alt || producto.nombre}
+              className="h-full w-full object-cover"
+              width={800}
+              height={800}
+              priority
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-steel-blue-gray text-[14px]">
+              Sin imagen
+            </div>
+          )}
+        </div>
       </div>
 
       <div>

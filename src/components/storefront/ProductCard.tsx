@@ -19,7 +19,7 @@ export function ProductCard({
       <div className="aspect-square overflow-hidden rounded-t-2xl bg-canvas-frost">
         {producto.imagenes[0]?.url ? (
           <img
-            src={producto.imagenes[0].url}
+            src={producto.imagenes[0].thumb || producto.imagenes[0].url}
             alt={producto.imagenes[0].alt}
             className="h-full w-full object-cover transition-transform group-hover:scale-105"
             width={400}
