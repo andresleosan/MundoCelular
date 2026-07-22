@@ -3,6 +3,7 @@ import { Sora, JetBrains_Mono } from "next/font/google";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { BottomTabBar } from "@/components/layout/BottomTabBar";
 import "./globals.css";
 
 const sora = Sora({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-sora-css" });
@@ -17,10 +18,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es-CO" className={`${sora.variable} ${jetbrainsMono.variable}`}>
-      <body>
+      <body className="pb-20 sm:pb-0">
         <Header />
         <AuthProvider>{children}</AuthProvider>
         <Footer />
+        <BottomTabBar />
       </body>
     </html>
   );
