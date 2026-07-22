@@ -111,3 +111,47 @@ export function jsonldReparaciones(config: ConfigTienda): JsonLdObject {
     description: `Servicio técnico de celulares en ${config.ciudad}. Pantallas, baterías, software y más.`,
   };
 }
+
+export function jsonldContacto(config: ConfigTienda): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: config.nombre,
+    url: url("/contacto"),
+    telephone: `+${config.whatsapp}`,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: config.direccion,
+      addressLocality: config.ciudad,
+      addressRegion: config.departamento,
+      addressCountry: config.pais,
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: `+${config.whatsapp}`,
+      contactType: "customer service",
+      availableLanguage: "Spanish",
+    },
+    sameAs: [config.redes.instagram, config.redes.facebook, config.redes.tiktok].filter(Boolean),
+  };
+}
+
+interface PreguntaFrecuente {
+  pregunta: string;
+  respuesta: string;
+}
+
+export function jsonldPreguntas(preguntas: PreguntaFrecuente[]): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: preguntas.map((p) => ({
+      "@type": "Question",
+      name: p.pregunta,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: p.respuesta,
+      },
+    })),
+  };
+}
