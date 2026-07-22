@@ -5,8 +5,6 @@ import { useCarrito } from "@/hooks/useCarrito";
 import { formatearCOP } from "@/lib/format";
 import { CarritoItem } from "./CarritoItem";
 
-const WHATSAPP_NUMERO = "573113554021";
-
 export function CarritoResumen() {
   const { items, total, vaciar } = useCarrito();
 
@@ -14,7 +12,7 @@ export function CarritoResumen() {
     return (
       <div className="flex flex-col items-center gap-4 py-16 text-center">
         <p className="text-[16px] text-steel-blue-gray">
-          Tu carrito está vacío
+          Tu carrito est\u00e1 vac\u00edo
         </p>
         <Link
           href="/"
@@ -25,15 +23,6 @@ export function CarritoResumen() {
       </div>
     );
   }
-
-  const mensajeItems = items
-    .map(
-      (i) =>
-        `${i.nombre} x${i.cantidad} (${formatearCOP(i.precio * i.cantidad)})`
-    )
-    .join(", ");
-  const mensajeWhatsApp = `Hola Mundo Celular, me gustaría ordenar: ${mensajeItems}. Total: ${formatearCOP(total)}.`;
-  const urlWhatsApp = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensajeWhatsApp)}`;
 
   return (
     <div className="flex flex-col gap-6">
@@ -63,14 +52,12 @@ export function CarritoResumen() {
             Vaciar carrito
           </button>
 
-          <a
-            href={urlWhatsApp}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/checkout"
             className="rounded-full bg-mundo-blue px-6 py-3 text-[14px] font-semibold text-white shadow-lg-2"
           >
-            Ordenar por WhatsApp
-          </a>
+            Proceder al checkout
+          </Link>
         </div>
       </div>
     </div>

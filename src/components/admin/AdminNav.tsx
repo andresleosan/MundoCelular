@@ -8,6 +8,7 @@ const ENLACES = [
   { href: "/admin", etiqueta: "Inicio" },
   { href: "/admin/categorias", etiqueta: "Categorías" },
   { href: "/admin/productos", etiqueta: "Productos" },
+  { href: "/admin/pedidos", etiqueta: "Pedidos" },
   { href: "/admin/configuracion", etiqueta: "Configuración" },
 ];
 

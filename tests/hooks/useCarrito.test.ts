@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useCarrito } from "@/hooks/useCarrito";
 
@@ -114,7 +114,7 @@ describe("useCarrito", () => {
   });
 
   it("persiste en localStorage al agregar", () => {
-    const { result, rerender } = renderHook(() => useCarrito());
+    const { result } = renderHook(() => useCarrito());
     act(() => {
       result.current.agregar(mockProducto);
     });

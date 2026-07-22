@@ -21,14 +21,18 @@ type DocData = { id: string; data: () => Record<string, unknown> };
 const mockGetFn = vi.fn<() => Promise<{ docs: DocData[]; empty: boolean }>>();
 const mockDocGetFn = vi.fn<() => Promise<{ exists: boolean; data: () => Record<string, unknown> | null }>>();
 
+function makeChain(): Record<string, unknown> {
+  const chain: Record<string, unknown> = {};
+  chain.where = vi.fn(() => chain);
+  chain.orderBy = vi.fn(() => chain);
+  chain.limit = vi.fn(() => ({ get: mockGetFn }));
+  chain.get = mockGetFn;
+  return chain;
+}
+
 vi.mock("@/lib/firebase-admin", () => ({
   getAdminDb: vi.fn(() => ({
-    collection: vi.fn(() => ({
-      where: vi.fn(function () { return this; }),
-      orderBy: vi.fn(function () { return this; }),
-      limit: vi.fn(function () { return { get: mockGetFn }; }),
-      get: mockGetFn,
-    })),
+    collection: vi.fn(() => makeChain()),
     doc: vi.fn(() => ({
       get: mockDocGetFn,
     })),

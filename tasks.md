@@ -33,6 +33,13 @@ Plan Fase 1: docs/superpowers/plans/2026-07-19-fase1-base-admin.md
 - [x] Cierre F2: seo integration tests + admin not-found + categoria index
 
 ## Fases siguientes
-- [ ] Fase 3 — Checkout WhatsApp + Worker /pedidos
+- [x] Fase 3 — Checkout WhatsApp + Worker /pedidos
+  - [x] Helper armarmensajePedido + urlWhatsApp (TDD)
+  - [x] API Route POST /api/pedidos (transacción stock+pedido)
+  - [x] API Route POST /api/pedidos/[id]/cancelar (rep stock, admin only)
+  - [x] Checkout page /checkout (form retiro/domicilio)
+  - [x] Carrito → checkout (botón "Proceder al checkout")
+  - [x] Panel admin /admin/pedidos (lista + detalle + estados)
+  - [x] Firestore pedidos.ts (listar, obtener, actualizarEstado)
 - [ ] Fase 4 — Imágenes R2 + Worker presign
 - [ ] Fase 5 — Pulido mobile + /contacto /reparaciones /preguntas + auditoría CWV/WCAG

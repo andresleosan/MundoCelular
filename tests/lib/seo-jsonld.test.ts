@@ -13,13 +13,15 @@ describe("jsonldInicio", () => {
   it("tiene LocalBusiness y WebSite con SearchAction", () => {
     const j = jsonldInicio(config);
     expect(j["@context"]).toBe("https://schema.org");
-    const graph = j["@graph"] as any[];
-    const localBiz = graph.find((n: any) => n["@type"] === "LocalBusiness");
-    const site = graph.find((n: any) => n["@type"] === "WebSite");
-    expect(localBiz.name).toBe("Mundo Celular");
-    expect(localBiz.sameAs).toContain("https://instagram.com/mundo_celular_75");
-    expect(localBiz.telephone).toBe("+573113554021");
-    expect(site.potentialAction["@type"]).toBe("SearchAction");
+    const graph = j["@graph"] as Record<string, unknown>[];
+    const localBiz = graph.find((n) => n["@type"] === "LocalBusiness");
+    const site = graph.find((n) => n["@type"] === "WebSite");
+    expect(localBiz).toBeDefined();
+    expect(site).toBeDefined();
+    expect((localBiz as Record<string, unknown>).name).toBe("Mundo Celular");
+    expect(((localBiz as Record<string, unknown>).sameAs as string[])).toContain("https://instagram.com/mundo_celular_75");
+    expect((localBiz as Record<string, unknown>).telephone).toBe("+573113554021");
+    expect(((site as Record<string, unknown>).potentialAction as Record<string, unknown>)["@type"]).toBe("SearchAction");
   });
 });
 
@@ -31,8 +33,7 @@ describe("jsonldCategoria", () => {
   it("tiene ItemList con ListItems", () => {
     const j = jsonldCategoria(cat, prods);
     expect(j["@type"]).toBe("ItemList");
-    expect(j.itemListElement).toHaveLength(1);
-    expect(j.itemListElement[0]["@type"]).toBe("ListItem");
+    expect((j as Record<string, unknown>).itemListElement).toHaveLength(1);
   });
 });
 
@@ -46,9 +47,10 @@ describe("jsonldProducto", () => {
   it("tiene Product con Offer (price COP, availability)", () => {
     const j = jsonldProducto(prod, cat);
     expect(j["@type"]).toBe("Product");
-    expect(j.offers[0].price).toBe("1850000");
-    expect(j.offers[0].priceCurrency).toBe("COP");
-    expect(j.offers[0].availability).toBe(prod.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock");
+    const offers = (j as Record<string, unknown>).offers as Record<string, unknown>[];
+    expect(offers[0].price).toBe("1850000");
+    expect(offers[0].priceCurrency).toBe("COP");
+    expect(offers[0].availability).toBe(prod.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock");
   });
 });
 
@@ -56,6 +58,6 @@ describe("jsonldReparaciones", () => {
   it("tiene Service con ServiceArea (Medellín)", () => {
     const j = jsonldReparaciones(config);
     expect(j["@type"]).toBe("Service");
-    expect(j.areaServed.name).toBe("Medellín");
+    expect(((j as Record<string, unknown>).areaServed as Record<string, unknown>).name).toBe("Medellín");
   });
 });

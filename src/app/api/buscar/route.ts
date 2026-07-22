@@ -5,7 +5,7 @@ export async function GET(req: NextRequest) {
   const q = (req.nextUrl.searchParams.get("q") ?? "").toLowerCase().trim();
   if (!q) return NextResponse.json({ resultados: [] });
   const todos = await listarTodosLosProductosActivos();
-  const resultados = todos.filter(({ producto, categoriaSlug }) =>
+  const resultados = todos.filter(({ producto }) =>
     producto.nombre.toLowerCase().includes(q) ||
     producto.marca.toLowerCase().includes(q) ||
     Object.values(producto.specs).some((v) => v.toLowerCase().includes(q))
