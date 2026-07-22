@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { listarCategoriasPublic, listarDestacados, obtenerConfigTiendaServidor } from "@/lib/firestore/public";
 import { metadataInicio } from "@/lib/seo/metadata";
 import { jsonldInicio } from "@/lib/seo/jsonld";
@@ -88,6 +89,21 @@ export default async function Home() {
           </div>
         </section>
       )}
+
+      <section className="mt-12 rounded-cards bg-abyss-navy px-6 py-10 text-center text-pure-white">
+        <h2 className="text-[20px] font-semibold tracking-[-0.02em]">
+          ¿Necesitas reparar tu celular?
+        </h2>
+        <p className="mt-2 text-[14px] text-cool-frost">
+          Servicio técnico profesional. Diagnóstico gratis.
+        </p>
+        <Link
+          href="/reparaciones"
+          className="mt-4 inline-block rounded-chips bg-pure-white px-5 py-2 text-[13px] font-semibold text-ink-navy"
+        >
+          Ver servicios
+        </Link>
+      </section>
     </main>
   );
 }
