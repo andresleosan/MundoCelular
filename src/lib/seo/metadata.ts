@@ -74,3 +74,21 @@ export function metadataAdmin(): Metadata {
     robots: { index: false, follow: false },
   };
 }
+
+export function metadataContacto(config: ConfigTienda): Metadata {
+  return {
+    title: `Contacto | ${siteName(config)}`,
+    description: `Dirección, horario y contacto de ${siteName(config)} en ${config.ciudad}. WhatsApp, redes sociales y mapa.`,
+    alternates: { canonical: "/contacto" },
+    openGraph: { type: "website", title: `Contacto | ${siteName(config)}` },
+  };
+}
+
+export function metadataPreguntas(config: ConfigTienda): Metadata {
+  return {
+    title: `Preguntas frecuentes | ${siteName(config)}`,
+    description: `Resolvemos tus dudas sobre compras, envíos, garantía y reparaciones en ${siteName(config)}.`,
+    alternates: { canonical: "/preguntas" },
+    openGraph: { type: "website", title: `Preguntas frecuentes | ${siteName(config)}` },
+  };
+}
