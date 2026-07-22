@@ -45,6 +45,16 @@ export function Footer() {
                   Carrito
                 </Link>
               </li>
+              <li>
+                <Link href="/contacto" className="hover:text-gray-900">
+                  Contacto
+                </Link>
+              </li>
+              <li>
+                <Link href="/preguntas" className="hover:text-gray-900">
+                  Preguntas frecuentes
+                </Link>
+              </li>
             </ul>
           </div>
 
