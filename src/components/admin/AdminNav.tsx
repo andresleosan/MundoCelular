@@ -10,6 +10,7 @@ const ENLACES = [
   { href: "/admin/productos", etiqueta: "Productos" },
   { href: "/admin/pedidos", etiqueta: "Pedidos" },
   { href: "/admin/configuracion", etiqueta: "Configuración" },
+  { href: "/admin/usuarios", etiqueta: "Usuarios" },
 ];
 
 export function AdminNav() {
@@ -18,7 +19,7 @@ export function AdminNav() {
 
   async function salir() {
     await cerrarSesion();
-    router.replace("/admin/login");
+    router.replace("/login");
   }
 
   return (
