@@ -5,5 +5,5 @@ const formato = new Intl.NumberFormat("es-CO", {
 });
 
 export function formatearCOP(valor: number): string {
-  return formato.format(valor);
+  return formato.format(valor).replace(/\u00a0/g, " ");
 }
