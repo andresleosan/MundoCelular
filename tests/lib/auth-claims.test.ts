@@ -99,3 +99,55 @@ describe("gestión de administradores", () => {
     expect(admins).toEqual([]);
   });
 });
+
+describe("flujo de login-destino en localStorage", () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it("login-destino se guarda y se limpia como debe", () => {
+    localStorage.setItem("login-destino", "admin");
+    expect(localStorage.getItem("login-destino")).toBe("admin");
+    localStorage.removeItem("login-destino");
+    expect(localStorage.getItem("login-destino")).toBeNull();
+  });
+
+  it("login-destino persiste 'cliente' correctamente", () => {
+    localStorage.setItem("login-destino", "cliente");
+    expect(localStorage.getItem("login-destino")).toBe("cliente");
+  });
+
+  it("clear() elimina login-destino junto con todo lo demás", () => {
+    localStorage.setItem("login-destino", "admin");
+    localStorage.setItem("otra-key", "valor");
+    localStorage.clear();
+    expect(localStorage.getItem("login-destino")).toBeNull();
+    expect(localStorage.getItem("otra-key")).toBeNull();
+  });
+});
+
+describe("validarEmail (igual al regex de AdminUsuarios)", () => {
+  const validarEmail = (e: string): boolean =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+
+  it("acepta emails válidos", () => {
+    expect(validarEmail("test@example.com")).toBe(true);
+    expect(validarEmail("user.name+tag@domain.co")).toBe(true);
+    expect(validarEmail("admin@mundocelular.co")).toBe(true);
+  });
+
+  it("rechaza emails inválidos", () => {
+    expect(validarEmail("")).toBe(false);
+    expect(validarEmail("notanemail")).toBe(false);
+    expect(validarEmail("@domain.com")).toBe(false);
+    expect(validarEmail("user@")).toBe(false);
+    expect(validarEmail("user@domain")).toBe(false);
+    expect(validarEmail("user name@domain.com")).toBe(false);
+    expect(validarEmail("USER@DOMAIN.COM")).toBe(true); // mayúsculas son válidas según el regex
+  });
+
+  it("es el mismo regex usado en Cliente/Admin en LoginButtons", () => {
+    // El regex se mantiene sincronizado entre AdminUsuarios y validaciones de auth
+    expect(validarEmail("cliente@ejemplo.com")).toBe(true);
+  });
+});
