@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { SearchInput } from "@/components/storefront/SearchInput";
 import { CarritoContador } from "@/components/carrito/CarritoContador";
 import { useAuth } from "@/hooks/useAuth";
-import { cerrarSesion } from "@/lib/auth";
+import { cerrarSesion } from "@/lib/auth-client";
 
 export function Header() {
   const [open, setOpen] = useState(false);

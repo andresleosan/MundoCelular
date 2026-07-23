@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { loginConGoogle } from "@/lib/auth";
+import { loginConGoogle } from "@/lib/auth-client";
 
 export function BotonGoogle() {
   const [cargando, setCargando] = useState(false);

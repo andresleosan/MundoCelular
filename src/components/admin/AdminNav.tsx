@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { cerrarSesion } from "@/lib/auth";
+import { cerrarSesion } from "@/lib/auth-client";
 
 const ENLACES = [
   { href: "/admin", etiqueta: "Inicio" },

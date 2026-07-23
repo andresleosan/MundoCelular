@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { LoginButtons } from "@/components/auth/LoginButtons";
 
+export const dynamic = "force-dynamic";
+
 export default function LoginPage() {
   const { usuario, esAdmin, cargando } = useAuth();
   const router = useRouter();

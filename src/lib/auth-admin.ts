@@ -1,14 +1,4 @@
-import { signInWithPopup, signOut } from "firebase/auth";
-import { auth, googleProvider } from "./firebase";
 import { getAdminDb } from "./firebase-admin";
-
-export async function loginConGoogle(): Promise<void> {
-  await signInWithPopup(auth, googleProvider);
-}
-
-export async function cerrarSesion(): Promise<void> {
-  await signOut(auth);
-}
 
 export async function asignarAdmin(email: string): Promise<void> {
   const db = getAdminDb();

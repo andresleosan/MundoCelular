@@ -31,7 +31,7 @@ vi.mock("@/lib/firebase", () => ({
 }));
 
 import { esClaimAdmin } from "@/lib/auth-claims";
-import { asignarAdmin, revocarAdmin, listarAdmins } from "@/lib/auth";
+import { asignarAdmin, revocarAdmin, listarAdmins } from "@/lib/auth-admin";
 
 describe("esClaimAdmin", () => {
   it("true solo cuando el claim admin es true", () => {
