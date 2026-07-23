@@ -92,7 +92,7 @@ describe("SEO integration — generateMetadata exports across pages", () => {
     },
     {
       nombre: "buscar (/buscar)",
-      rutaImport: "@/app/buscar/layout",
+      rutaImport: "@/app/buscar/page",
       testBase: (m) => { expect(m.title).toBeDefined(); },
     },
     {
