@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { loginConGoogle } from "@/lib/auth";
 
 export function LoginButtons() {
   const [cargando, setCargando] = useState<"cliente" | "admin" | null>(null);
   const [error, setError] = useState("");
-  const router = useRouter();
 
   async function handleLogin(tipo: "cliente" | "admin") {
     setCargando(tipo);
