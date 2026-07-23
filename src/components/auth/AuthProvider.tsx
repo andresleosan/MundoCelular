@@ -30,6 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setEsAdmin(esClaimAdmin(token.claims));
       } else {
         setEsAdmin(false);
+        localStorage.removeItem("login-destino");
       }
       setCargando(false);
     });
