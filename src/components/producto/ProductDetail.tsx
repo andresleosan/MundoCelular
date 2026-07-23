@@ -30,13 +30,15 @@ export function ProductDetail({
               <button
                 key={i}
                 onClick={() => setImgActiva(i)}
-                className={`h-16 w-16 overflow-hidden rounded-[12px] border-2 transition ${
+                className={`relative h-16 w-16 overflow-hidden rounded-[12px] border-2 transition ${
                   i === imgActiva ? "border-mundo-blue" : "border-faint-border"
                 }`}
               >
-                <img
+                <Image
                   src={img.thumb || img.url}
                   alt={img.alt}
+                  fill
+                  sizes="64px"
                   className="h-full w-full object-cover"
                 />
               </button>

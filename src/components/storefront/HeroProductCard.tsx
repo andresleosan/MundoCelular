@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { formatearCOP } from "@/lib/format";
 import type { Producto } from "@/types";
@@ -5,9 +6,16 @@ import type { Producto } from "@/types";
 export function HeroProductCard({ producto, categoriaSlug }: { producto: Producto; categoriaSlug: string }) {
   return (
     <Link href={`/${categoriaSlug}/${producto.slug}`} className="block rounded-cards bg-pure-white shadow-sm-2">
-      <div className="aspect-square overflow-hidden rounded-[20px] bg-canvas-frost">
+      <div className="relative aspect-square overflow-hidden rounded-[20px] bg-canvas-frost">
         {producto.imagenes[0]?.url ? (
-          <img src={producto.imagenes[0].thumb || producto.imagenes[0].url} alt={producto.imagenes[0].alt} className="h-full w-full object-cover" width={400} height={400} loading="lazy" />
+          <Image
+            src={producto.imagenes[0].thumb || producto.imagenes[0].url}
+            alt={producto.imagenes[0].alt}
+            fill
+            sizes="(max-width: 640px) 100vw, 400px"
+            className="h-full w-full object-cover"
+            priority
+          />
         ) : (
           <div className="flex h-full items-center justify-center text-steel-blue-gray text-[12px]">Sin imagen</div>
         )}

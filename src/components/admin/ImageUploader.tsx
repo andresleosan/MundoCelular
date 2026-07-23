@@ -63,6 +63,7 @@ export function ImageUploader({ imagenes, onChange, maximo = 5 }: ImageUploaderP
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {imagenes.map((img, i) => (
             <div key={i} className="relative rounded-cards border border-faint-border bg-pure-white p-2">
+              {/* eslint-disable-next-line @next/next/no-img-element -- admin preview, src es blob URL (no R2); no impacta CWV del storefront */}
               <img src={img.thumb} alt={img.alt} className="aspect-square w-full rounded-[12px] object-cover" />
               <input
                 value={img.alt}

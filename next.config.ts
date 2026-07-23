@@ -9,6 +9,17 @@ const nextConfig: NextConfig = {
     "@grpc/proto-loader",
     "google-auth-library",
   ],
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: process.env.R2_PUBLIC_URL
+          ? new URL(process.env.R2_PUBLIC_URL).hostname
+          : "r2.dev",
+        pathname: "/productos/**",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

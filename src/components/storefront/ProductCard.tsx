@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { formatearCOP } from "@/lib/format";
 import type { Producto } from "@/types";
@@ -16,15 +17,14 @@ export function ProductCard({
       href={`/${categoriaSlug}/${producto.slug}`}
       className="group block rounded-2xl bg-pure-white shadow-sm transition-shadow hover:shadow-lg"
     >
-      <div className="aspect-square overflow-hidden rounded-t-2xl bg-canvas-frost">
+      <div className="relative aspect-square overflow-hidden rounded-t-2xl bg-canvas-frost">
         {producto.imagenes[0]?.url ? (
-          <img
+          <Image
             src={producto.imagenes[0].thumb || producto.imagenes[0].url}
             alt={producto.imagenes[0].alt}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className="h-full w-full object-cover transition-transform group-hover:scale-105"
-            width={400}
-            height={400}
-            loading="lazy"
           />
         ) : (
           <div className="flex h-full items-center justify-center text-[12px] text-steel-blue-gray">
