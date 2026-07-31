@@ -7,11 +7,14 @@ export function ProductCard({
   producto,
   categoriaNombre,
   categoriaSlug,
+  precioMinimo,
 }: {
   producto: Producto;
   categoriaNombre: string;
   categoriaSlug: string;
+  precioMinimo?: number;
 }) {
+  const mostrarDesde = Boolean(producto.tieneVariantes) && typeof precioMinimo === "number";
   return (
     <Link
       href={`/${categoriaSlug}/${producto.slug}`}
@@ -41,7 +44,7 @@ export function ProductCard({
           {producto.nombre}
         </h3>
         <p className="mt-1 font-jetbrains-mono text-[14px] text-mundo-blue">
-          {formatearCOP(producto.precio)}
+          {mostrarDesde ? `Desde ${formatearCOP(precioMinimo!)}` : formatearCOP(producto.precio)}
         </p>
       </div>
     </Link>
