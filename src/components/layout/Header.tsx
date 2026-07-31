@@ -34,7 +34,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-20 border-b border-faint-border bg-pure-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-[1200px] items-center gap-4 px-4 py-3">
-        <Link href="/" className="font-sora text-[16px] font-semibold tracking-[-0.015em] text-mundo-blue">
+        <Link href="/" className="font-inter-tight text-[16px] font-semibold tracking-[-0.015em] text-mundo-blue">
           MUNDO CELULAR
         </Link>
 

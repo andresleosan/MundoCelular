@@ -6,7 +6,7 @@ const WHATSAPP_LINK = "https://wa.me/573113554021";
 export function Hero({ config }: { config: ConfigTienda }) {
   return (
     <section className="relative overflow-hidden rounded-cards bg-abyss-navy px-6 py-16 text-center text-pure-white">
-      <h1 className="font-sora text-[28px] font-semibold tracking-[-0.03em] text-mundo-blue sm:text-[36px]">
+      <h1 className="font-inter-tight text-[28px] font-semibold tracking-[-0.03em] text-mundo-blue sm:text-[36px]">
         {config.nombre}
       </h1>
       <p className="mt-3 text-[16px] tracking-[-0.02em] text-canvas-frost">

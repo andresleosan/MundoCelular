@@ -6,7 +6,7 @@ export function Footer() {
       <div className="mx-auto max-w-[1200px] px-4 py-12">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
           <div>
-            <h3 className="font-sora text-[16px] font-semibold tracking-[-0.015em] text-ink-navy">
+            <h3 className="font-inter-tight text-[16px] font-semibold tracking-[-0.015em] text-ink-navy">
               MUNDO CELULAR
             </h3>
             <p className="mt-3 text-[14px] text-steel-blue-gray">

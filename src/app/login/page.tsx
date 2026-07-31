@@ -46,7 +46,7 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 px-6">
-      <h1 className="font-sora text-[20px] font-semibold tracking-[-0.03em] text-mundo-blue">
+      <h1 className="font-inter-tight text-[20px] font-semibold tracking-[-0.03em] text-mundo-blue">
         MUNDO CELULAR
       </h1>
       <p className="text-[14px] text-steel-blue-gray">Iniciar sesión</p>
