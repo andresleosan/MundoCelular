@@ -1,37 +1,53 @@
 @import "tailwindcss";
 
 @theme {
-  /* Colors */
-  --color-canvas-frost: #eef2f9;
-  --color-pure-white: #ffffff;
-  --color-ink-navy: #0a1930;
-  --color-faint-border: #e0e6f0;
-  --color-steel-blue-gray: #5b6b85;
-  --color-cool-frost: #c7d0de;
-  --color-mist-blue: #a8b8d0;
-  --color-mundo-blue: #143b98;
+  /* Colores nuevos (brief) */
+  --color-primary: #1E4FA8;
+  --color-primary-dark: #153C82;
+  --color-primary-light: #4D7AD6;
+  --color-accent: #2563EB;
+  --color-bg: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-border: #E5E7EB;
+  --color-text: #1F2937;
+  --color-text-secondary: #6B7280;
+  --color-success: #16A34A;
+  --color-danger: #DC2626;
+
+  /* Alias existentes — mismo nombre, nuevo valor */
+  --color-mundo-blue: #1E4FA8;
+  --color-canvas-frost: #F8FAFC;
+  --color-pure-white: #FFFFFF;
+  --color-ink-navy: #1F2937;
+  --color-faint-border: #E5E7EB;
+  --color-steel-blue-gray: #6B7280;
+
+  /* Mantener (sin cambios) */
   --color-blue-wash: #c3d4f7;
   --color-abyss-navy: #0f1f3d;
   --color-slate-mist: #3d4f70;
+  --color-cool-frost: #c7d0de;
+  --color-mist-blue: #a8b8d0;
 
-  /* Typography */
-  --font-sora: var(--font-sora-css), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Tipografía — eliminar --font-sora, agregar nuevos */
+  --font-inter-tight: var(--font-inter-tight-css), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-inter: var(--font-inter-css), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-jetbrains-mono: var(--font-jetbrains-mono-css), ui-monospace, "SF Mono", monospace;
 
-  /* Border Radius */
+  /* Radius (sin cambios) */
   --radius-cards: 28px;
   --radius-chips: 9999px;
   --radius-pills: 20px;
 
-  /* Shadows */
-  --shadow-sm: rgba(10, 25, 48, 0.06) 0px 2px 8px 0px;
-  --shadow-sm-2: rgba(10, 25, 48, 0.1) 0px 4px 6px -1px, rgba(10, 25, 48, 0.1) 0px 2px 4px -2px;
-  --shadow-lg: rgba(10, 25, 48, 0.12) 0px 4px 24px 0px;
-  --shadow-lg-2: rgba(20, 59, 152, 0.34) 0px 4px 24px 0px;
+  /* Shadows — color base cambia a tinte azul */
+  --shadow-sm: rgba(30, 79, 168, 0.06) 0px 2px 8px 0px;
+  --shadow-sm-2: rgba(30, 79, 168, 0.1) 0px 4px 6px -1px, rgba(30, 79, 168, 0.1) 0px 2px 4px -2px;
+  --shadow-lg: rgba(30, 79, 168, 0.12) 0px 4px 24px 0px;
+  --shadow-lg-2: rgba(30, 79, 168, 0.34) 0px 4px 24px 0px;
 }
 
 body {
-  background-color: var(--color-canvas-frost);
-  color: var(--color-ink-navy);
-  font-family: var(--font-sora);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-inter);
 }
