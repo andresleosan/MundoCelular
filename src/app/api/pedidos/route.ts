@@ -3,9 +3,26 @@ import { getAuth } from "firebase-admin/auth";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminDb } from "@/lib/firebase-admin";
 
+interface PedidoItemBody {
+  productoId: string;
+  cantidad: number;
+  varianteId?: string;
+  atributos?: Record<string, string>;
+}
+
 interface PedidoBody {
-  items: Array<{ productoId: string; cantidad: number }>;
+  items: PedidoItemBody[];
   entrega: { tipo: "retiro" | "domicilio"; direccion?: string; barrio?: string };
+}
+
+interface ItemPedidoPersistido {
+  productoId: string;
+  nombre: string;
+  precioUnitario: number;
+  cantidad: number;
+  subtotal: number;
+  varianteId?: string;
+  atributos?: Record<string, string>;
 }
 
 export async function POST(req: NextRequest) {
@@ -18,64 +35,93 @@ export async function POST(req: NextRequest) {
   try {
     decoded = await getAuth().verifyIdToken(authHeader.slice(7));
   } catch {
-    return NextResponse.json({ error: "Token inv\u00e1lido" }, { status: 401 });
+    return NextResponse.json({ error: "Token inválido" }, { status: 401 });
   }
 
   const body = (await req.json()) as PedidoBody;
   if (!Array.isArray(body.items) || body.items.length === 0) {
-    return NextResponse.json({ error: "items es obligatorio y no puede estar vac\u00edo" }, { status: 400 });
+    return NextResponse.json({ error: "items es obligatorio y no puede estar vacío" }, { status: 400 });
   }
   if (!body.entrega?.tipo || !["retiro", "domicilio"].includes(body.entrega.tipo)) {
     return NextResponse.json({ error: "entrega.tipo debe ser 'retiro' o 'domicilio'" }, { status: 400 });
   }
   if (body.entrega.tipo === "domicilio" && !body.entrega.direccion?.trim()) {
-    return NextResponse.json({ error: "direcci\u00f3n es obligatoria para domicilio" }, { status: 400 });
+    return NextResponse.json({ error: "dirección es obligatoria para domicilio" }, { status: 400 });
   }
 
   const db = getAdminDb();
 
   try {
     const pedidoId = await db.runTransaction(async (tx) => {
-      const refs = body.items.map((item) => db.collection("productos").doc(item.productoId));
-      const snaps = await Promise.all(refs.map((ref) => tx.get(ref)));
+      const productoRefs = body.items.map((item) => db.collection("productos").doc(item.productoId));
+      const varianteRefs = body.items.map((item) =>
+        item.varianteId ? db.collection("variantes").doc(item.varianteId) : null
+      );
+      const [productoSnaps, varianteSnaps] = await Promise.all([
+        Promise.all(productoRefs.map((ref) => tx.get(ref))),
+        Promise.all(
+          varianteRefs.map((ref) => (ref ? tx.get(ref) : Promise.resolve(null)))
+        ),
+      ]);
 
-      const itemsPedido: Array<{
-        productoId: string;
-        nombre: string;
-        precioUnitario: number;
-        cantidad: number;
-        subtotal: number;
-      }> = [];
+      const itemsPedido: ItemPedidoPersistido[] = [];
       let total = 0;
 
       for (let i = 0; i < body.items.length; i++) {
-        const snap = snaps[i];
+        const prodSnap = productoSnaps[i];
+        const varSnap = varianteSnaps[i];
         const item = body.items[i];
 
-        if (!snap.exists) {
+        if (!prodSnap.exists) {
           throw new Error(`Producto ${item.productoId} no encontrado`);
         }
 
-        const prod = snap.data()!;
+        const prod = prodSnap.data()!;
         if (!prod.activo) {
-          throw new Error(`Producto ${prod.nombre} no est\u00e1 activo`);
-        }
-        if (prod.stock < item.cantidad) {
-          throw new Error(`Stock insuficiente para ${prod.nombre}: disponible ${prod.stock}, solicitado ${item.cantidad}`);
+          throw new Error(`Producto ${prod.nombre} no está activo`);
         }
 
-        const subtotal = prod.precio * item.cantidad;
+        let precio = prod.precio as number;
+        let stockActual = prod.stock as number;
+        let refActualizar = productoRefs[i];
+
+        if (item.varianteId) {
+          if (!varSnap || !varSnap.exists) {
+            throw new Error(`Variante ${item.varianteId} no encontrada`);
+          }
+          const variante = varSnap.data()!;
+          if (!variante.activo) {
+            throw new Error(`Variante no está activa`);
+          }
+          precio = variante.precio as number;
+          stockActual = variante.stock as number;
+          refActualizar = varianteRefs[i]!;
+        }
+
+        if (stockActual < item.cantidad) {
+          throw new Error(
+            `Stock insuficiente para ${prod.nombre}: disponible ${stockActual}, solicitado ${item.cantidad}`
+          );
+        }
+
+        const subtotal = precio * item.cantidad;
         total += subtotal;
+
+        const atributos =
+          item.atributos ??
+          (varSnap?.exists ? (varSnap.data()!.attributes as Record<string, string>) : undefined);
 
         itemsPedido.push({
           productoId: item.productoId,
           nombre: prod.nombre,
-          precioUnitario: prod.precio,
+          precioUnitario: precio,
           cantidad: item.cantidad,
           subtotal,
+          varianteId: item.varianteId,
+          atributos,
         });
 
-        tx.update(refs[i], { stock: prod.stock - item.cantidad });
+        tx.update(refActualizar, { stock: stockActual - item.cantidad });
       }
 
       const pedidoRef = db.collection("pedidos").doc();
@@ -100,24 +146,25 @@ export async function POST(req: NextRequest) {
 
     const pedidoSnap = await db.doc(`pedidos/${pedidoId}`).get();
     const pedido = pedidoSnap.data()!;
+    const items = pedido.items as ItemPedidoPersistido[];
 
-    const lineas = pedido.items.map(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (i: any) => `\u2022 ${i.nombre} \u2014 x${i.cantidad} \u2014 $ ${(i.subtotal as number).toLocaleString("es-CO")}`
-    );
-    const entrega = pedido.entrega.tipo === "domicilio"
-      ? `Entrega: Domicilio \u2014 ${pedido.entrega.direccion}${pedido.entrega.barrio ? `, ${pedido.entrega.barrio}` : ""}`
-      : "Entrega: Retiro en tienda";
+    const lineas = items.map((i) => {
+      const attrs = i.atributos ? ` (${Object.values(i.atributos).join(" / ")})` : "";
+      return `• ${i.nombre}${attrs} — x${i.cantidad} — $ ${i.subtotal.toLocaleString("es-CO")}`;
+    });
+    const entrega =
+      pedido.entrega.tipo === "domicilio"
+        ? `Entrega: Domicilio — ${pedido.entrega.direccion}${pedido.entrega.barrio ? `, ${pedido.entrega.barrio}` : ""}`
+        : "Entrega: Retiro en tienda";
     const mensaje = [
       "Hola Mundo Celular, quiero comprar:",
       ...lineas,
       `Total: $ ${(pedido.total as number).toLocaleString("es-CO")}`,
       entrega,
-      `Pedido #${pedidoId.slice(0, 8)} \u2014 ${decoded.name || decoded.email || "Cliente"}`,
+      `Pedido #${pedidoId.slice(0, 8)} — ${decoded.name || decoded.email || "Cliente"}`,
     ].join("\n");
 
     return NextResponse.json({ pedidoId, mensaje, whatsapp });
-
   } catch (error) {
     const msg = error instanceof Error ? error.message : "Error al crear pedido";
     return NextResponse.json({ error: msg }, { status: 400 });

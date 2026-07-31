@@ -63,7 +63,12 @@ export function CheckoutForm() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          items: items.map((i) => ({ productoId: i.productoId, cantidad: i.cantidad })),
+          items: items.map((i) => ({
+            productoId: i.productoId,
+            cantidad: i.cantidad,
+            varianteId: i.varianteId,
+            atributos: i.atributos,
+          })),
           entrega: { tipo: tipoEntrega, direccion: direccion.trim() || undefined, barrio: barrio.trim() || undefined },
         }),
       });
@@ -93,12 +98,15 @@ export function CheckoutForm() {
       <section className="mt-6 rounded-cards bg-pure-white p-6 shadow-sm-2">
         <h2 className="text-[14px] font-semibold text-steel-blue-gray">Tu pedido</h2>
         <ul className="mt-3 flex flex-col gap-2">
-          {items.map((item) => (
-            <li key={item.productoId} className="flex justify-between text-[14px]">
-              <span>{item.nombre} x{item.cantidad}</span>
-              <span className="font-jetbrains-mono">{formatearCOP(item.precio * item.cantidad)}</span>
-            </li>
-          ))}
+          {items.map((item) => {
+            const attrs = item.atributos ? ` (${Object.values(item.atributos).join(" / ")})` : "";
+            return (
+              <li key={`${item.productoId}__${item.varianteId ?? ""}`} className="flex justify-between text-[14px]">
+                <span>{item.nombre}{attrs} x{item.cantidad}</span>
+                <span className="font-jetbrains-mono">{formatearCOP(item.precio * item.cantidad)}</span>
+              </li>
+            );
+          })}
         </ul>
         <div className="mt-4 border-t border-faint-border pt-3 text-right">
           <span className="text-[14px] font-semibold">Total: </span>
