@@ -64,3 +64,17 @@ Plan Fase 1: docs/superpowers/plans/2026-07-19-fase1-base-admin.md
   - [x] Home — sección reparaciones banner CTA
   - [x] Footer — links a /contacto y /preguntas
   - [x] Verificación final — build OK (25 páginas) + auditoría WCAG
+
+## Fase 7 — Core Web Vitals + SEO + PWA
+- [x] T1 — Migración `<img>` → `<Image>` en storefront (HeroProductCard, ProductCard, ProductDetail)
+- [x] T2 — Lighthouse baseline (documentado en `docs/superpowers/reports/2026-07-31-lighthouse-baseline.md`) — bloqueado por HTTP 500 → resuelto en T7
+- [x] T3 — SEO enrichment: OG/Twitter metadata + sku en schema Product
+- [x] T4 — Web Vitals analytics: hook useReportWebVitals + endpoint /api/vitals
+- [x] T5 — PWA manifest + iconos placeholder + og-default.png
+- [x] T6 — Lighthouse final + comparación con baseline (reporte `2026-07-31-lighthouse-final.md`) — métricas reales obtenidas
+- [x] T7 — Fixes condicionales: `getDb()` lazy en `firebase.ts` + 4 módulos firestore — resuelve HTTP 500 y permite Lighthouse medir
+
+### Hallazgos fuera del código (pendientes operatorios)
+- [ ] Crear índice Firestore compuesto `categorias(activa ASC, orden ASC, __name__ ASC)`
+- [ ] Crear índice Firestore compuesto `productos(activo ASC, destacado ASC, __name__ ASC)`
+- [ ] Re-correr Lighthouse en producción (`npx next build && npx next start`) para diferenciar dev overhead

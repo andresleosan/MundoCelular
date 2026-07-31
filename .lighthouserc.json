@@ -1,0 +1,33 @@
+{
+  "ci": {
+    "collect": {
+      "url": [
+        "http://127.0.0.1:3000/",
+        "http://127.0.0.1:3000/reparaciones",
+        "http://127.0.0.1:3000/contacto",
+        "http://127.0.0.1:3000/preguntas"
+      ],
+      "numberOfRuns": 3,
+      "settings": {
+        "preset": "desktop",
+        "throttling": {
+          "rttMs": 40,
+          "throughputKbps": 10240,
+          "cpuSlowdownMultiplier": 1
+        }
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": "warn",
+        "categories:accessibility": "warn",
+        "categories:seo": "warn",
+        "categories:best-practices": "warn"
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": "docs/lighthouse-reports"
+    }
+  }
+}

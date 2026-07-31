@@ -52,6 +52,10 @@ describe("jsonldProducto", () => {
     expect(offers[0].priceCurrency).toBe("COP");
     expect(offers[0].availability).toBe(prod.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock");
   });
+  it("incluye sku = prod.id", () => {
+    const j = jsonldProducto(prod, cat);
+    expect((j as Record<string, unknown>).sku).toBe(prod.id);
+  });
 });
 
 describe("jsonldReparaciones", () => {

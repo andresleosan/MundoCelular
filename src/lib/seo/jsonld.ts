@@ -67,6 +67,7 @@ export function jsonldProducto(prod: Producto, cat: Categoria): JsonLdObject {
   return {
     "@context": "https://schema.org",
     "@type": "Product",
+    sku: prod.id,
     name: prod.nombre,
     description: prod.descripcion,
     brand: { "@type": "Brand", name: prod.marca || undefined },

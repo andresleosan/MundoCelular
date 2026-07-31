@@ -90,3 +90,49 @@ describe("metadataAdmin", () => {
     expect(robots.follow).toBe(false);
   });
 });
+
+describe("metadataInicio OG/Twitter", () => {
+  it("incluye og:locale=es_CO y og:url absoluta", () => {
+    const m = metadataInicio(config);
+    expect(m.openGraph?.locale).toBe("es_CO");
+    expect(m.openGraph?.url).toBeDefined();
+    expect(m.openGraph?.siteName).toBe(config.nombre);
+  });
+  it("incluye twitter:title y twitter:description", () => {
+    const m = metadataInicio(config);
+    expect(m.twitter?.title).toBeDefined();
+    expect(m.twitter?.description).toBeDefined();
+  });
+});
+
+describe("metadataProducto OG/Twitter", () => {
+  const cat: Categoria = { id: "c1", nombre: "Celulares", slug: "celulares", descripcion: "", orden: 1, activa: true };
+  const prodConImagen: Producto = {
+    id: "p1", nombre: "iPhone 13", slug: "iphone-13", descripcion: "OK",
+    precio: 1850000, stock: 3, categoriaId: "c1", marca: "Apple",
+    specs: {}, imagenes: [{ url: "https://r2.test/productos/p1.webp", thumb: "https://r2.test/productos/p1-thumb.webp", alt: "iPhone 13" }], activo: true, destacado: false,
+  };
+  it("incluye twitter:image con la imagen del producto", () => {
+    const m = metadataProducto(prodConImagen, cat, config);
+    const images = m.twitter?.images;
+    expect(images).toBeDefined();
+    if (Array.isArray(images)) {
+      expect(images[0]).toBe("https://r2.test/productos/p1.webp");
+    }
+  });
+  it("incluye og:url absoluta y og:locale=es_CO", () => {
+    const m = metadataProducto(prodConImagen, cat, config);
+    expect(m.openGraph?.url).toContain("/celulares/iphone-13");
+    expect(m.openGraph?.locale).toBe("es_CO");
+  });
+});
+
+describe("metadataCategoria OG/Twitter", () => {
+  const cat: Categoria = { id: "c1", nombre: "Celulares", slug: "celulares", descripcion: "Smartphones", orden: 1, activa: true };
+  it("incluye og:url, siteName, locale", () => {
+    const m = metadataCategoria(cat, config);
+    expect(m.openGraph?.url).toContain("/celulares");
+    expect(m.openGraph?.siteName).toBe(config.nombre);
+    expect(m.openGraph?.locale).toBe("es_CO");
+  });
+});
