@@ -18,7 +18,7 @@ export interface Producto {
   nombre: string;
   slug: string;
   descripcion: string;
-  precio: number;          // COP entero
+  precio: number;
   stock: number;
   categoriaId: string;
   marca: string;
@@ -28,11 +28,25 @@ export interface Producto {
   destacado: boolean;
   metaTitle?: string;
   metaDescription?: string;
+  tieneVariantes?: boolean;
+  atributosDisponibles?: string[];
+}
+
+export interface VarianteProducto {
+  id: string;
+  productId: string;
+  attributes: Record<string, string>;
+  precio: number;
+  stock: number;
+  imagenes: ImagenProducto[];
+  activo: boolean;
 }
 
 export interface ItemCarrito {
   productoId: string;
   cantidad: number;
+  varianteId?: string;
+  atributos?: Record<string, string>;
 }
 
 export interface Pedido {
@@ -40,11 +54,19 @@ export interface Pedido {
   clienteUid: string;
   clienteNombre: string;
   clienteEmail: string;
-  items: Array<{ productoId: string; nombre: string; precioUnitario: number; cantidad: number; subtotal: number }>;
+  items: Array<{
+    productoId: string;
+    nombre: string;
+    precioUnitario: number;
+    cantidad: number;
+    subtotal: number;
+    varianteId?: string;
+    atributos?: Record<string, string>;
+  }>;
   total: number;
   entrega: { tipo: "retiro" | "domicilio"; direccion?: string; barrio?: string };
   estado: "pendiente" | "contactado" | "cerrado" | "cancelado";
-  creadoEn: unknown; // Timestamp
+  creadoEn: unknown;
 }
 
 export interface ConfigTienda {
