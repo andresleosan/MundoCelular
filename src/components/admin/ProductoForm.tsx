@@ -21,6 +21,10 @@ export function ProductoForm({ categorias, producto }: { categorias: Categoria[]
   const [activo, setActivo] = useState(producto?.activo ?? true);
   const [destacado, setDestacado] = useState(producto?.destacado ?? false);
   const [imagenes, setImagenes] = useState<ImagenProducto[]>(producto?.imagenes ?? []);
+  const [tieneVariantes, setTieneVariantes] = useState(producto?.tieneVariantes ?? false);
+  const [atributosTexto, setAtributosTexto] = useState(
+    producto?.atributosDisponibles?.join(", ") ?? ""
+  );
   const [errores, setErrores] = useState<string[]>([]);
   const [guardando, setGuardando] = useState(false);
 
@@ -35,6 +39,7 @@ export function ProductoForm({ categorias, producto }: { categorias: Categoria[]
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const atributos = atributosTexto.split(",").map((s) => s.trim()).filter(Boolean);
     const input = {
       nombre, descripcion,
       precio: Number(precio),
@@ -43,6 +48,8 @@ export function ProductoForm({ categorias, producto }: { categorias: Categoria[]
       specs: parsearSpecs(),
       activo, destacado,
       imagenes,
+      tieneVariantes,
+      atributosDisponibles: atributos,
     };
     const errs = validarProducto(input);
     if (errs.length > 0) {
@@ -107,7 +114,16 @@ export function ProductoForm({ categorias, producto }: { categorias: Categoria[]
       <div className="flex gap-6">
         <label className="flex items-center gap-2 text-[14px]"><input type="checkbox" checked={activo} onChange={(e) => setActivo(e.target.checked)} /> Activo</label>
         <label className="flex items-center gap-2 text-[14px]"><input type="checkbox" checked={destacado} onChange={(e) => setDestacado(e.target.checked)} /> Destacado</label>
+        <label className="flex items-center gap-2 text-[14px]"><input id="tiene-variantes" type="checkbox" checked={tieneVariantes} onChange={(e) => setTieneVariantes(e.target.checked)} /> Tiene variantes</label>
       </div>
+
+      {tieneVariantes && (
+        <div>
+          <label htmlFor="atributos-disponibles" className={labelClase}>Atributos disponibles (separados por coma)</label>
+          <input id="atributos-disponibles" value={atributosTexto} onChange={(e) => setAtributosTexto(e.target.value)} className={inputClase} placeholder="Color, Capacidad" />
+          <p className="mt-1 text-[11px] text-steel-blue-gray">Después de guardar el producto podrás crear variantes con estos atributos.</p>
+        </div>
+      )}
       {errores.length > 0 && (
         <ul className="text-[12px] text-mundo-blue">
           {errores.map((err) => <li key={err}>{err}</li>)}
