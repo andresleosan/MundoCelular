@@ -29,11 +29,13 @@ export function CarritoResumen() {
       <div className="flex flex-col gap-3">
         {items.map((item) => (
           <CarritoItem
-            key={item.productoId}
+            key={`${item.productoId}__${item.varianteId ?? ""}`}
             productoId={item.productoId}
             nombre={item.nombre}
             precio={item.precio}
             cantidad={item.cantidad}
+            varianteId={item.varianteId}
+            atributos={item.atributos}
           />
         ))}
       </div>
