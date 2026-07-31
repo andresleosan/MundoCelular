@@ -42,7 +42,7 @@ export function validarProducto(input: ProductoInput): string[] {
 
 export function validarVariante(input: VarianteInput): string[] {
   const errores: string[] = [];
-  if (!input.productId.trim()) errores.push("El producto es obligatorio");
+  if (!input.productId || !input.productId.trim()) errores.push("El producto es obligatorio");
   if (!input.attributes || Object.keys(input.attributes).length === 0) {
     errores.push("Debe tener al menos un atributo");
   }

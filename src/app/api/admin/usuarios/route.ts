@@ -1,23 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuth } from "firebase-admin/auth";
 import { getAdminDb } from "@/lib/firebase-admin";
-
-async function verificarAdmin(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  if (!authHeader?.startsWith("Bearer ")) {
-    return null;
-  }
-
-  try {
-    const decoded = await getAuth().verifyIdToken(authHeader.slice(7));
-    if (decoded.admin !== true) {
-      return null;
-    }
-    return decoded;
-  } catch {
-    return null;
-  }
-}
+import { verificarAdmin } from "@/lib/api-auth";
 
 export async function GET(req: NextRequest) {
   const admin = await verificarAdmin(req);
