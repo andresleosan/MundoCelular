@@ -78,3 +78,23 @@ Plan Fase 1: docs/superpowers/plans/2026-07-19-fase1-base-admin.md
 - [ ] Crear índice Firestore compuesto `categorias(activa ASC, orden ASC, __name__ ASC)`
 - [ ] Crear índice Firestore compuesto `productos(activo ASC, destacado ASC, __name__ ASC)`
 - [ ] Re-correr Lighthouse en producción (`npx next build && npx next start`) para diferenciar dev overhead
+
+## Fase 3 (segunda iteración) — Variantes de producto
+Spec: `docs/superpowers/specs/2026-07-31-fase3-variantes-design.md`
+Plan: `docs/superpowers/plans/2026-07-31-fase3-variantes.md`
+- [x] T1 — Tipos `VarianteProducto` + `validarVariante` (TDD)
+- [x] T2 — CRUD Firestore variantes (`src/lib/firestore/variantes.ts`)
+- [x] T3 — Función pública `obtenerVariantesPorProducto` con `unstable_cache`
+- [x] T4 — API admin `/api/admin/variantes` (POST, GET, PUT, DELETE) + helper `verificarAdmin` compartido
+- [x] T5 — `ProductoForm` admin con switch `tieneVariantes` + input `atributosDisponibles`
+- [x] T6 — `ProductDetail` con selector de variantes (chips/selects) + galería reactiva + precio dinámico
+- [x] T7 — `useCarrito` extendido con `varianteId` y `atributos` por item
+- [x] T8 — `CarritoItem` muestra atributos entre paréntesis
+- [x] T9 — `CheckoutForm` + `/api/pedidos` envían `varianteId` y `atributos`; stock descuenta de variante
+- [x] T10 — `ProductCard` / `HeroProductCard` muestran "Desde $X" cuando hay variantes
+- [x] T11 — Reglas Firestore colección `variantes` (público read, admin write) + tests
+- [x] T12 — Verificación final: 146 tests pasan, tsc limpio, lint sin errores nuevos
+
+### Pendientes operatorios Fase 3 (variantes)
+- [ ] Desplegar reglas Firestore actualizadas (`npx firebase deploy --only firestore:rules`)
+- [ ] Crear índice compuesto `variantes(productId ASC, activo ASC, precio ASC)` en consola de Firebase
