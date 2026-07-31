@@ -3,22 +3,33 @@
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { SearchInput } from "@/components/storefront/SearchInput";
-import { CarritoContador } from "@/components/carrito/CarritoContador";
 import { useAuth } from "@/hooks/useAuth";
 import { cerrarSesion } from "@/lib/auth-client";
+import { SearchInput } from "@/components/storefront/SearchInput";
+import { CarritoContador } from "@/components/carrito/CarritoContador";
+import { AuthModal } from "@/components/layout/AuthModal";
+import { Icon } from "@/components/ui/Icon";
 
 export function Header() {
-  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
   const { usuario, esAdmin, cargando } = useAuth();
   const router = useRouter();
-  const menuRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false);
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -27,100 +38,149 @@ export function Header() {
 
   async function handleLogout() {
     await cerrarSesion();
-    setMenuOpen(false);
+    setUserMenuOpen(false);
     router.push("/");
   }
 
+  function inicial(nombre: string | null | undefined): string {
+    if (!nombre) return "?";
+    return nombre.trim().charAt(0).toUpperCase();
+  }
+
+  const navLinks = [
+    { href: "/#categorias", label: "Categorías" },
+    { href: "/#marcas", label: "Marcas" },
+    { href: "/#ofertas", label: "Ofertas" },
+    { href: "/contacto", label: "Sobre nosotros" },
+  ];
+
   return (
-    <header className="sticky top-0 z-20 border-b border-faint-border bg-pure-white/95 backdrop-blur">
-      <div className="mx-auto flex max-w-[1200px] items-center gap-4 px-4 py-3">
-        <Link href="/" className="font-inter-tight text-[16px] font-semibold tracking-[-0.015em] text-mundo-blue">
-          MUNDO CELULAR
-        </Link>
-
-        <div className="ml-auto hidden max-w-md flex-1 sm:block">
-          <SearchInput />
-        </div>
-
-        <div className="flex items-center gap-3">
-          <CarritoContador />
-
-          {/* Auth button */}
-          {!cargando && (
-            <div className="relative" ref={menuRef}>
-              {usuario ? (
-                <>
-                  <button
-                    onClick={() => setMenuOpen(!menuOpen)}
-                    className="flex items-center gap-2 text-[14px] text-ink-navy hover:text-mundo-blue"
-                  >
-                    <span className="hidden sm:inline">
-                      {usuario.displayName?.split(" ")[0] || "Mi cuenta"}
-                    </span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="m6 9 6 6 6-6"/>
-                    </svg>
-                  </button>
-
-                  {menuOpen && (
-                    <div className="absolute right-0 top-full mt-2 w-48 rounded-cards border border-faint-border bg-pure-white py-2 shadow-lg">
-                      {esAdmin && (
-                        <button
-                          onClick={() => { router.push("/admin"); setMenuOpen(false); }}
-                          className="w-full px-4 py-2 text-left text-[14px] text-ink-navy hover:bg-ghost-white"
-                        >
-                          Panel admin
-                        </button>
-                      )}
-                      <button
-                        onClick={handleLogout}
-                        className="w-full px-4 py-2 text-left text-[14px] text-ink-navy hover:bg-ghost-white"
-                      >
-                        Cerrar sesión
-                      </button>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <button
-                  onClick={() => router.push("/login")}
-                  className="flex items-center gap-2 text-[14px] text-ink-navy hover:text-mundo-blue"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
-                  </svg>
-                  <span className="hidden sm:inline">Iniciar sesión</span>
-                </button>
-              )}
-            </div>
-          )}
-
-          <button
-            className="sm:hidden text-ink-navy"
-            onClick={() => setOpen(!open)}
-            aria-label="Menú"
+    <>
+      <header
+        className={`sticky top-0 z-30 transition-all duration-300 ease-out ${
+          scrolled
+            ? "border-b border-faint-border bg-pure-white/85 backdrop-blur-xl shadow-sm"
+            : "border-b border-transparent bg-pure-white/70 backdrop-blur-md"
+        }`}
+      >
+        <div className="mx-auto flex max-w-[1280px] items-center gap-6 px-4 py-3">
+          <Link
+            href="/"
+            className="font-inter-tight text-[18px] font-bold tracking-[-0.02em] text-primary"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              {open ? <><path d="M18 6 6 18" /><path d="m6 6 12 12" /></> : <><path d="M4 6h16" /><path d="M4 12h16" /><path d="M4 18h16" /></>}
-            </svg>
-          </button>
-        </div>
-      </div>
+            MUNDO CELULAR
+          </Link>
 
-      {open && (
-        <div className="border-t border-faint-border px-4 py-4 sm:hidden">
-          <SearchInput />
-          {!cargando && !usuario && (
+          <nav className="hidden gap-6 lg:flex" aria-label="Navegación principal">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-[14px] font-medium text-text transition-colors hover:text-primary"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="ml-auto hidden max-w-md flex-1 sm:block">
+            <SearchInput />
+          </div>
+
+          <div className="flex items-center gap-3">
+            <CarritoContador />
+
+            {!cargando && (
+              <div className="relative" ref={userMenuRef}>
+                {usuario ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setUserMenuOpen(!userMenuOpen)}
+                      className="flex items-center gap-2"
+                      aria-haspopup="menu"
+                      aria-expanded={userMenuOpen}
+                      aria-label="Menú de usuario"
+                    >
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-[14px] font-semibold text-pure-white">
+                        {inicial(usuario.displayName)}
+                      </span>
+                      <Icon name="chevron-down" size={16} className="hidden text-steel-blue-gray sm:block" />
+                    </button>
+
+                    {userMenuOpen && (
+                      <div className="absolute right-0 top-full mt-2 w-56 rounded-cards border border-faint-border bg-pure-white py-2 shadow-lg" role="menu">
+                        <div className="border-b border-faint-border px-4 py-2 text-[12px] text-steel-blue-gray">
+                          {usuario.displayName || usuario.email}
+                        </div>
+                        {esAdmin && (
+                          <button
+                            type="button"
+                            role="menuitem"
+                            onClick={() => { router.push("/admin"); setUserMenuOpen(false); }}
+                            className="w-full px-4 py-2 text-left text-[14px] text-text hover:bg-canvas-frost"
+                          >
+                            Panel admin
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          role="menuitem"
+                          onClick={handleLogout}
+                          className="w-full px-4 py-2 text-left text-[14px] text-text hover:bg-canvas-frost"
+                        >
+                          Cerrar sesión
+                        </button>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setAuthOpen(true)}
+                    className="flex h-9 w-9 items-center justify-center rounded-full text-text transition-colors hover:bg-canvas-frost"
+                    aria-label="Iniciar sesión"
+                  >
+                    <Icon name="user" size={20} />
+                  </button>
+                )}
+              </div>
+            )}
+
             <button
-              onClick={() => router.push("/login")}
-              className="mt-4 w-full rounded-chips bg-mundo-blue px-4 py-2 text-[14px] font-medium text-pure-white"
+              type="button"
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="flex h-9 w-9 items-center justify-center rounded-full text-text transition-colors hover:bg-canvas-frost lg:hidden"
+              aria-label="Menú"
+              aria-expanded={menuOpen}
             >
-              Iniciar sesión
+              <Icon name={menuOpen ? "x" : "menu"} size={22} />
             </button>
-          )}
+          </div>
         </div>
-      )}
-    </header>
+
+        {menuOpen && (
+          <div className="border-t border-faint-border bg-pure-white/95 backdrop-blur-lg lg:hidden">
+            <nav className="mx-auto flex max-w-[1280px] flex-col gap-1 px-4 py-4" aria-label="Navegación móvil">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-chips px-3 py-2 text-[15px] font-medium text-text hover:bg-canvas-frost"
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <div className="mt-3 sm:hidden">
+                <SearchInput />
+              </div>
+            </nav>
+          </div>
+        )}
+      </header>
+
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
+    </>
   );
 }
