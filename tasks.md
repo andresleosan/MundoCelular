@@ -96,5 +96,5 @@ Plan: `docs/superpowers/plans/2026-07-31-fase3-variantes.md`
 - [x] T12 — Verificación final: 146 tests pasan, tsc limpio, lint sin errores nuevos
 
 ### Pendientes operatorios Fase 3 (variantes)
-- [ ] Desplegar reglas Firestore actualizadas (`npx firebase deploy --only firestore:rules`)
-- [ ] Crear índice compuesto `variantes(productId ASC, activo ASC, precio ASC)` en consola de Firebase
+- [x] Desplegar reglas Firestore actualizadas (`npm run deploy:firestore`)
+- [x] Crear índice compuesto `variantes(productId ASC, activo ASC, precio ASC)` (`firestore.indexes.json`)
