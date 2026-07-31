@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProductoPorId, getCategoriaPorId, getTodosLosProductos, obtenerConfigTiendaServidor } from "@/lib/firestore/public";
+import { getProductoPorId, getCategoriaPorId, getTodosLosProductos, obtenerConfigTiendaServidor, obtenerVariantesPorProducto } from "@/lib/firestore/public";
 import { metadataProducto } from "@/lib/seo/metadata";
 import { ProductDetail } from "@/components/producto/ProductDetail";
 
@@ -35,6 +35,7 @@ export default async function PaginaProducto({ params }: PageProps) {
   if (!prod) notFound();
   const cat = await getCategoriaPorId(prod.categoriaId);
   if (!cat) notFound();
+  const variantes = prod.tieneVariantes ? await obtenerVariantesPorProducto(prod.id) : [];
 
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-10">
@@ -44,7 +45,7 @@ export default async function PaginaProducto({ params }: PageProps) {
         {prod.nombre}
       </nav>
       <div className="mt-6 grid gap-8 lg:grid-cols-2">
-        <ProductDetail producto={prod} categoria={cat} />
+        <ProductDetail producto={prod} categoria={cat} variantes={variantes} />
       </div>
     </main>
   );

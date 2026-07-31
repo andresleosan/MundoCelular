@@ -6,13 +6,15 @@ interface CartItemLocal {
   nombre: string;
   precio: number;
   cantidad: number;
+  varianteId?: string;
+  atributos?: Record<string, string>;
 }
 
 interface UseCarritoReturn {
   items: CartItemLocal[];
-  agregar: (producto: Producto, cantidad?: number) => void;
-  quitar: (productoId: string) => void;
-  cambiarCantidad: (productoId: string, cantidad: number) => void;
+  agregar: (producto: Producto, cantidad?: number, varianteId?: string, atributos?: Record<string, string>) => void;
+  quitar: (productoId: string, varianteId?: string) => void;
+  cambiarCantidad: (productoId: string, cantidad: number, varianteId?: string) => void;
   vaciar: () => void;
   total: number;
 }
@@ -38,6 +40,10 @@ function guardarEnStorage(items: CartItemLocal[]): void {
   }
 }
 
+function claveItem(productoId: string, varianteId?: string): string {
+  return `${productoId}__${varianteId ?? ""}`;
+}
+
 export function useCarrito(): UseCarritoReturn {
   const [items, setItems] = useState<CartItemLocal[]>([]);
   const [inicializado, setInicializado] = useState(false);
@@ -52,31 +58,49 @@ export function useCarrito(): UseCarritoReturn {
     guardarEnStorage(items);
   }, [items, inicializado]);
 
-  const agregar = useCallback((producto: Producto, cantidad = 1) => {
-    setItems((prev) => {
-      const found = prev.find((i) => i.productoId === producto.id);
-      if (found) {
-        return prev.map((i) =>
-          i.productoId === producto.id
-            ? { ...i, cantidad: i.cantidad + cantidad }
-            : i
-        );
-      }
-      return [...prev, { productoId: producto.id, nombre: producto.nombre, precio: producto.precio, cantidad }];
-    });
-  }, []);
+  const agregar = useCallback(
+    (producto: Producto, cantidad = 1, varianteId?: string, atributos?: Record<string, string>) => {
+      setItems((prev) => {
+        const k = claveItem(producto.id, varianteId);
+        const found = prev.find((i) => claveItem(i.productoId, i.varianteId) === k);
+        if (found) {
+          return prev.map((i) =>
+            claveItem(i.productoId, i.varianteId) === k
+              ? { ...i, cantidad: i.cantidad + cantidad }
+              : i
+          );
+        }
+        return [
+          ...prev,
+          {
+            productoId: producto.id,
+            nombre: producto.nombre,
+            precio: producto.precio,
+            cantidad,
+            varianteId,
+            atributos,
+          },
+        ];
+      });
+    },
+    []
+  );
 
-  const quitar = useCallback((productoId: string) => {
-    setItems((prev) => prev.filter((i) => i.productoId !== productoId));
+  const quitar = useCallback((productoId: string, varianteId?: string) => {
+    setItems((prev) =>
+      prev.filter((i) => claveItem(i.productoId, i.varianteId) !== claveItem(productoId, varianteId))
+    );
   }, []);
 
   const cambiarCantidad = useCallback(
-    (productoId: string, cantidad: number) => {
+    (productoId: string, cantidad: number, varianteId?: string) => {
       setItems((prev) =>
         cantidad <= 0
-          ? prev.filter((i) => i.productoId !== productoId)
+          ? prev.filter((i) => claveItem(i.productoId, i.varianteId) !== claveItem(productoId, varianteId))
           : prev.map((i) =>
-              i.productoId === productoId ? { ...i, cantidad } : i
+              claveItem(i.productoId, i.varianteId) === claveItem(productoId, varianteId)
+                ? { ...i, cantidad }
+                : i
             )
       );
     },

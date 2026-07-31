@@ -152,4 +152,46 @@ describe("ProductDetail", () => {
     const link = pill.closest("a");
     expect(link?.getAttribute("href")).toBe("/categoria/celulares");
   });
+
+  describe("con variantes", () => {
+    const productoConVariantes = {
+      ...mockProducto,
+      tieneVariantes: true,
+      atributosDisponibles: ["Color", "Capacidad"],
+    };
+
+    it("muestra selectores de atributos cuando tiene variantes", () => {
+      render(
+        <ProductDetail
+          producto={productoConVariantes}
+          categoria={mockCategoria}
+          variantes={[
+            {
+              id: "v1",
+              productId: "1",
+              attributes: { Color: "Negro", Capacidad: "128GB" },
+              precio: 4200000,
+              stock: 5,
+              imagenes: [],
+              activo: true,
+            },
+          ]}
+        />
+      );
+      expect(screen.getByText("Color")).toBeDefined();
+      expect(screen.getByText("Capacidad")).toBeDefined();
+    });
+
+    it("no muestra selectores cuando tieneVariantes es false", () => {
+      render(
+        <ProductDetail
+          producto={mockProducto}
+          categoria={mockCategoria}
+          variantes={[]}
+        />
+      );
+      expect(screen.queryByText("Color")).toBeNull();
+      expect(screen.queryByText("Capacidad")).toBeNull();
+    });
+  });
 });
