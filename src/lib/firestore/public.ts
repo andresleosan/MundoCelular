@@ -1,12 +1,15 @@
 import { unstable_cache } from "next/cache";
 import { getAdminDb } from "@/lib/firebase-admin";
-import type { Categoria, Producto, ConfigTienda } from "@/types";
+import type { Categoria, Producto, ConfigTienda, VarianteProducto } from "@/types";
 
 function toCategoria(snap: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>): Categoria {
   return { id: snap.id, ...(snap.data() as Omit<Categoria, "id">) };
 }
 function toProducto(snap: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>): Producto {
   return { id: snap.id, ...(snap.data() as Omit<Producto, "id">) };
+}
+function toVariante(snap: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>): VarianteProducto {
+  return { id: snap.id, ...(snap.data() as Omit<VarianteProducto, "id">) };
 }
 
 export const listarCategoriasPublic = unstable_cache(
@@ -127,3 +130,18 @@ export async function listarTodosLosSlugsProducto(): Promise<Array<{ categoria: 
   }
   return out;
 }
+
+export const obtenerVariantesPorProducto = unstable_cache(
+  async (productId: string): Promise<VarianteProducto[]> => {
+    const db = getAdminDb();
+    const snap = await db
+      .collection("variantes")
+      .where("productId", "==", productId)
+      .where("activo", "==", true)
+      .orderBy("precio")
+      .get();
+    return snap.docs.map(toVariante);
+  },
+  ["variantes-por-producto"],
+  { tags: ["variantes", "productos"] }
+);

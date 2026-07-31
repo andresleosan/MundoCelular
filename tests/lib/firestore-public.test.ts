@@ -73,6 +73,7 @@ import {
   listarDestacados,
   obtenerConfigTiendaServidor,
   listarTodosLosSlugsProducto,
+  obtenerVariantesPorProducto,
 } from "@/lib/firestore/public";
 
 describe("lecturas servidor del catálogo", () => {
@@ -194,6 +195,40 @@ describe("lecturas servidor del catálogo", () => {
       expect(slugs[0]).toHaveProperty("producto");
       expect(slugs[0].categoria).toBe("celulares");
       expect(slugs[0].producto).toBe("iphone-13");
+    });
+  });
+});
+
+describe("variantes", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe("obtenerVariantesPorProducto", () => {
+    it("devuelve variantes activas del producto", async () => {
+      mockGetFn.mockResolvedValue({
+        docs: [
+          makeDocData("v1", {
+            productId: "prod1",
+            attributes: { Color: "Negro", Capacidad: "128GB" },
+            precio: 1850000,
+            stock: 5,
+            imagenes: [],
+            activo: true,
+          }),
+        ],
+        empty: false,
+      });
+      const variantes = await obtenerVariantesPorProducto("prod1");
+      expect(Array.isArray(variantes)).toBe(true);
+      expect(variantes).toHaveLength(1);
+      expect(variantes[0].productId).toBe("prod1");
+    });
+
+    it("devuelve array vacío si no hay variantes", async () => {
+      mockGetFn.mockResolvedValue({ docs: [], empty: true });
+      const variantes = await obtenerVariantesPorProducto("prod1");
+      expect(variantes).toEqual([]);
     });
   });
 });
