@@ -19,7 +19,7 @@ export function AdminNav() {
 
   async function salir() {
     await cerrarSesion();
-    router.replace("/login");
+    router.replace("/");
   }
 
   return (
