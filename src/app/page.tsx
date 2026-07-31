@@ -69,7 +69,7 @@ export default async function Home() {
         <SearchInput />
       </section>
 
-      <section className="mt-10">
+      <section id="categorias" className="mt-10">
         <CategorySectionHeader titulo="Categorías" />
         <div className="flex flex-wrap gap-2">
           {categorias.map((c) => (
