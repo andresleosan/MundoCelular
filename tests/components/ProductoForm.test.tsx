@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ProductoForm } from "@/components/admin/ProductoForm";
-import type { Categoria, Producto } from "@/types";
+import type { Categoria } from "@/types";
 
 vi.mock("@/lib/firestore/productos", () => ({ crearProducto: vi.fn(), actualizarProducto: vi.fn() }));
 vi.mock("@/lib/firestore/variantes", () => ({
