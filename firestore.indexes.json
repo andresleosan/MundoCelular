@@ -1,0 +1,14 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "variantes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "productId", "order": "ASCENDING" },
+        { "fieldPath": "activo", "order": "ASCENDING" },
+        { "fieldPath": "precio", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
