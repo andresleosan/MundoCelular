@@ -33,6 +33,24 @@ describe("productos", () => {
   });
 });
 
+describe("variantes", () => {
+  it("lectura pública, escritura denegada sin auth", async () => {
+    const anon = testEnv.unauthenticatedContext().firestore();
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), "variantes/v1"), { productId: "p1", precio: 100, stock: 5 });
+    });
+    await assertSucceeds(getDoc(doc(anon, "variantes/v1")));
+    await assertFails(setDoc(doc(anon, "variantes/v2"), { productId: "p1", precio: 1 }));
+  });
+
+  it("cliente normal NO puede escribir; admin sí", async () => {
+    const cliente = testEnv.authenticatedContext("u1").firestore();
+    await assertFails(setDoc(doc(cliente, "variantes/v3"), { productId: "p1", precio: 1 }));
+    const admin = testEnv.authenticatedContext("a1", { admin: true }).firestore();
+    await assertSucceeds(setDoc(doc(admin, "variantes/v3"), { productId: "p1", precio: 1, stock: 5 }));
+  });
+});
+
 describe("carritos", () => {
   it("solo el dueño lee/escribe su carrito", async () => {
     const u1 = testEnv.authenticatedContext("u1").firestore();

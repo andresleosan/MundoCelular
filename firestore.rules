@@ -11,6 +11,11 @@ service cloud.firestore {
       allow write: if esAdmin();
     }
 
+    match /variantes/{id} {
+      allow read: if true;
+      allow write: if esAdmin();
+    }
+
     match /categorias/{id} {
       allow read: if true;
       allow write: if esAdmin();
