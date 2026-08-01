@@ -14,7 +14,10 @@ export function HeroProductCard({
 }) {
   const mostrarDesde = Boolean(producto.tieneVariantes) && typeof precioMinimo === "number";
   return (
-    <Link href={`/${categoriaSlug}/${producto.slug}`} className="block rounded-cards bg-pure-white shadow-sm-2">
+    <Link
+      href={`/${categoriaSlug}/${producto.slug}`}
+      className="group block overflow-hidden rounded-cards bg-surface border border-faint-border transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+    >
       <div className="relative aspect-square overflow-hidden rounded-[20px] bg-canvas-frost">
         {producto.imagenes[0]?.url ? (
           <Image
@@ -22,16 +25,16 @@ export function HeroProductCard({
             alt={producto.imagenes[0].alt}
             fill
             sizes="(max-width: 640px) 100vw, 400px"
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             priority
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-steel-blue-gray text-[12px]">Sin imagen</div>
+          <div className="flex h-full items-center justify-center text-text-secondary text-[12px]">Sin imagen</div>
         )}
       </div>
       <div className="px-4 py-3">
-        <h3 className="text-[14px] font-semibold tracking-[-0.015em] text-ink-navy">{producto.nombre}</h3>
-        <p className="mt-1 font-jetbrains-mono text-[14px] text-mundo-blue">
+        <h3 className="font-inter-tight text-[14px] font-semibold tracking-[-0.015em] text-text">{producto.nombre}</h3>
+        <p className="mt-1 font-jetbrains-mono text-[14px] font-semibold text-primary">
           {mostrarDesde ? `Desde ${formatearCOP(precioMinimo!)}` : formatearCOP(producto.precio)}
         </p>
       </div>
