@@ -5,9 +5,11 @@ import { metadataInicio } from "@/lib/seo/metadata";
 import { jsonldInicio } from "@/lib/seo/jsonld";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Hero } from "@/components/storefront/Hero";
+import { MarcasSection } from "@/components/storefront/MarcasSection";
+import { OfertasSection } from "@/components/storefront/OfertasSection";
+import { BeneficiosSection } from "@/components/storefront/BeneficiosSection";
 import { CategoryPill } from "@/components/storefront/CategoryPill";
 import { HeroProductCard } from "@/components/storefront/HeroProductCard";
-import { CategorySectionHeader } from "@/components/storefront/CategorySectionHeader";
 import { SearchInput } from "@/components/storefront/SearchInput";
 import type { Categoria, Producto, ConfigTienda } from "@/types";
 
@@ -53,36 +55,54 @@ export async function generateMetadata(): Promise<Metadata> {
   return metadataInicio(config);
 }
 
+const REPARACIONES_BANNER_GRADIENT = "linear-gradient(135deg, var(--color-abyss-navy), var(--color-primary-dark))";
+
 export default async function Home() {
   const [config, categorias, destacados] = await Promise.all([
     safeFetchConfig(),
     safeFetchCategorias(),
     safeFetchDestacados(),
   ]);
+
+  const ofertas = destacados.slice(0, 3);
+  const restantes = destacados.slice(3);
+  const destacadoPrincipal = destacados[0] ?? null;
+
   return (
-    <main className="mx-auto max-w-[1200px] px-4 py-10">
+    <>
       <JsonLd data={jsonldInicio(config)} />
 
-      <Hero config={config} />
+      <Hero config={config} productoDestacado={destacadoPrincipal} />
 
-      <section className="mt-10">
-        <SearchInput />
-      </section>
+      <MarcasSection />
 
-      <section id="categorias" className="mt-10">
-        <CategorySectionHeader titulo="Categorías" />
-        <div className="flex flex-wrap gap-2">
+      <OfertasSection productos={ofertas} categorias={categorias} />
+
+      <section id="categorias" className="mx-auto max-w-[1280px] px-4 py-16 sm:py-20" aria-label="Categorías">
+        <div className="mb-8 text-center">
+          <h2 className="font-inter-tight text-[24px] font-semibold tracking-[-0.02em] text-text sm:text-[32px]">
+            Compra por categoría
+          </h2>
+        </div>
+        <div className="mx-auto mb-12 max-w-2xl">
+          <SearchInput />
+        </div>
+        <div className="flex flex-wrap justify-center gap-3">
           {categorias.map((c) => (
-            <CategoryPill key={c.id} nombre={c.nombre} slug={c.slug} icono={<span>●</span>} />
+            <CategoryPill key={c.id} nombre={c.nombre} slug={c.slug} />
           ))}
         </div>
       </section>
 
-      {destacados.length > 0 && (
-        <section className="mt-12">
-          <CategorySectionHeader titulo="Destacados" />
+      {restantes.length > 0 && (
+        <section id="destacados" className="mx-auto max-w-[1280px] px-4 py-16 sm:py-20" aria-label="Más destacados">
+          <div className="mb-10 text-center">
+            <h2 className="font-inter-tight text-[24px] font-semibold tracking-[-0.02em] text-text sm:text-[32px]">
+              Más productos destacados
+            </h2>
+          </div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {destacados.map((p) => {
+            {restantes.map((p) => {
               const catSlug = categorias.find((c) => c.id === p.categoriaId)?.slug ?? "";
               return <HeroProductCard key={p.id} producto={p} categoriaSlug={catSlug} />;
             })}
@@ -90,20 +110,29 @@ export default async function Home() {
         </section>
       )}
 
-      <section className="mt-12 rounded-cards bg-abyss-navy px-6 py-10 text-center text-pure-white">
-        <h2 className="text-[20px] font-semibold tracking-[-0.02em]">
-          ¿Necesitas reparar tu celular?
-        </h2>
-        <p className="mt-2 text-[14px] text-cool-frost">
-          Servicio técnico profesional. Diagnóstico gratis.
-        </p>
-        <Link
-          href="/reparaciones"
-          className="mt-4 inline-block rounded-chips bg-pure-white px-5 py-2 text-[13px] font-semibold text-ink-navy"
+      <section className="mx-auto max-w-[1280px] px-4 py-16 sm:py-20" aria-label="Reparaciones">
+        <div
+          className="relative overflow-hidden rounded-cards px-6 py-12 text-center text-pure-white shadow-lg-2 sm:px-16 sm:py-20"
+          style={{ background: REPARACIONES_BANNER_GRADIENT }}
         >
-          Ver servicios
-        </Link>
+          <div className="relative z-10">
+            <h2 className="font-inter-tight text-[24px] font-semibold tracking-[-0.02em] sm:text-[28px]">
+              ¿Necesitas reparar tu celular?
+            </h2>
+            <p className="mx-auto mt-3 max-w-[500px] text-[15px] text-cool-frost sm:text-[16px]">
+              Servicio técnico profesional. Diagnóstico gratis y repuestos originales.
+            </p>
+            <Link
+              href="/reparaciones"
+              className="mt-6 inline-flex h-11 items-center justify-center rounded-xl bg-pure-white px-6 text-[14px] font-semibold text-text transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-white/40"
+            >
+              Ver servicios
+            </Link>
+          </div>
+        </div>
       </section>
-    </main>
+
+      <BeneficiosSection />
+    </>
   );
 }

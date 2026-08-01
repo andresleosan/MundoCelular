@@ -98,3 +98,12 @@ Plan: `docs/superpowers/plans/2026-07-31-fase3-variantes.md`
 ### Pendientes operatorios Fase 3 (variantes)
 - [x] Desplegar reglas Firestore actualizadas (`npm run deploy:firestore`)
 - [x] Crear índice compuesto `variantes(productId ASC, activo ASC, precio ASC)` (`firestore.indexes.json`)
+
+## Rediseño Premium v2
+Spec: `docs/superpowers/specs/2026-07-31-rediseno-premium-v2-design.md` (pendiente)
+Plan: `docs/superpowers/plans/2026-07-31-rediseno-premium-v2.md` (pendiente)
+- [x] T1 — Tokens migrados (Inter Tight + Inter, primary `#1E4FA8`)
+- [x] T2 — Hooks creados (`useScrollAnimation`, `useParallax`)
+- [x] T3 — `<Icon>` con 13 SVGs
+- [x] T4 — `AuthModal` + Header premium con glassmorphism + scroll listener + nav anchors
+- [x] T5 — Home Page Rebuild (hero split, marcas, ofertas, beneficios)
