@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { formatearCOP } from "@/lib/format";
 import { useCarrito } from "@/hooks/useCarrito";
+import { Icon } from "@/components/ui/Icon";
 
 interface CarritoItemProps {
   productoId: string;
@@ -10,6 +12,8 @@ interface CarritoItemProps {
   cantidad: number;
   varianteId?: string;
   atributos?: Record<string, string>;
+  imagenUrl?: string;
+  imagenAlt?: string;
 }
 
 export function CarritoItem({
@@ -19,50 +23,83 @@ export function CarritoItem({
   cantidad,
   varianteId,
   atributos,
+  imagenUrl,
+  imagenAlt,
 }: CarritoItemProps) {
   const { quitar, cambiarCantidad } = useCarrito();
 
   const atributosTexto = atributos ? Object.values(atributos).join(" / ") : null;
 
   return (
-    <div className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-sm">
-      <div className="flex-1 min-w-0">
-        <h3 className="text-[14px] font-semibold text-gray-900 truncate">
-          {nombre}
+    <div className="flex gap-4 rounded-[20px] border border-faint-border bg-surface p-4 sm:p-5">
+      {/* Imagen */}
+      <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-[12px] bg-canvas-frost sm:h-[80px] sm:w-[80px]">
+        {imagenUrl ? (
+          <Image
+            src={imagenUrl}
+            alt={imagenAlt || nombre}
+            fill
+            sizes="80px"
+            className="object-cover"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center">
+            <Icon name="shopping-bag" size={24} className="text-text-secondary" />
+          </div>
+        )}
+      </div>
+
+      {/* Info */}
+      <div className="flex flex-1 flex-col justify-between min-w-0">
+        <div>
+          <h3 className="text-[14px] font-semibold text-text truncate sm:text-[15px]">
+            {nombre}
+          </h3>
           {atributosTexto && (
-            <span className="ml-1 font-normal text-steel-blue-gray">({atributosTexto})</span>
+            <p className="mt-0.5 text-[12px] text-text-secondary">
+              {atributosTexto}
+            </p>
           )}
-        </h3>
-        <p className="mt-0.5 font-jetbrains-mono text-[14px] text-gray-900">
-          {formatearCOP(precio)}
-        </p>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <p className="font-jetbrains-mono text-[15px] font-bold text-text sm:text-[16px]">
+            {formatearCOP(precio)}
+          </p>
+
+          <div className="flex items-center gap-3">
+            {/* Controles cantidad */}
+            <div className="flex items-center gap-2 rounded-full bg-bg px-2 py-1">
+              <button
+                onClick={() => cambiarCantidad(productoId, cantidad - 1, varianteId)}
+                className="flex h-7 w-7 items-center justify-center rounded-full text-text transition-colors hover:bg-primary hover:text-pure-white"
+                aria-label="Reducir cantidad"
+              >
+                -
+              </button>
+              <span className="w-5 text-center text-[14px] font-semibold text-text">
+                {cantidad}
+              </span>
+              <button
+                onClick={() => cambiarCantidad(productoId, cantidad + 1, varianteId)}
+                className="flex h-7 w-7 items-center justify-center rounded-full text-text transition-colors hover:bg-primary hover:text-pure-white"
+                aria-label="Aumentar cantidad"
+              >
+                +
+              </button>
+            </div>
+
+            {/* Quitar */}
+            <button
+              onClick={() => quitar(productoId, varianteId)}
+              className="text-[12px] font-medium text-danger transition-colors hover:underline"
+              aria-label="Quitar del carrito"
+            >
+              Quitar
+            </button>
+          </div>
+        </div>
       </div>
-      <div className="flex items-center gap-2">
-        <button
-          onClick={() => cambiarCantidad(productoId, cantidad - 1, varianteId)}
-          className="flex h-8 w-8 items-center justify-center rounded-full border border-faint-border text-[14px] text-gray-900"
-          aria-label="Reducir cantidad"
-        >
-          -
-        </button>
-        <span className="w-6 text-center text-[14px] font-semibold text-gray-900">
-          {cantidad}
-        </span>
-        <button
-          onClick={() => cambiarCantidad(productoId, cantidad + 1, varianteId)}
-          className="flex h-8 w-8 items-center justify-center rounded-full border border-faint-border text-[14px] text-gray-900"
-          aria-label="Aumentar cantidad"
-        >
-          +
-        </button>
-      </div>
-      <button
-        onClick={() => quitar(productoId, varianteId)}
-        className="text-[12px] text-steel-blue-gray hover:text-gray-900"
-        aria-label="Quitar del carrito"
-      >
-        Quitar
-      </button>
     </div>
   );
 }
