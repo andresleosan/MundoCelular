@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatearCOP } from "@/lib/format";
 import { AgregarAlCarrito } from "./AgregarAlCarrito";
+import { Icon } from "@/components/ui/Icon";
 import type { Producto, Categoria, VarianteProducto } from "@/types";
 
 const WHATSAPP_NUMERO = "573113554021";
@@ -20,6 +21,14 @@ export function ProductDetail({
 }) {
   const [imgActiva, setImgActiva] = useState(0);
   const [selecciones, setSelecciones] = useState<Record<string, string>>({});
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const tieneVariantes = Boolean(producto.tieneVariantes) && variantes.length > 0;
 
@@ -55,138 +64,196 @@ export function ProductDetail({
   const urlWhatsApp = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensajeWhatsApp)}`;
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-3 sm:flex-row">
-        {imagenes.length > 1 && (
-          <div className="flex gap-2 sm:flex-col">
-            {imagenes.map((img, i) => (
-              <button
-                key={i}
-                onClick={() => setImgActiva(i)}
-                className={`relative h-16 w-16 overflow-hidden rounded-[12px] border-2 transition ${
-                  i === imgActiva ? "border-mundo-blue" : "border-faint-border"
-                }`}
-              >
-                <Image
-                  src={img.thumb || img.url}
-                  alt={img.alt}
-                  fill
-                  sizes="64px"
-                  className="h-full w-full object-cover"
-                />
-              </button>
-            ))}
+    <div className="mx-auto max-w-[1280px] px-4 py-8 sm:py-12">
+      <div className="flex flex-col gap-8 lg:flex-row lg:gap-12">
+        {/* Galería */}
+        <div className="flex flex-col gap-3 lg:flex-1">
+          <div className="relative aspect-square w-full overflow-hidden rounded-[24px] border border-faint-border bg-bg">
+            {imagenes.length > 0 ? (
+              <Image
+                src={imagenes[imgActiva]?.url || ""}
+                alt={imagenes[imgActiva]?.alt || producto.nombre}
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                priority
+                className="object-cover transition-transform duration-300 hover:scale-[1.02]"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-text-secondary">
+                Sin imagen
+              </div>
+            )}
           </div>
-        )}
 
-        <div className="flex-1 rounded-2xl bg-canvas-frost aspect-square overflow-hidden">
-          {imagenes.length > 0 ? (
-            <Image
-              src={imagenes[imgActiva]?.url || ""}
-              alt={imagenes[imgActiva]?.alt || producto.nombre}
-              className="h-full w-full object-cover"
-              width={800}
-              height={800}
-              priority
-            />
+          {imagenes.length > 1 && (
+            <div className="flex gap-2 overflow-x-auto pb-2">
+              {imagenes.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setImgActiva(i)}
+                  className={`relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-[12px] border-2 transition-all duration-200 ${
+                    i === imgActiva
+                      ? "border-primary"
+                      : "border-faint-border hover:border-primary-light"
+                  }`}
+                >
+                  <Image
+                    src={img.thumb || img.url}
+                    alt={img.alt}
+                    fill
+                    sizes="80px"
+                    className="object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Info panel */}
+        <div className="flex flex-col gap-6 lg:w-[560px] lg:flex-shrink-0">
+          {categoria && (
+            <Link
+              href={`/categoria/${categoria.slug}`}
+              className="inline-block w-fit rounded-full bg-primary/10 px-3 py-1 text-[12px] font-medium text-primary"
+            >
+              {categoria.nombre}
+            </Link>
+          )}
+
+          <div>
+            <h1 className="font-inter-tight text-[28px] font-bold tracking-[-0.03em] text-text sm:text-[40px]">
+              {producto.nombre}
+            </h1>
+            {producto.marca && (
+              <p className="mt-2 text-[14px] font-medium uppercase tracking-wide text-text-secondary">
+                Marca: {producto.marca}
+              </p>
+            )}
+          </div>
+
+          <p className="font-inter-tight text-[32px] font-bold text-primary sm:text-[36px]">
+            {formatearCOP(precioMostrar)}
+          </p>
+
+          {stockMostrar > 0 ? (
+            <p className="text-[14px] font-medium text-success">
+              Disponible: {stockMostrar}
+            </p>
           ) : (
-            <div className="flex h-full items-center justify-center text-steel-blue-gray text-[14px]">
-              Sin imagen
+            <p className="text-[14px] font-medium text-danger">Agotado</p>
+          )}
+
+          {tieneVariantes && (producto.atributosDisponibles ?? []).length > 0 && (
+            <div className="flex flex-col gap-3 rounded-[16px] border border-faint-border bg-surface p-4">
+              {(producto.atributosDisponibles ?? []).map((attr) => (
+                <div key={attr}>
+                  <label
+                    htmlFor={`attr-${attr}`}
+                    className="mb-1.5 block text-[12px] font-medium text-text-secondary"
+                  >
+                    {attr}
+                  </label>
+                  <select
+                    id={`attr-${attr}`}
+                    value={selecciones[attr] ?? ""}
+                    onChange={(e) =>
+                      setSelecciones((prev) => ({ ...prev, [attr]: e.target.value }))
+                    }
+                    className="w-full rounded-[12px] border border-faint-border bg-pure-white px-4 py-3 text-[14px] text-text outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  >
+                    <option value="">Seleccionar…</option>
+                    {(opcionesPorAtributo[attr] ?? []).map((op) => (
+                      <option key={op} value={op}>
+                        {op}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {producto.descripcion && (
+            <p className="text-[16px] leading-relaxed text-text">
+              {producto.descripcion}
+            </p>
+          )}
+
+          <div className="flex flex-col gap-3">
+            {stockMostrar > 0 && (
+              <div className="premium-button-wrapper">
+                <AgregarAlCarrito
+                  producto={producto}
+                  variante={varianteSeleccionada ?? undefined}
+                />
+              </div>
+            )}
+            <a
+              href={urlWhatsApp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-12 items-center justify-center rounded-[12px] border-2 border-primary bg-pure-white px-6 text-[14px] font-semibold text-primary transition-all duration-200 hover:bg-primary hover:text-pure-white hover:shadow-lg focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary/30"
+            >
+              <Icon name="message-circle" size={18} className="mr-2" />
+              Comprar por WhatsApp
+            </a>
+          </div>
+
+          {Object.keys(producto.specs).length > 0 && (
+            <div className="rounded-[16px] border border-faint-border bg-surface p-4">
+              <h3 className="mb-3 font-inter-tight text-[16px] font-semibold text-text">
+                Especificaciones
+              </h3>
+              <dl className="space-y-2">
+                {Object.entries(producto.specs).map(([k, v]) => (
+                  <div
+                    key={k}
+                    className="flex justify-between border-b border-faint-border py-2 last:border-0"
+                  >
+                    <dt className="text-[13px] text-text-secondary">{k}</dt>
+                    <dd className="font-jetbrains-mono text-[14px] font-medium text-text">
+                      {v}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </div>
           )}
         </div>
       </div>
 
-      <div>
-        {categoria && (
-          <Link
-            href={`/categoria/${categoria.slug}`}
-            className="inline-block rounded-full bg-blue-wash px-2 py-0.5 text-[11px] font-medium text-steel-blue-gray mb-2"
-          >
-            {categoria.nombre}
-          </Link>
-        )}
-        <h1 className="text-[24px] font-semibold tracking-[-0.03em] text-gray-900">
-          {producto.nombre}
-        </h1>
-        <p className="mt-2 font-jetbrains-mono text-[20px] text-gray-900">
-          {formatearCOP(precioMostrar)}
-        </p>
-        {producto.marca && (
-          <p className="mt-1 text-[12px] text-steel-blue-gray">
-            Marca: {producto.marca}
-          </p>
-        )}
-        {stockMostrar > 0 ? (
-          <p className="mt-1 text-[12px] text-steel-blue-gray">
-            Disponible: {stockMostrar}
-          </p>
-        ) : (
-          <p className="mt-1 text-[12px] text-steel-blue-gray">Agotado</p>
-        )}
-      </div>
-
-      {tieneVariantes && (producto.atributosDisponibles ?? []).length > 0 && (
-        <div className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm-2">
-          {(producto.atributosDisponibles ?? []).map((attr) => (
-            <div key={attr}>
-              <label htmlFor={`attr-${attr}`} className="mb-1 block text-[12px] font-medium text-steel-blue-gray">
-                {attr}
-              </label>
-              <select
-                id={`attr-${attr}`}
-                value={selecciones[attr] ?? ""}
-                onChange={(e) => setSelecciones((prev) => ({ ...prev, [attr]: e.target.value }))}
-                className="w-full rounded-chips border border-faint-border bg-pure-white px-3 py-2 text-[14px] text-ink-navy outline-none focus:border-mundo-blue"
-              >
-                <option value="">Seleccionar…</option>
-                {(opcionesPorAtributo[attr] ?? []).map((op) => (
-                  <option key={op} value={op}>{op}</option>
-                ))}
-              </select>
+      {/* Mobile sticky CTA */}
+      {isMobile && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-faint-border bg-surface/95 p-4 backdrop-blur-sm">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-[12px] text-text-secondary">Precio</p>
+              <p className="font-inter-tight text-[18px] font-bold text-primary">
+                {formatearCOP(precioMostrar)}
+              </p>
             </div>
-          ))}
+            <div className="flex gap-2">
+              <a
+                href={urlWhatsApp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-10 items-center justify-center rounded-[12px] bg-primary px-4 text-[13px] font-semibold text-pure-white"
+              >
+                WhatsApp
+              </a>
+              {stockMostrar > 0 && (
+                <div className="premium-button-wrapper">
+                  <AgregarAlCarrito
+                    producto={producto}
+                    variante={varianteSeleccionada ?? undefined}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
-
-      {producto.descripcion && (
-        <p className="text-[16px] tracking-[-0.02em] text-gray-900">
-          {producto.descripcion}
-        </p>
-      )}
-
-      {Object.keys(producto.specs).length > 0 && (
-        <dl className="rounded-2xl bg-white p-4 shadow-sm-2">
-          {Object.entries(producto.specs).map(([k, v]) => (
-            <div
-              key={k}
-              className="flex justify-between border-b border-faint-border py-2 last:border-0"
-            >
-              <dt className="text-[12px] text-steel-blue-gray">{k}</dt>
-              <dd className="font-jetbrains-mono text-[14px] text-gray-900">
-                {v}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      )}
-
-      <div className="sticky bottom-4 flex flex-wrap gap-3">
-        {stockMostrar > 0 && (
-          <AgregarAlCarrito
-            producto={producto}
-            variante={varianteSeleccionada ?? undefined}
-          />
-        )}
-        <a
-          href={urlWhatsApp}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="rounded-full bg-mundo-blue px-6 py-3 text-[14px] font-semibold text-white shadow-lg-2"
-        >
-          Comprar por WhatsApp
-        </a>
-      </div>
     </div>
   );
 }

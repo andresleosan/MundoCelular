@@ -107,3 +107,4 @@ Plan: `docs/superpowers/plans/2026-07-31-rediseno-premium-v2.md` (pendiente)
 - [x] T3 — `<Icon>` con 13 SVGs
 - [x] T4 — `AuthModal` + Header premium con glassmorphism + scroll listener + nav anchors
 - [x] T5 — Home Page Rebuild (hero split, marcas, ofertas, beneficios)
+- [x] T6 — ProductDetail premium (layout 2 cols, galería, CTAs, mobile sticky CTA)
