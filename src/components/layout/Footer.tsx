@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Icon } from "@/components/ui/Icon";
 
 export function Footer() {
@@ -8,7 +9,14 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {/* Info tienda */}
           <div>
-            <h3 className="font-inter-tight text-[18px] font-bold tracking-[-0.02em] text-text">
+            <Image
+              src="/icons/logo-footer.png"
+              alt="Mundo Celular"
+              width={56}
+              height={56}
+              className="h-14 w-14"
+            />
+            <h3 className="mt-3 font-inter-tight text-[18px] font-bold tracking-[-0.02em] text-text">
               MUNDO CELULAR
             </h3>
             <div className="mt-4 space-y-2 text-[14px] text-text-secondary">

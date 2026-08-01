@@ -11,6 +11,7 @@
     "test:rules": "vitest run --config vitest.rules.config.ts",
     "seed:config": "tsx scripts/seed-config.ts",
     "set:admin": "tsx scripts/set-admin.ts",
+    "build:icons": "node scripts/build-icons.mjs",
     "deploy:firestore": "firebase deploy --only firestore --project mundocelular-id",
     "deploy:rules": "firebase deploy --only firestore:rules --project mundocelular-id",
     "deploy:indexes": "firebase deploy --only firestore:indexes --project mundocelular-id"
@@ -42,6 +43,7 @@
     "firebase-tools": "^15.24.0",
     "jsdom": "^29.1.1",
     "tailwindcss": "^4",
+    "to-ico": "^1.1.5",
     "tsx": "^4.23.1",
     "typescript": "^5",
     "vitest": "^4.1.10"
