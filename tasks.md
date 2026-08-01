@@ -77,7 +77,7 @@ Plan Fase 1: docs/superpowers/plans/2026-07-19-fase1-base-admin.md
 ### Hallazgos fuera del código (pendientes operatorios)
 - [x] Crear índice Firestore compuesto `categorias(activa ASC, orden ASC, __name__ ASC)`
 - [x] Crear índice Firestore compuesto `productos(activo ASC, destacado ASC, __name__ ASC)`
-- [ ] Re-correr Lighthouse en producción (`npx next build && npx next start`) para diferenciar dev overhead
+- [x] Re-correr Lighthouse en producción (`npx next build && npx next start`) para diferenciar dev overhead — reporte `docs/superpowers/reports/2026-08-01-lighthouse-produccion.md`: Performance 99-100, A11y 98-100, BP/SEO 100
 
 ## Fase 3 (segunda iteración) — Variantes de producto
 Spec: `docs/superpowers/specs/2026-07-31-fase3-variantes-design.md`

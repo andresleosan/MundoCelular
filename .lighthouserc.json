@@ -2,10 +2,10 @@
   "ci": {
     "collect": {
       "url": [
-        "http://127.0.0.1:3000/",
-        "http://127.0.0.1:3000/reparaciones",
-        "http://127.0.0.1:3000/contacto",
-        "http://127.0.0.1:3000/preguntas"
+        "http://localhost:3000/",
+        "http://localhost:3000/reparaciones",
+        "http://localhost:3000/contacto",
+        "http://localhost:3000/preguntas"
       ],
       "numberOfRuns": 3,
       "settings": {
