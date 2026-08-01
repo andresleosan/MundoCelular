@@ -75,8 +75,8 @@ Plan Fase 1: docs/superpowers/plans/2026-07-19-fase1-base-admin.md
 - [x] T7 — Fixes condicionales: `getDb()` lazy en `firebase.ts` + 4 módulos firestore — resuelve HTTP 500 y permite Lighthouse medir
 
 ### Hallazgos fuera del código (pendientes operatorios)
-- [ ] Crear índice Firestore compuesto `categorias(activa ASC, orden ASC, __name__ ASC)`
-- [ ] Crear índice Firestore compuesto `productos(activo ASC, destacado ASC, __name__ ASC)`
+- [x] Crear índice Firestore compuesto `categorias(activa ASC, orden ASC, __name__ ASC)`
+- [x] Crear índice Firestore compuesto `productos(activo ASC, destacado ASC, __name__ ASC)`
 - [ ] Re-correr Lighthouse en producción (`npx next build && npx next start`) para diferenciar dev overhead
 
 ## Fase 3 (segunda iteración) — Variantes de producto
