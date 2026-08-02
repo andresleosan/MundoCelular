@@ -12,8 +12,8 @@ export function CarritoResumen() {
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 py-16 text-center">
-        <span className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-bg">
-          <Icon name="shopping-bag" size={32} className="text-text-secondary" />
+        <span className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-glow-cyan/10">
+          <Icon name="shopping-bag" size={32} className="text-glow-cyan" />
         </span>
         <h2 className="font-inter-tight text-[20px] font-semibold text-text sm:text-[24px]">
           Tu carrito está vacío
@@ -23,7 +23,7 @@ export function CarritoResumen() {
         </p>
         <Link
           href="/"
-          className="mt-2 inline-flex h-11 items-center justify-center rounded-[12px] bg-primary px-6 text-[14px] font-semibold text-pure-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+          className="mt-2 inline-flex h-11 items-center justify-center rounded-pills bg-glow-cyan px-6 text-[14px] font-semibold text-navy-deep transition-all duration-200 hover:-translate-y-0.5 hover:shadow-cyan-glow"
         >
           Ver productos
         </Link>
@@ -49,7 +49,7 @@ export function CarritoResumen() {
 
         <Link
           href="/"
-          className="mt-2 inline-flex items-center gap-2 text-[14px] font-medium text-primary transition-colors hover:underline"
+          className="mt-2 inline-flex items-center gap-2 text-[14px] font-medium text-glow-cyan transition-colors hover:underline"
         >
           <Icon name="arrow-right" size={16} className="rotate-180" />
           Seguir comprando
@@ -58,7 +58,7 @@ export function CarritoResumen() {
 
       {/* Resumen sticky */}
       <div className="lg:sticky lg:top-24 lg:h-fit lg:w-[320px] lg:flex-shrink-0">
-        <div className="rounded-[24px] border border-faint-border bg-surface p-6 shadow-sm-2 sm:p-8">
+        <div className="rounded-cards border border-faint-border bg-surface p-6 shadow-sm-2 sm:p-8">
           <h2 className="mb-6 font-inter-tight text-[18px] font-semibold text-text">
             Resumen del pedido
           </h2>
@@ -84,7 +84,7 @@ export function CarritoResumen() {
           <div className="mt-6 flex flex-col gap-3">
             <Link
               href="/checkout"
-              className="inline-flex h-12 items-center justify-center rounded-[12px] bg-primary px-6 text-[14px] font-semibold text-pure-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary/30"
+              className="inline-flex h-12 items-center justify-center rounded-pills bg-glow-cyan px-6 text-[14px] font-semibold text-navy-deep transition-all duration-200 hover:-translate-y-0.5 hover:shadow-cyan-glow focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-glow-cyan/40"
             >
               Proceder al checkout
             </Link>

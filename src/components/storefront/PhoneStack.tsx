@@ -4,9 +4,9 @@ import Image from "next/image";
 import { useTilt } from "@/hooks/useTilt";
 
 const phones = [
-  { offsetX: 0, offsetY: 0, rotation: 0, scale: 1, shadow: "0 8px 32px rgba(11,19,48,0.5)" },
-  { offsetX: -18, offsetY: 14, rotation: -4, scale: 0.96, shadow: "0 6px 24px rgba(11,19,48,0.4)" },
-  { offsetX: 20, offsetY: 24, rotation: 3, scale: 0.92, shadow: "0 4px 16px rgba(11,19,48,0.3)" },
+  { offsetX: 0, offsetY: 0, rotation: 0, scale: 1, shadow: "0 12px 40px rgba(0, 27, 91, 0.5), 0 0 48px rgba(0, 212, 255, 0.25)" },
+  { offsetX: -18, offsetY: 14, rotation: -4, scale: 0.96, shadow: "0 8px 28px rgba(0, 27, 91, 0.4), 0 0 24px rgba(0, 212, 255, 0.15)" },
+  { offsetX: 20, offsetY: 24, rotation: 3, scale: 0.92, shadow: "0 6px 20px rgba(0, 27, 91, 0.3), 0 0 16px rgba(0, 212, 255, 0.1)" },
 ];
 
 const chips = [
@@ -21,18 +21,18 @@ function PhoneSVG({ glowId }: { glowId: string }) {
     <svg viewBox="0 0 120 220" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-full w-full">
       <defs>
         <linearGradient id={glowId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--color-primary)" />
-          <stop offset="100%" stopColor="var(--color-glow-cyan)" />
+          <stop offset="0%" stopColor="#001B5B" />
+          <stop offset="100%" stopColor="#00D4FF" />
         </linearGradient>
       </defs>
       {/* Phone body */}
-      <rect x="4" y="4" width="112" height="212" rx="20" fill="#1a1f36" stroke="#2a3050" strokeWidth="1.5" />
+      <rect x="4" y="4" width="112" height="212" rx="20" fill="#00113A" stroke="#0035A8" strokeWidth="1.5" />
       {/* Screen */}
-      <rect x="10" y="16" width="100" height="188" rx="12" fill={`url(#${glowId})`} opacity="0.85" className="animate-glow-pulse" />
+      <rect x="10" y="16" width="100" height="188" rx="12" fill={`url(#${glowId})`} opacity="0.9" className="animate-glow-pulse" />
       {/* Notch */}
-      <rect x="40" y="8" width="40" height="8" rx="4" fill="#0f1325" />
+      <rect x="40" y="8" width="40" height="8" rx="4" fill="#00113A" />
       {/* Camera dot */}
-      <circle cx="60" cy="12" r="2" fill="#2a3050" />
+      <circle cx="60" cy="12" r="2" fill="#0035A8" />
     </svg>
   );
 }

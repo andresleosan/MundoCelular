@@ -27,7 +27,7 @@ export async function Footer() {
   const config = await getConfig();
   const whatsappFormatted = config.whatsapp.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})$/, "+$1 $2 $3 $4");
   return (
-    <footer className="border-t border-white/10 bg-navy-base">
+    <footer className="border-t border-fog-white/10 bg-navy-base">
       <div className="mx-auto max-w-[1280px] px-4 py-12 sm:py-16">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {/* Info tienda */}
@@ -42,11 +42,11 @@ export async function Footer() {
             <h3 className="mt-3 font-inter-tight text-[18px] font-bold tracking-[-0.02em] text-fog-white">
               MUNDO CELULAR
             </h3>
-            <div className="mt-4 space-y-2 text-[14px] text-slate-muted">
+            <div className="mt-4 space-y-2 text-[14px] text-fog-white/70">
               <p>{config.direccion || "Cra 36 # 38 - 33, Barrio El Salvador"}</p>
               <p>{config.ciudad}{config.departamento ? `, ${config.departamento}` : ""}</p>
             </div>
-            <div className="mt-4 space-y-2 text-[14px] text-slate-muted">
+            <div className="mt-4 space-y-2 text-[14px] text-fog-white/70">
               <a
                 href={`https://wa.me/${config.whatsapp}`}
                 target="_blank"
@@ -69,7 +69,7 @@ export async function Footer() {
               <li>
                 <Link
                   href="/"
-                  className="text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
+                  className="text-[14px] text-fog-white/70 transition-colors hover:text-glow-cyan"
                 >
                   Categorías
                 </Link>
@@ -77,7 +77,7 @@ export async function Footer() {
               <li>
                 <Link
                   href="/reparaciones"
-                  className="text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
+                  className="text-[14px] text-fog-white/70 transition-colors hover:text-glow-cyan"
                 >
                   Reparaciones
                 </Link>
@@ -85,7 +85,7 @@ export async function Footer() {
               <li>
                 <Link
                   href="/carrito"
-                  className="text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
+                  className="text-[14px] text-fog-white/70 transition-colors hover:text-glow-cyan"
                 >
                   Carrito
                 </Link>
@@ -93,7 +93,7 @@ export async function Footer() {
               <li>
                 <Link
                   href="/contacto"
-                  className="text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
+                  className="text-[14px] text-fog-white/70 transition-colors hover:text-glow-cyan"
                 >
                   Contacto
                 </Link>
@@ -101,7 +101,7 @@ export async function Footer() {
               <li>
                 <Link
                   href="/preguntas"
-                  className="text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
+                  className="text-[14px] text-fog-white/70 transition-colors hover:text-glow-cyan"
                 >
                   Preguntas frecuentes
                 </Link>
@@ -121,9 +121,9 @@ export async function Footer() {
                     href={config.redes.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
+                    className="inline-flex items-center gap-2 text-[14px] text-fog-white/70 transition-colors hover:text-glow-cyan"
                   >
-                    <Icon name="user" size={16} />
+                    <Icon name="instagram" size={16} />
                     Instagram
                   </a>
                 </li>
@@ -134,9 +134,9 @@ export async function Footer() {
                     href={config.redes.facebook}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
+                    className="inline-flex items-center gap-2 text-[14px] text-fog-white/70 transition-colors hover:text-glow-cyan"
                   >
-                    <Icon name="user" size={16} />
+                    <Icon name="facebook" size={16} />
                     Facebook
                   </a>
                 </li>
@@ -147,9 +147,9 @@ export async function Footer() {
                     href={config.redes.tiktok}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
+                    className="inline-flex items-center gap-2 text-[14px] text-fog-white/70 transition-colors hover:text-glow-cyan"
                   >
-                    <Icon name="user" size={16} />
+                    <Icon name="music" size={16} />
                     TikTok
                   </a>
                 </li>
@@ -158,7 +158,7 @@ export async function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 border-t border-white/10 pt-6 text-center text-[13px] text-slate-muted">
+        <div className="mt-12 border-t border-fog-white/10 pt-6 text-center text-[13px] text-fog-white/50">
           &copy; {new Date().getFullYear()} Mundo Celular. Todos los derechos reservados.
         </div>
       </div>

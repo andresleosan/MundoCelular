@@ -37,6 +37,10 @@ export function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (usuario) setAuthOpen(false);
+  }, [usuario]);
+
   async function handleLogout() {
     await cerrarSesion();
     setUserMenuOpen(false);
@@ -58,8 +62,8 @@ export function Header() {
   return (
     <>
       <header
-        className={`sticky top-0 z-30 transition-all duration-300 ease-out border-b border-white/10 bg-navy-base ${
-          scrolled ? "backdrop-blur-2xl shadow-sm" : "backdrop-blur-none"
+        className={`sticky top-0 z-30 transition-all duration-300 ease-out border-b border-fog-white/10 bg-navy-base ${
+          scrolled ? "backdrop-blur-2xl shadow-md" : "backdrop-blur-none"
         }`}
       >
         <div className="mx-auto flex max-w-[1280px] items-center gap-6 px-4 py-3">
@@ -86,7 +90,7 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-[14px] font-medium text-fog-white transition-colors hover:text-glow-cyan"
+                className="text-[14px] font-medium text-fog-white/80 transition-colors hover:text-glow-cyan"
               >
                 {link.label}
               </Link>
@@ -111,15 +115,15 @@ export function Header() {
                     aria-expanded={userMenuOpen}
                     aria-label="Menú de usuario"
                   >
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-[14px] font-semibold text-pure-white">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-glow-cyan text-[14px] font-semibold text-navy-deep">
                       {inicial(usuario.displayName)}
                     </span>
-                    <Icon name="chevron-down" size={16} className="hidden text-slate-muted sm:block" />
+                    <Icon name="chevron-down" size={16} className="hidden text-fog-white/60 sm:block" />
                   </button>
 
                   {userMenuOpen && (
-                    <div className="absolute right-0 top-full mt-2 w-56 rounded-cards border border-white/10 bg-navy-base py-2 shadow-lg" role="menu">
-                      <div className="border-b border-white/10 px-4 py-2 text-[12px] text-slate-muted">
+                    <div className="absolute right-0 top-full mt-2 w-56 rounded-cards border border-fog-white/10 bg-navy-base py-2 shadow-lg" role="menu">
+                      <div className="border-b border-fog-white/10 px-4 py-2 text-[12px] text-fog-white/60">
                         {usuario.displayName || usuario.email}
                       </div>
                       {esAdmin && (
@@ -127,7 +131,7 @@ export function Header() {
                           type="button"
                           role="menuitem"
                           onClick={() => { router.push("/admin"); setUserMenuOpen(false); }}
-                          className="w-full px-4 py-2 text-left text-[14px] text-fog-white hover:bg-white/10"
+                          className="w-full px-4 py-2 text-left text-[14px] text-fog-white hover:bg-glow-cyan/10"
                         >
                           Panel admin
                         </button>
@@ -136,7 +140,7 @@ export function Header() {
                         type="button"
                         role="menuitem"
                         onClick={handleLogout}
-                        className="w-full px-4 py-2 text-left text-[14px] text-fog-white hover:bg-white/10"
+                        className="w-full px-4 py-2 text-left text-[14px] text-fog-white hover:bg-glow-cyan/10"
                       >
                         Cerrar sesión
                       </button>
@@ -147,7 +151,7 @@ export function Header() {
                 <button
                   type="button"
                   onClick={() => setAuthOpen(true)}
-                  className="flex h-9 w-9 items-center justify-center rounded-full text-fog-white transition-colors hover:bg-white/10"
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-fog-white/80 transition-colors hover:bg-glow-cyan/20 hover:text-glow-cyan"
                   aria-label="Iniciar sesión"
                 >
                   <Icon name="user" size={20} />
@@ -158,7 +162,7 @@ export function Header() {
             <button
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
-              className="flex h-9 w-9 items-center justify-center rounded-full text-fog-white transition-colors hover:bg-white/10 lg:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-full text-fog-white/80 transition-colors hover:bg-glow-cyan/20 hover:text-glow-cyan lg:hidden"
               aria-label="Menú"
               aria-expanded={menuOpen}
             >
@@ -168,14 +172,14 @@ export function Header() {
         </div>
 
         {menuOpen && (
-          <div className="border-t border-white/10 bg-navy-base/95 backdrop-blur-lg lg:hidden">
+          <div className="border-t border-fog-white/10 bg-navy-base/95 backdrop-blur-lg lg:hidden">
             <nav className="mx-auto flex max-w-[1280px] flex-col gap-1 px-4 py-4" aria-label="Navegación móvil">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-chips px-3 py-2 text-[15px] font-medium text-fog-white hover:bg-white/10"
+                  className="rounded-chips px-3 py-2.5 text-[15px] font-medium text-fog-white hover:bg-glow-cyan/10"
                 >
                   {link.label}
                 </Link>

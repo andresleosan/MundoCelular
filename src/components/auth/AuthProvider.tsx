@@ -26,8 +26,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return onIdTokenChanged(auth, async (user) => {
       setUsuario(user);
       if (user) {
-        const token = await user.getIdTokenResult();
-        setEsAdmin(esClaimAdmin(token.claims));
+        try {
+          const token = await user.getIdTokenResult();
+          setEsAdmin(esClaimAdmin(token.claims));
+        } catch {
+          setEsAdmin(false);
+        }
       } else {
         setEsAdmin(false);
         localStorage.removeItem("login-destino");

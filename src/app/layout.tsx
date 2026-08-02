@@ -32,9 +32,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es-CO" className={`${interTight.variable} ${inter.variable} ${jetbrainsMono.variable} ${sora.variable}`}>
       <body className="pb-20 sm:pb-0">
-        <Header />
         <ConfigProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <Header />
+            {children}
+          </AuthProvider>
         </ConfigProvider>
         <Footer />
         <BottomTabBar />

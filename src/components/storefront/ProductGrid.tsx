@@ -11,13 +11,14 @@ export function ProductGrid({
   categoriaSlug: string;
 }) {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {productos.map((p) => (
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      {productos.map((p, i) => (
         <ProductCard
           key={p.id}
           producto={p}
           categoriaNombre={categoriaNombre}
           categoriaSlug={categoriaSlug}
+          priority={i < 4}
         />
       ))}
     </div>

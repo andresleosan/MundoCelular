@@ -12,19 +12,19 @@ export function BottomTabBar() {
   const { items } = useCarrito();
   const config = useConfig();
   const totalItems = items.reduce((sum: number, item: { cantidad: number }) => sum + item.cantidad, 0);
-
-  const WHATSAPP_LINK = `https://wa.me/${config.whatsapp}`;
+  const whatsappHref = `https://wa.me/${config.whatsapp}`;
 
   const navItems = [
     { href: "/", label: "Inicio", icon: "home" as IconName },
     { href: "/#categorias", label: "Categorías", icon: "grid" as IconName },
+    { href: "/buscar", label: "Buscar", icon: "search" as IconName },
     { href: "/carrito", label: "Carrito", icon: "shopping-bag" as IconName },
-    { href: WHATSAPP_LINK, label: "WhatsApp", icon: "message-circle" as IconName, external: true },
+    { href: whatsappHref, label: "WhatsApp", icon: "message-circle" as IconName, external: true },
   ] as const;
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-navy-base/95 backdrop-blur-lg sm:hidden"
+      className="fixed bottom-0 left-0 right-0 z-50 border-t border-fog-white/10 bg-navy-base/95 backdrop-blur-lg sm:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       aria-label="Navegación principal"
     >
@@ -40,7 +40,7 @@ export function BottomTabBar() {
                 <Icon
                   name={item.icon}
                   size={22}
-                  className={isActive ? "text-glow-cyan" : "text-slate-muted"}
+                  className={isActive ? "text-glow-cyan" : "text-fog-white/50"}
                 />
                 {showBadge && (
                   <span className="absolute -right-2 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-glow-cyan text-[9px] font-bold text-navy-base">
@@ -48,7 +48,7 @@ export function BottomTabBar() {
                   </span>
                 )}
               </span>
-              <span className={`text-[10px] ${isActive ? "font-semibold text-glow-cyan" : "text-slate-muted"}`}>
+              <span className={`text-[10px] ${isActive ? "font-semibold text-glow-cyan" : "text-fog-white/50"}`}>
                 {item.label}
               </span>
             </span>

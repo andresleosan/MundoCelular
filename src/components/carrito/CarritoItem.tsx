@@ -31,9 +31,9 @@ export function CarritoItem({
   const atributosTexto = atributos ? Object.values(atributos).join(" / ") : null;
 
   return (
-    <div className="flex gap-4 rounded-[20px] border border-faint-border bg-surface p-4 sm:p-5">
+    <div className="flex gap-4 rounded-cards border border-faint-border bg-surface p-4 sm:p-5">
       {/* Imagen */}
-      <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-[12px] bg-canvas-frost sm:h-[80px] sm:w-[80px]">
+      <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-cards-sm bg-canvas-frost sm:h-[80px] sm:w-[80px]">
         {imagenUrl ? (
           <Image
             src={imagenUrl}
@@ -72,17 +72,17 @@ export function CarritoItem({
             <div className="flex items-center gap-2 rounded-full bg-bg px-2 py-1">
               <button
                 onClick={() => cambiarCantidad(productoId, cantidad - 1, varianteId)}
-                className="flex h-7 w-7 items-center justify-center rounded-full text-text transition-colors hover:bg-primary hover:text-pure-white"
+                className="flex h-7 w-7 items-center justify-center rounded-full text-text transition-colors hover:bg-glow-cyan hover:text-navy-deep"
                 aria-label="Reducir cantidad"
               >
-                -
+                −
               </button>
               <span className="w-5 text-center text-[14px] font-semibold text-text">
                 {cantidad}
               </span>
               <button
                 onClick={() => cambiarCantidad(productoId, cantidad + 1, varianteId)}
-                className="flex h-7 w-7 items-center justify-center rounded-full text-text transition-colors hover:bg-primary hover:text-pure-white"
+                className="flex h-7 w-7 items-center justify-center rounded-full text-text transition-colors hover:bg-glow-cyan hover:text-navy-deep"
                 aria-label="Aumentar cantidad"
               >
                 +

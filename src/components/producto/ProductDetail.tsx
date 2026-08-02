@@ -7,6 +7,7 @@ import { formatearCOP } from "@/lib/format";
 import { useConfig } from "@/components/auth/ConfigProvider";
 import { AgregarAlCarrito } from "./AgregarAlCarrito";
 import { Icon } from "@/components/ui/Icon";
+import { Badge } from "@/components/ui/Badge";
 import type { Producto, Categoria, VarianteProducto } from "@/types";
 
 export function ProductDetail({
@@ -68,7 +69,7 @@ export function ProductDetail({
       <div className="flex flex-col gap-8 lg:flex-row lg:gap-12">
         {/* Galería */}
         <div className="flex flex-col gap-3 lg:flex-1">
-          <div className="relative aspect-square w-full overflow-hidden rounded-[24px] border border-faint-border bg-bg">
+          <div className="relative aspect-square w-full overflow-hidden rounded-cards border border-faint-border bg-bg">
             {imagenes.length > 0 ? (
               <Image
                 src={imagenes[imgActiva]?.url || ""}
@@ -86,15 +87,15 @@ export function ProductDetail({
           </div>
 
           {imagenes.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto pb-2">
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
               {imagenes.map((img, i) => (
                 <button
                   key={i}
                   onClick={() => setImgActiva(i)}
-                  className={`relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-[12px] border-2 transition-all duration-200 ${
+                  className={`relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-cards-sm border-2 transition-all duration-200 ${
                     i === imgActiva
-                      ? "border-primary"
-                      : "border-faint-border hover:border-primary-light"
+                      ? "border-glow-cyan"
+                      : "border-faint-border hover:border-glow-cyan/50"
                   }`}
                 >
                   <Image
@@ -115,24 +116,24 @@ export function ProductDetail({
           {categoria && (
             <Link
               href={`/categoria/${categoria.slug}`}
-              className="inline-block w-fit rounded-full bg-primary/10 px-3 py-1 text-[12px] font-medium text-primary"
+              className="inline-block w-fit rounded-chips bg-glow-cyan/10 px-3 py-1 text-[12px] font-medium text-glow-cyan"
             >
               {categoria.nombre}
             </Link>
           )}
 
           <div>
-            <h1 className="font-inter-tight text-[28px] font-bold tracking-[-0.03em] text-text sm:text-[40px]">
-              {producto.nombre}
-            </h1>
             {producto.marca && (
-              <p className="mt-2 text-[14px] font-medium uppercase tracking-wide text-text-secondary">
+              <p className="text-[12px] font-semibold uppercase tracking-widest text-glow-cyan">
                 Marca: {producto.marca}
               </p>
             )}
+            <h1 className="font-inter-tight text-[28px] font-bold tracking-[-0.03em] text-text sm:text-[40px]">
+              {producto.nombre}
+            </h1>
           </div>
 
-          <p className="font-inter-tight text-[32px] font-bold text-primary sm:text-[36px]">
+          <p className="font-inter-tight text-[32px] font-bold text-glow-cyan sm:text-[36px]">
             {formatearCOP(precioMostrar)}
           </p>
 
@@ -141,16 +142,16 @@ export function ProductDetail({
               Disponible: {stockMostrar}
             </p>
           ) : (
-            <p className="text-[14px] font-medium text-danger">Agotado</p>
+            <Badge variant="danger">Agotado</Badge>
           )}
 
           {tieneVariantes && (producto.atributosDisponibles ?? []).length > 0 && (
-            <div className="flex flex-col gap-3 rounded-[16px] border border-faint-border bg-surface p-4">
+            <div className="flex flex-col gap-3 rounded-cards border border-faint-border bg-surface p-4">
               {(producto.atributosDisponibles ?? []).map((attr) => (
                 <div key={attr}>
                   <label
                     htmlFor={`attr-${attr}`}
-                    className="mb-1.5 block text-[12px] font-medium text-text-secondary"
+                    className="mb-1.5 block text-[12px] font-semibold uppercase tracking-wide text-text-secondary"
                   >
                     {attr}
                   </label>
@@ -160,7 +161,7 @@ export function ProductDetail({
                     onChange={(e) =>
                       setSelecciones((prev) => ({ ...prev, [attr]: e.target.value }))
                     }
-                    className="w-full rounded-[12px] border border-faint-border bg-pure-white px-4 py-3 text-[14px] text-text outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                    className="w-full rounded-pills border border-faint-border bg-pure-white px-4 py-3 text-[14px] text-text outline-none transition-all duration-200 focus:border-glow-cyan focus:shadow-[0_0_0_3px_rgba(0,212,255,0.2)]"
                   >
                     <option value="">Seleccionar…</option>
                     {(opcionesPorAtributo[attr] ?? []).map((op) => (
@@ -193,7 +194,7 @@ export function ProductDetail({
               href={urlWhatsApp}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-12 items-center justify-center rounded-[12px] border-2 border-primary bg-pure-white px-6 text-[14px] font-semibold text-primary transition-all duration-200 hover:bg-primary hover:text-pure-white hover:shadow-lg focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary/30"
+              className="inline-flex h-12 items-center justify-center rounded-pills border-2 border-glow-cyan bg-pure-white px-6 text-[14px] font-semibold text-primary transition-all duration-200 hover:bg-glow-cyan hover:text-navy-deep hover:shadow-cyan-glow focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-glow-cyan/40"
             >
               <Icon name="message-circle" size={18} className="mr-2" />
               Comprar por WhatsApp
@@ -201,7 +202,7 @@ export function ProductDetail({
           </div>
 
           {Object.keys(producto.specs).length > 0 && (
-            <div className="rounded-[16px] border border-faint-border bg-surface p-4">
+            <div className="rounded-cards border border-faint-border bg-surface p-4">
               <h3 className="mb-3 font-inter-tight text-[16px] font-semibold text-text">
                 Especificaciones
               </h3>
@@ -229,7 +230,7 @@ export function ProductDetail({
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-[12px] text-text-secondary">Precio</p>
-              <p className="font-inter-tight text-[18px] font-bold text-primary">
+              <p className="font-inter-tight text-[18px] font-bold text-glow-cyan">
                 {formatearCOP(precioMostrar)}
               </p>
             </div>
@@ -238,7 +239,7 @@ export function ProductDetail({
                 href={urlWhatsApp}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-10 items-center justify-center rounded-[12px] bg-primary px-4 text-[13px] font-semibold text-pure-white"
+                className="inline-flex h-10 items-center justify-center rounded-pills bg-glow-cyan px-4 text-[13px] font-semibold text-navy-deep"
               >
                 WhatsApp
               </a>
