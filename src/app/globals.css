@@ -14,6 +14,13 @@
   --color-success: #16A34A;
   --color-danger: #DC2626;
 
+  /* Hero dark palette */
+  --color-navy-base: #0B1330;
+  --color-glow-cyan: #33D6FF;
+  --color-coral-cta: #FF6B4D;
+  --color-fog-white: #F5F7FB;
+  --color-slate-muted: #8A93B3;
+
   /* Alias existentes — mismo nombre, nuevo valor */
   --color-mundo-blue: #1E4FA8;
   --color-canvas-frost: #F8FAFC;
@@ -29,7 +36,8 @@
   --color-cool-frost: #c7d0de;
   --color-mist-blue: #a8b8d0;
 
-  /* Tipografía — eliminar --font-sora, agregar nuevos */
+  /* Tipografía */
+  --font-sora: var(--font-sora-css), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-inter-tight: var(--font-inter-tight-css), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-inter: var(--font-inter-css), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-jetbrains-mono: var(--font-jetbrains-mono-css), ui-monospace, "SF Mono", monospace;
@@ -67,8 +75,21 @@ body {
 .animate-fade-up   { animation: fade-up 0.6s ease-out both; }
 .animate-fade-in   { animation: fade-in 0.5s ease-out both; }
 .animate-scale-in  { animation: scale-in 0.6s ease-out both; }
+
+@keyframes float-chip {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+.animate-float-chip { animation: float-chip 3s ease-in-out infinite; }
+.animate-glow-pulse { animation: glow-pulse 2.5s ease-in-out infinite; }
+
 @media (prefers-reduced-motion: reduce) {
-  .animate-fade-up, .animate-fade-in, .animate-scale-in {
+  .animate-fade-up, .animate-fade-in, .animate-scale-in,
+  .animate-float-chip, .animate-glow-pulse {
     animation: none;
     opacity: 1;
     transform: none;

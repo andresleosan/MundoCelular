@@ -21,7 +21,7 @@ export function Header() {
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 80);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -60,8 +60,8 @@ export function Header() {
       <header
         className={`sticky top-0 z-30 transition-all duration-300 ease-out ${
           scrolled
-            ? "border-b border-faint-border bg-pure-white/85 backdrop-blur-xl shadow-sm"
-            : "border-b border-transparent bg-pure-white/70 backdrop-blur-md"
+            ? "border-b border-faint-border/60 bg-pure-white/80 backdrop-blur-2xl shadow-sm"
+            : "border-b border-transparent bg-transparent backdrop-blur-none"
         }`}
       >
         <div className="mx-auto flex max-w-[1280px] items-center gap-6 px-4 py-3">
