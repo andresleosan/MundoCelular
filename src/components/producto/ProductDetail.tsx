@@ -4,11 +4,10 @@ import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatearCOP } from "@/lib/format";
+import { useConfig } from "@/components/auth/ConfigProvider";
 import { AgregarAlCarrito } from "./AgregarAlCarrito";
 import { Icon } from "@/components/ui/Icon";
 import type { Producto, Categoria, VarianteProducto } from "@/types";
-
-const WHATSAPP_NUMERO = "573113554021";
 
 export function ProductDetail({
   producto,
@@ -19,6 +18,7 @@ export function ProductDetail({
   categoria: Categoria | null;
   variantes?: VarianteProducto[];
 }) {
+  const config = useConfig();
   const [imgActiva, setImgActiva] = useState(0);
   const [selecciones, setSelecciones] = useState<Record<string, string>>({});
   const [isMobile, setIsMobile] = useState(false);
@@ -61,7 +61,7 @@ export function ProductDetail({
   const mensajeWhatsApp = atributosTexto
     ? `Hola, me interesa ${producto.nombre} (${atributosTexto})`
     : `Hola, me interesa ${producto.nombre}`;
-  const urlWhatsApp = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensajeWhatsApp)}`;
+  const urlWhatsApp = `https://wa.me/${config.whatsapp}?text=${encodeURIComponent(mensajeWhatsApp)}`;
 
   return (
     <div className="mx-auto max-w-[1280px] px-4 py-8 sm:py-12">

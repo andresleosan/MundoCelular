@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { listarPedidos, actualizarEstadoPedido } from "@/lib/firestore/pedidos";
+import { useAuth } from "@/hooks/useAuth";
 import { formatearCOP } from "@/lib/format";
 import type { Pedido } from "@/types";
 
@@ -13,6 +14,7 @@ export default function PedidosAdmin() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [filtro, setFiltro] = useState("");
   const [error, setError] = useState("");
+  const { usuario } = useAuth();
 
   const cargar = () => listarPedidos(filtro || undefined).then(setPedidos).catch(() => setError("No se pudieron cargar"));
   useEffect(() => { cargar(); }, [filtro]);
@@ -20,7 +22,19 @@ export default function PedidosAdmin() {
   async function cambiarEstado(id: string, estado: Pedido["estado"]) {
     setError("");
     try {
-      await actualizarEstadoPedido(id, estado);
+      if (estado === "cancelado" && usuario) {
+        const token = await usuario.getIdToken();
+        const res = await fetch(`/api/pedidos/${id}/cancelar`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "Error al cancelar");
+        }
+      } else {
+        await actualizarEstadoPedido(id, estado);
+      }
       await cargar();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al actualizar");

@@ -1,18 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { loginConGoogle } from "@/lib/auth-client";
+import { useAuth } from "@/hooks/useAuth";
 import { Icon } from "@/components/ui/Icon";
 
 export function LoginForm() {
   const [cargando, setCargando] = useState<"cliente" | "admin" | null>(null);
   const [error, setError] = useState("");
+  const { usuario, esAdmin, cargando: authCargando } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (authCargando || !cargando || !usuario) return;
+    if (cargando === "admin") {
+      if (esAdmin) {
+        router.push("/admin");
+      } else {
+        setError("Esta cuenta no tiene permisos de administrador. Ejecuta: npm run set:admin -- <uid>");
+        setCargando(null);
+      }
+    } else {
+      router.push("/");
+    }
+  }, [cargando, usuario, esAdmin, authCargando, router]);
 
   async function handleLogin(tipo: "cliente" | "admin") {
     setCargando(tipo);
     setError("");
     try {
-      localStorage.setItem("login-destino", tipo);
       await loginConGoogle();
     } catch {
       setError("No se pudo iniciar sesión. Intenta de nuevo.");

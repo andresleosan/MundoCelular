@@ -55,6 +55,7 @@ export interface Pedido {
   clienteUid: string;
   clienteNombre: string;
   clienteEmail: string;
+  clienteTelefono?: string;
   items: Array<{
     productoId: string;
     nombre: string;
@@ -66,6 +67,8 @@ export interface Pedido {
   }>;
   total: number;
   entrega: { tipo: "retiro" | "domicilio"; direccion?: string; barrio?: string };
+  ciudad?: string;
+  observaciones?: string;
   estado: "pendiente" | "contactado" | "cerrado" | "cancelado";
   creadoEn: unknown;
 }

@@ -1,18 +1,18 @@
 "use client";
 
 import { useCarrito } from "@/hooks/useCarrito";
+import { useConfig } from "@/components/auth/ConfigProvider";
 import type { Producto } from "@/types";
-
-const WHATSAPP_NUMERO = "573113554021";
 
 export function BotonWhatsAppProducto({ producto }: { producto: Producto }) {
   const { items } = useCarrito();
+  const config = useConfig();
   const enCarrito = items.some((i) => i.productoId === producto.id);
 
   if (enCarrito) return null;
 
   const mensaje = `Hola, me interesa ${producto.nombre}`;
-  const url = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`;
+  const url = `https://wa.me/${config.whatsapp}?text=${encodeURIComponent(mensaje)}`;
 
   return (
     <a

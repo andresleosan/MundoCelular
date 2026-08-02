@@ -13,9 +13,13 @@ export function CheckoutForm() {
   const { usuario } = useAuth();
   const router = useRouter();
 
-  const [tipoEntrega, setTipoEntrega] = useState<"retiro" | "domicilio">("retiro");
+  const [nombre, setNombre] = useState("");
+  const [telefono, setTelefono] = useState("");
   const [direccion, setDireccion] = useState("");
   const [barrio, setBarrio] = useState("");
+  const [ciudad, setCiudad] = useState("Medellín");
+  const [observaciones, setObservaciones] = useState("");
+  const [tipoEntrega, setTipoEntrega] = useState<"retiro" | "domicilio">("retiro");
   const [procesando, setProcesando] = useState(false);
   const [error, setError] = useState("");
 
@@ -64,6 +68,14 @@ export function CheckoutForm() {
   }
 
   async function confirmarPedido() {
+    if (!nombre.trim()) {
+      setError("El nombre es obligatorio");
+      return;
+    }
+    if (!telefono.trim()) {
+      setError("El teléfono es obligatorio");
+      return;
+    }
     if (tipoEntrega === "domicilio" && !direccion.trim()) {
       setError("La dirección es obligatoria para domicilio");
       return;
@@ -89,6 +101,10 @@ export function CheckoutForm() {
             atributos: i.atributos,
           })),
           entrega: { tipo: tipoEntrega, direccion: direccion.trim() || undefined, barrio: barrio.trim() || undefined },
+          clienteNombre: nombre.trim(),
+          clienteTelefono: telefono.trim(),
+          ciudad: ciudad.trim() || undefined,
+          observaciones: observaciones.trim() || undefined,
         }),
       });
 
@@ -156,67 +172,121 @@ export function CheckoutForm() {
         <div className="lg:w-[400px] lg:flex-shrink-0">
           <div className="rounded-[24px] border border-faint-border bg-surface p-6 sm:p-8">
             <h2 className="mb-6 font-inter-tight text-[18px] font-semibold text-text">
-              Entrega
+              Datos de entrega
             </h2>
 
-            <div className="space-y-3">
-              <label className="flex cursor-pointer items-center gap-3 rounded-[12px] border border-faint-border p-4 transition-all duration-200 hover:border-primary-light">
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="nombre" className="mb-1.5 block text-[13px] font-medium text-text-secondary">
+                  Nombre completo *
+                </label>
                 <input
-                  type="radio"
-                  name="entrega"
-                  checked={tipoEntrega === "retiro"}
-                  onChange={() => setTipoEntrega("retiro")}
-                  className="h-5 w-5 accent-primary"
+                  id="nombre"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  className="w-full rounded-[12px] border border-faint-border bg-pure-white px-4 py-3 text-[14px] text-text outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  placeholder="Tu nombre"
                 />
-                <div>
-                  <p className="text-[14px] font-medium text-text">Retiro en tienda</p>
-                  <p className="text-[12px] text-text-secondary">Gratis</p>
-                </div>
-              </label>
-
-              <label className="flex cursor-pointer items-center gap-3 rounded-[12px] border border-faint-border p-4 transition-all duration-200 hover:border-primary-light">
-                <input
-                  type="radio"
-                  name="entrega"
-                  checked={tipoEntrega === "domicilio"}
-                  onChange={() => setTipoEntrega("domicilio")}
-                  className="h-5 w-5 accent-primary"
-                />
-                <div>
-                  <p className="text-[14px] font-medium text-text">Domicilio</p>
-                  <p className="text-[12px] text-text-secondary">Gratis</p>
-                </div>
-              </label>
-            </div>
-
-            {tipoEntrega === "domicilio" && (
-              <div className="mt-6 space-y-4">
-                <div>
-                  <label htmlFor="direccion" className="mb-1.5 block text-[13px] font-medium text-text-secondary">
-                    Dirección *
-                  </label>
-                  <input
-                    id="direccion"
-                    value={direccion}
-                    onChange={(e) => setDireccion(e.target.value)}
-                    className="w-full rounded-[12px] border border-faint-border bg-pure-white px-4 py-3 text-[14px] text-text outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10"
-                    placeholder="Cra 45 #12-30"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="barrio" className="mb-1.5 block text-[13px] font-medium text-text-secondary">
-                    Barrio
-                  </label>
-                  <input
-                    id="barrio"
-                    value={barrio}
-                    onChange={(e) => setBarrio(e.target.value)}
-                    className="w-full rounded-[12px] border border-faint-border bg-pure-white px-4 py-3 text-[14px] text-text outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10"
-                    placeholder="El Poblado"
-                  />
-                </div>
               </div>
-            )}
+
+              <div>
+                <label htmlFor="telefono" className="mb-1.5 block text-[13px] font-medium text-text-secondary">
+                  Teléfono *
+                </label>
+                <input
+                  id="telefono"
+                  value={telefono}
+                  onChange={(e) => setTelefono(e.target.value)}
+                  className="w-full rounded-[12px] border border-faint-border bg-pure-white px-4 py-3 text-[14px] text-text outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  placeholder="300 123 4567"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <label className="flex cursor-pointer items-center gap-3 rounded-[12px] border border-faint-border p-4 transition-all duration-200 hover:border-primary-light">
+                  <input
+                    type="radio"
+                    name="entrega"
+                    checked={tipoEntrega === "retiro"}
+                    onChange={() => setTipoEntrega("retiro")}
+                    className="h-5 w-5 accent-primary"
+                  />
+                  <div>
+                    <p className="text-[14px] font-medium text-text">Retiro en tienda</p>
+                    <p className="text-[12px] text-text-secondary">Gratis</p>
+                  </div>
+                </label>
+
+                <label className="flex cursor-pointer items-center gap-3 rounded-[12px] border border-faint-border p-4 transition-all duration-200 hover:border-primary-light">
+                  <input
+                    type="radio"
+                    name="entrega"
+                    checked={tipoEntrega === "domicilio"}
+                    onChange={() => setTipoEntrega("domicilio")}
+                    className="h-5 w-5 accent-primary"
+                  />
+                  <div>
+                    <p className="text-[14px] font-medium text-text">Domicilio</p>
+                    <p className="text-[12px] text-text-secondary">Gratis</p>
+                  </div>
+                </label>
+              </div>
+
+              {tipoEntrega === "domicilio" && (
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="direccion" className="mb-1.5 block text-[13px] font-medium text-text-secondary">
+                      Dirección *
+                    </label>
+                    <input
+                      id="direccion"
+                      value={direccion}
+                      onChange={(e) => setDireccion(e.target.value)}
+                      className="w-full rounded-[12px] border border-faint-border bg-pure-white px-4 py-3 text-[14px] text-text outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                      placeholder="Cra 45 #12-30"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="barrio" className="mb-1.5 block text-[13px] font-medium text-text-secondary">
+                      Barrio
+                    </label>
+                    <input
+                      id="barrio"
+                      value={barrio}
+                      onChange={(e) => setBarrio(e.target.value)}
+                      className="w-full rounded-[12px] border border-faint-border bg-pure-white px-4 py-3 text-[14px] text-text outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                      placeholder="El Poblado"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="ciudad" className="mb-1.5 block text-[13px] font-medium text-text-secondary">
+                      Ciudad
+                    </label>
+                    <input
+                      id="ciudad"
+                      value={ciudad}
+                      onChange={(e) => setCiudad(e.target.value)}
+                      className="w-full rounded-[12px] border border-faint-border bg-pure-white px-4 py-3 text-[14px] text-text outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                      placeholder="Medellín"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label htmlFor="observaciones" className="mb-1.5 block text-[13px] font-medium text-text-secondary">
+                  Observaciones
+                </label>
+                <textarea
+                  id="observaciones"
+                  value={observaciones}
+                  onChange={(e) => setObservaciones(e.target.value)}
+                  rows={3}
+                  className="w-full rounded-[12px] border border-faint-border bg-pure-white px-4 py-3 text-[14px] text-text outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none"
+                  placeholder="Instrucciones especiales, referencias, etc."
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

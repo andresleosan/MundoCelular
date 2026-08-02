@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { obtenerPedido, actualizarEstadoPedido } from "@/lib/firestore/pedidos";
+import { useAuth } from "@/hooks/useAuth";
 import { formatearCOP } from "@/lib/format";
 import type { Pedido } from "@/types";
 
@@ -12,6 +13,7 @@ export default function DetallePedido() {
   const router = useRouter();
   const [pedido, setPedido] = useState<Pedido | null>(null);
   const [error, setError] = useState("");
+  const { usuario } = useAuth();
 
   useEffect(() => {
     obtenerPedido(id).then((p) => {
@@ -23,7 +25,19 @@ export default function DetallePedido() {
   async function cambiarEstado(estado: Pedido["estado"]) {
     setError("");
     try {
-      await actualizarEstadoPedido(id, estado);
+      if (estado === "cancelado" && usuario) {
+        const token = await usuario.getIdToken();
+        const res = await fetch(`/api/pedidos/${id}/cancelar`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "Error al cancelar");
+        }
+      } else {
+        await actualizarEstadoPedido(id, estado);
+      }
       const p = await obtenerPedido(id);
       if (p) setPedido(p);
     } catch (err) {
@@ -45,6 +59,9 @@ export default function DetallePedido() {
             <span className="font-semibold">{pedido.clienteNombre}</span>
             <span className="text-steel-blue-gray">{pedido.clienteEmail}</span>
           </div>
+          {pedido.clienteTelefono && (
+            <p className="mt-1 text-[12px] text-steel-blue-gray">Tel: {pedido.clienteTelefono}</p>
+          )}
           <p className="mt-1 text-[12px] text-steel-blue-gray">UID: {pedido.clienteUid}</p>
 
           <h2 className="mt-4 text-[14px] font-semibold text-steel-blue-gray">Items</h2>
@@ -64,9 +81,12 @@ export default function DetallePedido() {
           <h2 className="mt-4 text-[14px] font-semibold text-steel-blue-gray">Entrega</h2>
           <p className="mt-1 text-[14px]">
             {pedido.entrega.tipo === "domicilio"
-              ? `Domicilio \u2014 ${pedido.entrega.direccion}${pedido.entrega.barrio ? `, ${pedido.entrega.barrio}` : ""}`
+              ? `Domicilio \u2014 ${pedido.entrega.direccion}${pedido.entrega.barrio ? `, ${pedido.entrega.barrio}` : ""}${pedido.ciudad ? ` (${pedido.ciudad})` : ""}`
               : "Retiro en tienda"}
           </p>
+          {pedido.observaciones && (
+            <p className="mt-2 text-[13px] text-steel-blue-gray italic">Obs: {pedido.observaciones}</p>
+          )}
 
           <h2 className="mt-4 text-[14px] font-semibold text-steel-blue-gray">Estado</h2>
           <p className="mt-1 text-[14px] font-semibold">{pedido.estado}</p>

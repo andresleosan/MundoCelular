@@ -3,22 +3,24 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCarrito } from "@/hooks/useCarrito";
+import { useConfig } from "@/components/auth/ConfigProvider";
 import { Icon } from "@/components/ui/Icon";
 import type { IconName } from "@/components/ui/Icon";
-
-const WHATSAPP_LINK = "https://wa.me/573113554021";
-
-const navItems = [
-  { href: "/", label: "Inicio", icon: "home" as IconName },
-  { href: "/#categorias", label: "Categorías", icon: "grid" as IconName },
-  { href: "/carrito", label: "Carrito", icon: "shopping-bag" as IconName },
-  { href: WHATSAPP_LINK, label: "WhatsApp", icon: "message-circle" as IconName, external: true },
-] as const;
 
 export function BottomTabBar() {
   const pathname = usePathname();
   const { items } = useCarrito();
+  const config = useConfig();
   const totalItems = items.reduce((sum: number, item: { cantidad: number }) => sum + item.cantidad, 0);
+
+  const WHATSAPP_LINK = `https://wa.me/${config.whatsapp}`;
+
+  const navItems = [
+    { href: "/", label: "Inicio", icon: "home" as IconName },
+    { href: "/#categorias", label: "Categorías", icon: "grid" as IconName },
+    { href: "/carrito", label: "Carrito", icon: "shopping-bag" as IconName },
+    { href: WHATSAPP_LINK, label: "WhatsApp", icon: "message-circle" as IconName, external: true },
+  ] as const;
 
   return (
     <nav

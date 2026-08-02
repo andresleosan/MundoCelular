@@ -1,8 +1,31 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@/components/ui/Icon";
+import { obtenerConfigTiendaServidor } from "@/lib/firestore/public";
+import type { ConfigTienda } from "@/types";
 
-export function Footer() {
+const FALLBACK: ConfigTienda = {
+  nombre: "Mundo Celular",
+  whatsapp: "573113554021",
+  direccion: "Cra 36 # 38 - 33, Barrio El Salvador",
+  ciudad: "Medellín",
+  departamento: "Antioquia",
+  pais: "CO",
+  horario: "Lun–Sáb 9:00 AM – 7:00 PM",
+  redes: { instagram: "https://instagram.com/mundo_celular_75", facebook: "https://facebook.com/Mundo.Celular.01", tiktok: "https://tiktok.com/@mundocelular75" },
+};
+
+async function getConfig(): Promise<ConfigTienda> {
+  try {
+    return await obtenerConfigTiendaServidor();
+  } catch {
+    return FALLBACK;
+  }
+}
+
+export async function Footer() {
+  const config = await getConfig();
+  const whatsappFormatted = config.whatsapp.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})$/, "+$1 $2 $3 $4");
   return (
     <footer className="border-t border-white/10 bg-navy-base">
       <div className="mx-auto max-w-[1280px] px-4 py-12 sm:py-16">
@@ -20,20 +43,20 @@ export function Footer() {
               MUNDO CELULAR
             </h3>
             <div className="mt-4 space-y-2 text-[14px] text-slate-muted">
-              <p>Cra 36 # 38 - 33, Barrio El Salvador</p>
-              <p>Medellín, Antioquia</p>
+              <p>{config.direccion || "Cra 36 # 38 - 33, Barrio El Salvador"}</p>
+              <p>{config.ciudad}{config.departamento ? `, ${config.departamento}` : ""}</p>
             </div>
             <div className="mt-4 space-y-2 text-[14px] text-slate-muted">
               <a
-                href="https://wa.me/573113554021"
+                href={`https://wa.me/${config.whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 transition-colors hover:text-glow-cyan"
               >
                 <Icon name="message-circle" size={16} />
-                WhatsApp: +57 311 355 4021
+                WhatsApp: {whatsappFormatted || config.whatsapp}
               </a>
-              <p>Lun–Sáb 9:00 AM – 7:00 PM</p>
+              <p>{config.horario || "Lun–Sáb 9:00 AM – 7:00 PM"}</p>
             </div>
           </div>
 
@@ -92,39 +115,45 @@ export function Footer() {
               Redes sociales
             </h4>
             <ul className="mt-4 space-y-3">
-              <li>
-                <a
-                  href="https://instagram.com/mundo_celular_75"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
-                >
-                  <Icon name="user" size={16} />
-                  Instagram
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://facebook.com/Mundo.Celular.01"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
-                >
-                  <Icon name="user" size={16} />
-                  Facebook
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://tiktok.com/@mundocelular75"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
-                >
-                  <Icon name="user" size={16} />
-                  TikTok
-                </a>
-              </li>
+              {config.redes.instagram && (
+                <li>
+                  <a
+                    href={config.redes.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
+                  >
+                    <Icon name="user" size={16} />
+                    Instagram
+                  </a>
+                </li>
+              )}
+              {config.redes.facebook && (
+                <li>
+                  <a
+                    href={config.redes.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
+                  >
+                    <Icon name="user" size={16} />
+                    Facebook
+                  </a>
+                </li>
+              )}
+              {config.redes.tiktok && (
+                <li>
+                  <a
+                    href={config.redes.tiktok}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
+                  >
+                    <Icon name="user" size={16} />
+                    TikTok
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>

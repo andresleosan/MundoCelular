@@ -13,6 +13,10 @@ interface PedidoItemBody {
 interface PedidoBody {
   items: PedidoItemBody[];
   entrega: { tipo: "retiro" | "domicilio"; direccion?: string; barrio?: string };
+  clienteNombre?: string;
+  clienteTelefono?: string;
+  ciudad?: string;
+  observaciones?: string;
 }
 
 interface ItemPedidoPersistido {
@@ -127,11 +131,14 @@ export async function POST(req: NextRequest) {
       const pedidoRef = db.collection("pedidos").doc();
       tx.set(pedidoRef, {
         clienteUid: decoded.uid,
-        clienteNombre: decoded.name || decoded.email || "Cliente",
+        clienteNombre: body.clienteNombre || decoded.name || decoded.email || "Cliente",
         clienteEmail: decoded.email || "",
+        clienteTelefono: body.clienteTelefono || "",
         items: itemsPedido,
         total,
         entrega: body.entrega,
+        ciudad: body.ciudad || "",
+        observaciones: body.observaciones || "",
         estado: "pendiente",
         creadoEn: FieldValue.serverTimestamp(),
         actualizadoEn: FieldValue.serverTimestamp(),
@@ -154,14 +161,20 @@ export async function POST(req: NextRequest) {
     });
     const entrega =
       pedido.entrega.tipo === "domicilio"
-        ? `Entrega: Domicilio — ${pedido.entrega.direccion}${pedido.entrega.barrio ? `, ${pedido.entrega.barrio}` : ""}`
+        ? `Entrega: Domicilio — ${pedido.entrega.direccion}${pedido.entrega.barrio ? `, ${pedido.entrega.barrio}` : ""}${pedido.ciudad ? ` (${pedido.ciudad})` : ""}`
         : "Entrega: Retiro en tienda";
+    const clienteLine = [
+      `Cliente: ${pedido.clienteNombre}`,
+      pedido.clienteTelefono ? `Teléfono: ${pedido.clienteTelefono}` : "",
+      pedido.observaciones ? `Obs: ${pedido.observaciones}` : "",
+    ].filter(Boolean).join("\n");
     const mensaje = [
       "Hola Mundo Celular, quiero comprar:",
       ...lineas,
       `Total: $ ${(pedido.total as number).toLocaleString("es-CO")}`,
       entrega,
-      `Pedido #${pedidoId.slice(0, 8)} — ${decoded.name || decoded.email || "Cliente"}`,
+      clienteLine,
+      `Pedido #${pedidoId.slice(0, 8)}`,
     ].join("\n");
 
     return NextResponse.json({ pedidoId, mensaje, whatsapp });

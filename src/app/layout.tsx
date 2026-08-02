@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Inter_Tight, JetBrains_Mono, Sora } from "next/font/google";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import { ConfigProvider } from "@/components/auth/ConfigProvider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { BottomTabBar } from "@/components/layout/BottomTabBar";
@@ -32,7 +33,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es-CO" className={`${interTight.variable} ${inter.variable} ${jetbrainsMono.variable} ${sora.variable}`}>
       <body className="pb-20 sm:pb-0">
         <Header />
-        <AuthProvider>{children}</AuthProvider>
+        <ConfigProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ConfigProvider>
         <Footer />
         <BottomTabBar />
         <WebVitals />

@@ -20,6 +20,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "Cross-Origin-Opener-Policy", value: process.env.NODE_ENV === "production" ? "same-origin-allow-popups" : "unsafe-none" },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
