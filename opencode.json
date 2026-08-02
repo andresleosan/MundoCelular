@@ -36,7 +36,7 @@
         "npx",
         "@playwright/mcp@latest"
       ],
-      "enabled": false
+      "enabled": true
     }
   }
 }

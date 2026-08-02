@@ -16,7 +16,7 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
-  const { usuario, esAdmin, cargando } = useAuth();
+  const { usuario, esAdmin } = useAuth();
   const router = useRouter();
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -102,62 +102,60 @@ export function Header() {
           <div className="flex items-center gap-3">
             <CarritoContador />
 
-            {!cargando && (
-              <div className="relative" ref={userMenuRef}>
-                {usuario ? (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => setUserMenuOpen(!userMenuOpen)}
-                      className="flex items-center gap-2"
-                      aria-haspopup="menu"
-                      aria-expanded={userMenuOpen}
-                      aria-label="Menú de usuario"
-                    >
-                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-[14px] font-semibold text-pure-white">
-                        {inicial(usuario.displayName)}
-                      </span>
-                      <Icon name="chevron-down" size={16} className="hidden text-steel-blue-gray sm:block" />
-                    </button>
+            <div className="relative" ref={userMenuRef}>
+              {usuario ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                    className="flex items-center gap-2"
+                    aria-haspopup="menu"
+                    aria-expanded={userMenuOpen}
+                    aria-label="Menú de usuario"
+                  >
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-[14px] font-semibold text-pure-white">
+                      {inicial(usuario.displayName)}
+                    </span>
+                    <Icon name="chevron-down" size={16} className="hidden text-steel-blue-gray sm:block" />
+                  </button>
 
-                    {userMenuOpen && (
-                      <div className="absolute right-0 top-full mt-2 w-56 rounded-cards border border-faint-border bg-pure-white py-2 shadow-lg" role="menu">
-                        <div className="border-b border-faint-border px-4 py-2 text-[12px] text-steel-blue-gray">
-                          {usuario.displayName || usuario.email}
-                        </div>
-                        {esAdmin && (
-                          <button
-                            type="button"
-                            role="menuitem"
-                            onClick={() => { router.push("/admin"); setUserMenuOpen(false); }}
-                            className="w-full px-4 py-2 text-left text-[14px] text-text hover:bg-canvas-frost"
-                          >
-                            Panel admin
-                          </button>
-                        )}
+                  {userMenuOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-56 rounded-cards border border-faint-border bg-pure-white py-2 shadow-lg" role="menu">
+                      <div className="border-b border-faint-border px-4 py-2 text-[12px] text-steel-blue-gray">
+                        {usuario.displayName || usuario.email}
+                      </div>
+                      {esAdmin && (
                         <button
                           type="button"
                           role="menuitem"
-                          onClick={handleLogout}
+                          onClick={() => { router.push("/admin"); setUserMenuOpen(false); }}
                           className="w-full px-4 py-2 text-left text-[14px] text-text hover:bg-canvas-frost"
                         >
-                          Cerrar sesión
+                          Panel admin
                         </button>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => setAuthOpen(true)}
-                    className="flex h-9 w-9 items-center justify-center rounded-full text-text transition-colors hover:bg-canvas-frost"
-                    aria-label="Iniciar sesión"
-                  >
-                    <Icon name="user" size={20} />
-                  </button>
-                )}
-              </div>
-            )}
+                      )}
+                      <button
+                        type="button"
+                        role="menuitem"
+                        onClick={handleLogout}
+                        className="w-full px-4 py-2 text-left text-[14px] text-text hover:bg-canvas-frost"
+                      >
+                        Cerrar sesión
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setAuthOpen(true)}
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-text transition-colors hover:bg-canvas-frost"
+                  aria-label="Iniciar sesión"
+                >
+                  <Icon name="user" size={20} />
+                </button>
+              )}
+            </div>
 
             <button
               type="button"
