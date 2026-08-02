@@ -28,10 +28,10 @@ npm run set:admin -- <uid>  # tsx scripts/set-admin.ts
 
 - **Idioma:** UI y commits en español (Colombia). Commits convencionales: `feat(f5-t1): ...`, `fix(f3): ...`
 - **Moneda:** COP entero (sin decimales), locale `es-CO`
-- **Accent color:** `#143b98` (`mundo-blue`) SOLO en botón WhatsApp, wordmark y search submit. No usar en otros componentes.
+- **Accent color:** `#1E4FA8` (`mundo-blue` / `--color-primary`) SOLO en botón WhatsApp, wordmark y search submit. No usar en otros componentes.
 - **Tokens de diseño:** Definidos en `src/app/globals.css` bajo `@theme`. Usar classes de Tailwind (`text-mundo-blue`, `rounded-cards`, etc.), no hex directo.
 - **Rutas:** `@/*` → `src/*` (alias en tsconfig)
-- **Fuentes:** Sora (body) y JetBrains Mono (código) vía `next/font/google` con CSS variables
+- **Fuentes:** Sora (display/headline), Inter (body), Inter Tight (headings secundarios, pendiente de consolidar), JetBrains Mono (código) vía `next/font/google` con CSS variables
 
 ## Arquitectura
 
@@ -52,7 +52,7 @@ src/
     buscar/             # Búsqueda full-text
   components/
     layout/             # Header, Footer, BottomTabBar (mobile-only, hidden sm:)
-    storefront/         # Hero, ProductCard, CategoryPill, SearchInput
+    storefront/         # Hero, PhoneStack, ProductCard, CategoryPill, SearchInput
     admin/              # ImageUploader, ProductoForm, etc.
     producto/           # ProductDetail (galería con thumbnails)
     seo/                # JsonLd component
