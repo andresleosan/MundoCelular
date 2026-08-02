@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useTilt } from "@/hooks/useTilt";
 
 const phones = [
@@ -9,10 +10,10 @@ const phones = [
 ];
 
 const chips = [
-  { label: "5G", x: -60, y: -30, delay: "0s" },
-  { label: "128GB", x: 70, y: -20, delay: "0.5s" },
-  { label: "48MP", x: -50, y: 50, delay: "1s" },
-  { label: "12 meses", x: 65, y: 55, delay: "1.5s" },
+  { label: "5G", x: -35, y: -25, delay: "0s" },
+  { label: "128GB", x: 40, y: -18, delay: "0.5s" },
+  { label: "48MP", x: -30, y: 30, delay: "1s" },
+  { label: "12 meses", x: 38, y: 35, delay: "1.5s" },
 ];
 
 function PhoneSVG({ glowId }: { glowId: string }) {
@@ -49,6 +50,18 @@ export function PhoneStack() {
         transition: "transform 0.15s ease-out",
       }}
     >
+      {/* Logo background */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-[0.06]">
+        <Image
+          src="/icons/logo-header.png"
+          alt=""
+          width={280}
+          height={280}
+          className="h-auto w-[65%] object-contain"
+          priority
+        />
+      </div>
+
       {/* Phone stack */}
       <div className="absolute inset-0">
         {phones.map((phone, i) => (
