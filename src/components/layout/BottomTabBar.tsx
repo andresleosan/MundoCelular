@@ -22,7 +22,7 @@ export function BottomTabBar() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 border-t border-faint-border bg-surface/95 backdrop-blur-lg sm:hidden"
+      className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-navy-base/95 backdrop-blur-lg sm:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       aria-label="Navegación principal"
     >
@@ -38,15 +38,15 @@ export function BottomTabBar() {
                 <Icon
                   name={item.icon}
                   size={22}
-                  className={isActive ? "text-primary" : "text-text-secondary"}
+                  className={isActive ? "text-glow-cyan" : "text-slate-muted"}
                 />
                 {showBadge && (
-                  <span className="absolute -right-2 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-pure-white">
+                  <span className="absolute -right-2 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-glow-cyan text-[9px] font-bold text-navy-base">
                     {totalItems}
                   </span>
                 )}
               </span>
-              <span className={`text-[10px] ${isActive ? "font-semibold text-primary" : "text-text-secondary"}`}>
+              <span className={`text-[10px] ${isActive ? "font-semibold text-glow-cyan" : "text-slate-muted"}`}>
                 {item.label}
               </span>
             </span>

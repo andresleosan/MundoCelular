@@ -74,61 +74,73 @@ export default async function Home() {
 
       <Hero config={config} productoDestacado={destacadoPrincipal} />
 
-      <MarcasSection />
+      <div className="bg-navy-base">
+        <MarcasSection />
+      </div>
 
-      <OfertasSection productos={ofertas} categorias={categorias} />
+      <div className="bg-navy-base">
+        <OfertasSection productos={ofertas} categorias={categorias} />
+      </div>
 
-      <section id="categorias" className="mx-auto max-w-[1280px] px-4 py-16 sm:py-20" aria-label="Categorías">
-        <div className="mb-8 text-center">
-          <h2 className="font-inter-tight text-[24px] font-semibold tracking-[-0.02em] text-text sm:text-[32px]">
-            Compra por categoría
-          </h2>
+      <section id="categorias" className="bg-navy-base" aria-label="Categorías">
+        <div className="mx-auto max-w-[1280px] px-4 py-16 sm:py-20">
+          <div className="mb-8 text-center">
+            <h2 className="font-sora text-[24px] font-semibold tracking-[-0.02em] text-fog-white sm:text-[32px]">
+              Compra por categoría
+            </h2>
+          </div>
+          <div className="mx-auto mb-12 max-w-2xl">
+            <SearchInput />
+          </div>
+          <BentoGrid categorias={categorias} />
         </div>
-        <div className="mx-auto mb-12 max-w-2xl">
-          <SearchInput />
-        </div>
-        <BentoGrid categorias={categorias} />
       </section>
 
       {restantes.length > 0 && (
-        <section id="destacados" className="mx-auto max-w-[1280px] px-4 py-16 sm:py-20" aria-label="Más destacados">
-          <div className="mb-10 text-center">
-            <h2 className="font-inter-tight text-[24px] font-semibold tracking-[-0.02em] text-text sm:text-[32px]">
-              Más productos destacados
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {restantes.map((p) => {
-              const catSlug = categorias.find((c) => c.id === p.categoriaId)?.slug ?? "";
-              return <HeroProductCard key={p.id} producto={p} categoriaSlug={catSlug} />;
-            })}
+        <section id="destacados" className="bg-navy-base" aria-label="Más destacados">
+          <div className="mx-auto max-w-[1280px] px-4 py-16 sm:py-20">
+            <div className="mb-10 text-center">
+              <h2 className="font-sora text-[24px] font-semibold tracking-[-0.02em] text-fog-white sm:text-[32px]">
+                Más productos destacados
+              </h2>
+            </div>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+              {restantes.map((p) => {
+                const catSlug = categorias.find((c) => c.id === p.categoriaId)?.slug ?? "";
+                return <HeroProductCard key={p.id} producto={p} categoriaSlug={catSlug} />;
+              })}
+            </div>
           </div>
         </section>
       )}
 
-      <section className="mx-auto max-w-[1280px] px-4 py-16 sm:py-20" aria-label="Reparaciones">
-        <div
-          className="relative overflow-hidden rounded-cards px-6 py-12 text-center text-pure-white shadow-lg-2 sm:px-16 sm:py-20"
-          style={{ background: REPARACIONES_BANNER_GRADIENT }}
-        >
-          <div className="relative z-10">
-            <h2 className="font-inter-tight text-[24px] font-semibold tracking-[-0.02em] sm:text-[28px]">
-              ¿Necesitas reparar tu celular?
-            </h2>
-            <p className="mx-auto mt-3 max-w-[500px] text-[15px] text-cool-frost sm:text-[16px]">
-              Servicio técnico profesional. Diagnóstico gratis y repuestos originales.
-            </p>
-            <Link
-              href="/reparaciones"
-              className="mt-6 inline-flex h-11 items-center justify-center rounded-xl bg-pure-white px-6 text-[14px] font-semibold text-text transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-white/40"
-            >
-              Ver servicios
-            </Link>
+      <section className="bg-navy-base" aria-label="Reparaciones">
+        <div className="mx-auto max-w-[1280px] px-4 py-16 sm:py-20">
+          <div
+            className="relative overflow-hidden rounded-cards px-6 py-12 text-center text-pure-white shadow-lg-2 sm:px-16 sm:py-20"
+            style={{ background: REPARACIONES_BANNER_GRADIENT }}
+          >
+            <div className="relative z-10">
+              <h2 className="font-inter-tight text-[24px] font-semibold tracking-[-0.02em] sm:text-[28px]">
+                ¿Necesitas reparar tu celular?
+              </h2>
+              <p className="mx-auto mt-3 max-w-[500px] text-[15px] text-cool-frost sm:text-[16px]">
+                Servicio técnico profesional. Diagnóstico gratis y repuestos originales.
+              </p>
+              <Link
+                href="/reparaciones"
+                className="mt-6 inline-flex h-11 items-center justify-center rounded-xl bg-pure-white px-6 text-[14px] font-semibold text-text transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-white/40"
+              >
+                Ver servicios
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      <BeneficiosSection />
+      <div className="bg-navy-base">
+        <BeneficiosSection />
+      </div>
     </>
   );
 }

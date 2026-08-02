@@ -28,10 +28,10 @@ export function OfertasSection({ productos, categorias }: OfertasSectionProps) {
       aria-label="Ofertas destacadas"
     >
       <div className="mb-10 text-center">
-        <h2 className="font-inter-tight text-[24px] font-semibold tracking-[-0.02em] text-text sm:text-[32px]">
+        <h2 className="font-sora text-[24px] font-semibold tracking-[-0.02em] text-fog-white sm:text-[32px]">
           Ofertas destacadas
         </h2>
-        <p className="mt-3 text-[15px] text-text-secondary sm:text-[16px]">
+        <p className="mt-3 text-[15px] text-slate-muted sm:text-[16px]">
           La mejor tecnología al mejor precio
         </p>
       </div>
@@ -43,10 +43,10 @@ export function OfertasSection({ productos, categorias }: OfertasSectionProps) {
             <Link
               key={p.id}
               href={`/${catSlug}/${p.slug}`}
-              className={`group block overflow-hidden rounded-cards border border-faint-border bg-surface transition-all duration-250 hover:-translate-y-1.5 hover:shadow-lg ${visible ? "animate-fade-up" : "opacity-0"}`}
+              className={`group block overflow-hidden rounded-cards border border-white/10 bg-white/5 transition-all duration-250 hover:-translate-y-1.5 hover:shadow-lg ${visible ? "animate-fade-up" : "opacity-0"}`}
               style={{ animationDelay: `${i * 80}ms` }}
             >
-              <div className="relative aspect-[4/5] overflow-hidden bg-canvas-frost">
+              <div className="relative aspect-[4/5] overflow-hidden bg-white/5">
                 {p.imagenes?.[0]?.url ? (
                   <Image
                     src={p.imagenes[0].thumb || p.imagenes[0].url}
@@ -56,25 +56,25 @@ export function OfertasSection({ productos, categorias }: OfertasSectionProps) {
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
-                  <div className="flex h-full items-center justify-center text-[12px] text-text-secondary">
+                  <div className="flex h-full items-center justify-center text-[12px] text-slate-muted">
                     Sin imagen
                   </div>
                 )}
               </div>
               <div className="p-5 sm:p-6">
                 {p.marca && (
-                  <span className="text-[11px] font-medium uppercase tracking-wide text-text-secondary">
+                  <span className="text-[11px] font-medium uppercase tracking-wide text-slate-muted">
                     {p.marca}
                   </span>
                 )}
-                <h3 className="mt-2 font-inter-tight text-[18px] font-semibold tracking-[-0.015em] text-text sm:text-[20px]">
+                <h3 className="mt-2 font-sora text-[18px] font-semibold tracking-[-0.015em] text-fog-white sm:text-[20px]">
                   {p.nombre}
                 </h3>
-                <p className="mt-1.5 font-jetbrains-mono text-[20px] font-bold text-primary sm:text-[22px]">
+                <p className="mt-1.5 font-jetbrains-mono text-[20px] font-bold text-primary-light sm:text-[22px]">
                   {formatearCOP(p.precio)}
                 </p>
                 <span
-                  className="mt-3 inline-flex items-center gap-1.5 text-[13px] font-medium text-primary transition-transform duration-200 group-hover:gap-2"
+                  className="mt-3 inline-flex items-center gap-1.5 text-[13px] font-medium text-glow-cyan transition-transform duration-200 group-hover:gap-2"
                 >
                   Ver oferta
                   <Icon name="arrow-right" size={14} />

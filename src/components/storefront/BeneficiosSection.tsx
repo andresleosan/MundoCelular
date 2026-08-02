@@ -29,10 +29,10 @@ export function BeneficiosSection() {
       aria-label="Beneficios"
     >
       <div className="mb-12 text-center">
-        <h2 className="font-inter-tight text-[28px] font-semibold tracking-[-0.02em] text-text sm:text-[40px]">
+        <h2 className="font-sora text-[28px] font-semibold tracking-[-0.02em] text-fog-white sm:text-[40px]">
           ¿Por qué elegir MundoCelular?
         </h2>
-        <p className="mx-auto mt-4 max-w-[600px] text-[16px] text-text-secondary sm:text-[18px]">
+        <p className="mx-auto mt-4 max-w-[600px] text-[16px] text-slate-muted sm:text-[18px]">
           Tu tienda de tecnología de confianza en Medellín
         </p>
       </div>
@@ -41,16 +41,16 @@ export function BeneficiosSection() {
         {BENEFICIOS.map((b, i) => (
           <article
             key={b.titulo}
-            className={`rounded-cards border border-faint-border bg-surface p-6 transition-all duration-200 hover:-translate-y-1 hover:border-primary-light hover:shadow-sm sm:p-8 ${visible ? "animate-fade-up" : "opacity-0"}`}
+            className={`rounded-cards border border-white/10 bg-white/5 p-6 transition-all duration-200 hover:-translate-y-1 hover:border-glow-cyan/30 hover:shadow-sm sm:p-8 ${visible ? "animate-fade-up" : "opacity-0"}`}
             style={{ animationDelay: `${i * 100}ms` }}
           >
-            <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-glow-cyan">
               <Icon name={b.icon} size={22} />
             </span>
-            <h3 className="mt-4 font-inter-tight text-[16px] font-semibold tracking-[-0.01em] text-text sm:text-[18px]">
+            <h3 className="mt-4 font-sora text-[16px] font-semibold tracking-[-0.01em] text-fog-white sm:text-[18px]">
               {b.titulo}
             </h3>
-            <p className="mt-2 text-[13px] leading-relaxed text-text-secondary sm:text-[14px]">
+            <p className="mt-2 text-[13px] leading-relaxed text-slate-muted sm:text-[14px]">
               {b.descripcion}
             </p>
           </article>

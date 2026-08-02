@@ -4,7 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 
 export function Footer() {
   return (
-    <footer className="border-t border-faint-border bg-surface">
+    <footer className="border-t border-white/10 bg-navy-base">
       <div className="mx-auto max-w-[1280px] px-4 py-12 sm:py-16">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {/* Info tienda */}
@@ -16,19 +16,19 @@ export function Footer() {
               height={56}
               className="h-14 w-14"
             />
-            <h3 className="mt-3 font-inter-tight text-[18px] font-bold tracking-[-0.02em] text-text">
+            <h3 className="mt-3 font-inter-tight text-[18px] font-bold tracking-[-0.02em] text-fog-white">
               MUNDO CELULAR
             </h3>
-            <div className="mt-4 space-y-2 text-[14px] text-text-secondary">
+            <div className="mt-4 space-y-2 text-[14px] text-slate-muted">
               <p>Cra 36 # 38 - 33, Barrio El Salvador</p>
               <p>Medellín, Antioquia</p>
             </div>
-            <div className="mt-4 space-y-2 text-[14px] text-text-secondary">
+            <div className="mt-4 space-y-2 text-[14px] text-slate-muted">
               <a
                 href="https://wa.me/573113554021"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 transition-colors hover:text-primary"
+                className="inline-flex items-center gap-2 transition-colors hover:text-glow-cyan"
               >
                 <Icon name="message-circle" size={16} />
                 WhatsApp: +57 311 355 4021
@@ -39,14 +39,14 @@ export function Footer() {
 
           {/* Enlaces */}
           <div>
-            <h4 className="font-inter-tight text-[16px] font-semibold text-text">
+            <h4 className="font-inter-tight text-[16px] font-semibold text-fog-white">
               Enlaces
             </h4>
             <ul className="mt-4 space-y-3">
               <li>
                 <Link
                   href="/"
-                  className="text-[14px] text-text-secondary transition-colors hover:text-primary"
+                  className="text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
                 >
                   Categorías
                 </Link>
@@ -54,7 +54,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/reparaciones"
-                  className="text-[14px] text-text-secondary transition-colors hover:text-primary"
+                  className="text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
                 >
                   Reparaciones
                 </Link>
@@ -62,7 +62,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/carrito"
-                  className="text-[14px] text-text-secondary transition-colors hover:text-primary"
+                  className="text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
                 >
                   Carrito
                 </Link>
@@ -70,7 +70,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/contacto"
-                  className="text-[14px] text-text-secondary transition-colors hover:text-primary"
+                  className="text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
                 >
                   Contacto
                 </Link>
@@ -78,7 +78,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/preguntas"
-                  className="text-[14px] text-text-secondary transition-colors hover:text-primary"
+                  className="text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
                 >
                   Preguntas frecuentes
                 </Link>
@@ -88,7 +88,7 @@ export function Footer() {
 
           {/* Redes sociales */}
           <div>
-            <h4 className="font-inter-tight text-[16px] font-semibold text-text">
+            <h4 className="font-inter-tight text-[16px] font-semibold text-fog-white">
               Redes sociales
             </h4>
             <ul className="mt-4 space-y-3">
@@ -97,7 +97,7 @@ export function Footer() {
                   href="https://instagram.com/mundo_celular_75"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[14px] text-text-secondary transition-colors hover:text-primary"
+                  className="inline-flex items-center gap-2 text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
                 >
                   <Icon name="user" size={16} />
                   Instagram
@@ -108,7 +108,7 @@ export function Footer() {
                   href="https://facebook.com/Mundo.Celular.01"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[14px] text-text-secondary transition-colors hover:text-primary"
+                  className="inline-flex items-center gap-2 text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
                 >
                   <Icon name="user" size={16} />
                   Facebook
@@ -119,7 +119,7 @@ export function Footer() {
                   href="https://tiktok.com/@mundocelular75"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[14px] text-text-secondary transition-colors hover:text-primary"
+                  className="inline-flex items-center gap-2 text-[14px] text-slate-muted transition-colors hover:text-glow-cyan"
                 >
                   <Icon name="user" size={16} />
                   TikTok
@@ -129,7 +129,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 border-t border-faint-border pt-6 text-center text-[13px] text-text-secondary">
+        <div className="mt-12 border-t border-white/10 pt-6 text-center text-[13px] text-slate-muted">
           &copy; {new Date().getFullYear()} Mundo Celular. Todos los derechos reservados.
         </div>
       </div>

@@ -10,10 +10,10 @@ const phones = [
 ];
 
 const chips = [
-  { label: "5G", x: -35, y: -25, delay: "0s" },
-  { label: "128GB", x: 40, y: -18, delay: "0.5s" },
-  { label: "48MP", x: -30, y: 30, delay: "1s" },
-  { label: "12 meses", x: 38, y: 35, delay: "1.5s" },
+  { label: "5G", left: "18%", top: "18%", delay: "0s" },
+  { label: "128GB", left: "82%", top: "18%", delay: "0.5s" },
+  { label: "48MP", left: "18%", top: "82%", delay: "1s" },
+  { label: "12 meses", left: "82%", top: "82%", delay: "1.5s" },
 ];
 
 function PhoneSVG({ glowId }: { glowId: string }) {
@@ -50,18 +50,6 @@ export function PhoneStack() {
         transition: "transform 0.15s ease-out",
       }}
     >
-      {/* Logo background */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-[0.06]">
-        <Image
-          src="/icons/logo-header.png"
-          alt=""
-          width={280}
-          height={280}
-          className="h-auto w-[65%] object-contain"
-          priority
-        />
-      </div>
-
       {/* Phone stack */}
       <div className="absolute inset-0">
         {phones.map((phone, i) => (
@@ -72,6 +60,7 @@ export function PhoneStack() {
               left: "50%",
               top: "50%",
               width: "55%",
+              aspectRatio: "120 / 220",
               transform: `translate(calc(-50% + ${phone.offsetX}px), calc(-50% + ${phone.offsetY}px)) rotate(${phone.rotation}deg) scale(${phone.scale})`,
               boxShadow: phone.shadow,
               borderRadius: "24px",
@@ -79,25 +68,53 @@ export function PhoneStack() {
             }}
           >
             <PhoneSVG glowId={`phone-glow-${i}`} />
+            {/* Screen overlay — only on front phone */}
+            {i === 0 && (
+              <div
+                className="absolute"
+                style={{
+                  left: "8.33%",
+                  top: "7.27%",
+                  width: "83.33%",
+                  height: "85.45%",
+                }}
+              >
+                {/* Logo icon centered */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="relative flex h-[35%] w-[35%] items-center justify-center rounded-[16px] bg-white/10 backdrop-blur-sm">
+                    <Image
+                      src="/icons/logo-icon-white.svg"
+                      alt=""
+                      width={48}
+                      height={48}
+                      className="h-full w-full object-contain animate-logo-breathe"
+                    />
+                    {/* Ping ring */}
+                    <div className="absolute inset-0 rounded-[16px] border-2 border-white/30 animate-ping-ring" />
+                  </div>
+                </div>
+                {/* Chips in screen area */}
+                <div className="relative h-full w-full">
+                  {chips.map((chip) => (
+                    <div
+                      key={chip.label}
+                      className="animate-float-chip absolute z-20 -translate-x-1/2 -translate-y-1/2 cursor-default rounded-chips border border-white/10 bg-white/10 px-3 py-1.5 text-[11px] font-semibold tracking-wide text-fog-white backdrop-blur-md transition-all duration-200 hover:scale-110 hover:border-glow-cyan/40 hover:bg-white/20 hover:shadow-[0_0_16px_rgba(51,214,255,0.25)]"
+                      style={{
+                        left: chip.left,
+                        top: chip.top,
+                        animationDelay: chip.delay,
+                        fontFamily: "var(--font-jetbrains-mono)",
+                      }}
+                    >
+                      {chip.label}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
-
-      {/* Floating chips */}
-      {chips.map((chip) => (
-        <div
-          key={chip.label}
-          className="animate-float-chip absolute z-20 cursor-default rounded-chips border border-white/10 bg-white/10 px-3 py-1.5 text-[11px] font-semibold tracking-wide text-fog-white backdrop-blur-md transition-all duration-200 hover:scale-110 hover:border-glow-cyan/40 hover:bg-white/20 hover:shadow-[0_0_16px_rgba(51,214,255,0.25)]"
-          style={{
-            left: `calc(50% + ${chip.x}px)`,
-            top: `calc(50% + ${chip.y}px)`,
-            animationDelay: chip.delay,
-            fontFamily: "var(--font-jetbrains-mono)",
-          }}
-        >
-          {chip.label}
-        </div>
-      ))}
     </div>
   );
 }

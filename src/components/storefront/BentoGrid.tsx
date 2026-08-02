@@ -36,16 +36,16 @@ function BentoCard({
     >
       <Link
         href={`/${categoria.slug}`}
-        className="group flex h-full min-h-[140px] flex-col justify-end overflow-hidden rounded-2xl border border-faint-border bg-surface p-5 transition-all duration-300 hover:-translate-y-1 hover:border-glow-cyan/30 hover:shadow-[0_8px_32px_rgba(51,214,255,0.12)] md:min-h-[180px]"
+        className="group flex h-full min-h-[140px] flex-col justify-end overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-glow-cyan/30 hover:shadow-[0_8px_32px_rgba(51,214,255,0.12)] md:min-h-[180px]"
       >
         <span className="text-[11px] font-medium uppercase tracking-wider text-slate-muted">
           {size === "lg" ? "Destacada" : "Categoría"}
         </span>
-        <h3 className="mt-1 font-sora text-[18px] font-bold text-text transition-colors group-hover:text-primary md:text-[22px]">
+        <h3 className="mt-1 font-sora text-[18px] font-bold text-fog-white transition-colors group-hover:text-glow-cyan md:text-[22px]">
           {categoria.nombre}
         </h3>
         {size === "lg" && categoria.descripcion && (
-          <p className="mt-2 text-[13px] leading-relaxed text-text-secondary line-clamp-2">
+          <p className="mt-2 text-[13px] leading-relaxed text-slate-muted line-clamp-2">
             {categoria.descripcion}
           </p>
         )}
