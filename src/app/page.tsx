@@ -8,8 +8,8 @@ import { Hero } from "@/components/storefront/Hero";
 import { MarcasSection } from "@/components/storefront/MarcasSection";
 import { OfertasSection } from "@/components/storefront/OfertasSection";
 import { BeneficiosSection } from "@/components/storefront/BeneficiosSection";
-import { CategoryPill } from "@/components/storefront/CategoryPill";
 import { HeroProductCard } from "@/components/storefront/HeroProductCard";
+import { BentoGrid } from "@/components/storefront/BentoGrid";
 import { SearchInput } from "@/components/storefront/SearchInput";
 import type { Categoria, Producto, ConfigTienda } from "@/types";
 
@@ -87,11 +87,7 @@ export default async function Home() {
         <div className="mx-auto mb-12 max-w-2xl">
           <SearchInput />
         </div>
-        <div className="flex flex-wrap justify-center gap-3">
-          {categorias.map((c) => (
-            <CategoryPill key={c.id} nombre={c.nombre} slug={c.slug} />
-          ))}
-        </div>
+        <BentoGrid categorias={categorias} />
       </section>
 
       {restantes.length > 0 && (

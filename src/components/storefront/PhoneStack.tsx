@@ -74,7 +74,7 @@ export function PhoneStack() {
       {chips.map((chip) => (
         <div
           key={chip.label}
-          className="animate-float-chip absolute z-20 rounded-chips border border-white/10 bg-white/10 px-3 py-1.5 text-[11px] font-semibold tracking-wide text-fog-white backdrop-blur-md"
+          className="animate-float-chip absolute z-20 cursor-default rounded-chips border border-white/10 bg-white/10 px-3 py-1.5 text-[11px] font-semibold tracking-wide text-fog-white backdrop-blur-md transition-all duration-200 hover:scale-110 hover:border-glow-cyan/40 hover:bg-white/20 hover:shadow-[0_0_16px_rgba(51,214,255,0.25)]"
           style={{
             left: `calc(50% + ${chip.x}px)`,
             top: `calc(50% + ${chip.y}px)`,

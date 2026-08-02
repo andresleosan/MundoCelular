@@ -18,7 +18,7 @@ export function ProductCard({
   return (
     <Link
       href={`/${categoriaSlug}/${producto.slug}`}
-      className="group block overflow-hidden rounded-2xl bg-surface border border-faint-border transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+      className="group block overflow-hidden rounded-2xl bg-surface border border-faint-border transition-all duration-300 hover:-translate-y-1.5 hover:border-glow-cyan/30 hover:shadow-[0_8px_32px_rgba(51,214,255,0.15)]"
     >
       <div className="relative aspect-square overflow-hidden rounded-t-2xl bg-canvas-frost">
         {producto.imagenes[0]?.url ? (

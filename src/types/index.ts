@@ -5,6 +5,7 @@ export interface Categoria {
   descripcion: string;
   orden: number;
   activa: boolean;
+  size?: "lg" | "md" | "sm";
 }
 
 export interface ImagenProducto {
