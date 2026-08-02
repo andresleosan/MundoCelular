@@ -1,0 +1,67 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Mundo Celular - Inicio" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e5]: MUNDO CELULAR
+      - navigation "Navegación principal" [ref=e6]:
+        - link "Categorías" [ref=e7] [cursor=pointer]:
+          - /url: /#categorias
+        - link "Marcas" [ref=e8] [cursor=pointer]:
+          - /url: /#marcas
+        - link "Ofertas" [ref=e9] [cursor=pointer]:
+          - /url: /#ofertas
+        - link "Sobre nosotros" [ref=e10] [cursor=pointer]:
+          - /url: /contacto
+      - generic [ref=e12]:
+        - searchbox "Buscar productos" [ref=e16]
+        - button "Buscar" [ref=e17]
+      - generic [ref=e20]:
+        - link "Carrito (0 productos)" [ref=e21] [cursor=pointer]:
+          - /url: /carrito
+        - button "Iniciar sesión" [ref=e26]
+  - main [ref=e30]: Cargando…
+  - contentinfo [ref=e31]:
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - generic [ref=e34]:
+          - img "Mundo Celular" [ref=e35]
+          - heading "MUNDO CELULAR" [level=3] [ref=e36]
+          - generic [ref=e37]:
+            - paragraph [ref=e38]: "Cra 36 # 38 - 33, Barrio El Salvador"
+            - paragraph [ref=e39]: Medellín, Antioquia
+          - generic [ref=e40]:
+            - 'link "WhatsApp: +57 311 355 4021" [ref=e41] [cursor=pointer]':
+              - /url: https://wa.me/573113554021
+            - paragraph [ref=e44]: Lun–Sáb 9:00 AM – 7:00 PM
+        - generic [ref=e45]:
+          - heading "Enlaces" [level=4] [ref=e46]
+          - list [ref=e47]:
+            - listitem [ref=e48]:
+              - link "Categorías" [ref=e49] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=e50]:
+              - link "Reparaciones" [ref=e51] [cursor=pointer]:
+                - /url: /reparaciones
+            - listitem [ref=e52]:
+              - link "Carrito" [ref=e53] [cursor=pointer]:
+                - /url: /carrito
+            - listitem [ref=e54]:
+              - link "Contacto" [ref=e55] [cursor=pointer]:
+                - /url: /contacto
+            - listitem [ref=e56]:
+              - link "Preguntas frecuentes" [ref=e57] [cursor=pointer]:
+                - /url: /preguntas
+        - generic [ref=e58]:
+          - heading "Redes sociales" [level=4] [ref=e59]
+          - list [ref=e60]:
+            - listitem [ref=e61]:
+              - link "Instagram" [ref=e62] [cursor=pointer]:
+                - /url: https://www.instagram.com/mundo_celular_75/
+            - listitem [ref=e66]:
+              - link "Facebook" [ref=e67] [cursor=pointer]:
+                - /url: https://www.facebook.com/Mundo.Celular.01
+            - listitem [ref=e70]:
+              - link "TikTok" [ref=e71] [cursor=pointer]:
+                - /url: https://www.tiktok.com/@mundocelular75
+      - generic [ref=e76]: © 2026 Mundo Celular. Todos los derechos reservados.

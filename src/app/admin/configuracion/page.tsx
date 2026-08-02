@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AdminNav } from "@/components/admin/AdminNav";
 import { obtenerConfigTienda, guardarConfigTienda } from "@/lib/firestore/config";
 import type { ConfigTienda } from "@/types";
 
@@ -49,9 +48,8 @@ export default function ConfiguracionAdmin() {
   }
 
   return (
-    <>
-      <AdminNav />
-      <main className="mx-auto max-w-[1200px] px-4 py-10">
+    <main className="px-4 py-10 lg:px-10">
+      <div className="mx-auto max-w-[1200px]">
         <h1 className="mb-6 text-[20px] font-semibold tracking-[-0.03em]">Configuración de la tienda</h1>
         <form onSubmit={onSubmit} className="flex max-w-xl flex-col gap-4 rounded-cards bg-pure-white p-6 shadow-sm-2">
           {campo("nombre", "Nombre de la tienda")}
@@ -66,7 +64,7 @@ export default function ConfiguracionAdmin() {
             Guardar
           </button>
         </form>
-      </main>
-    </>
+      </div>
+    </main>
   );
 }

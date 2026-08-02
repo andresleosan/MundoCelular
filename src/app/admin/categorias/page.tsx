@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AdminNav } from "@/components/admin/AdminNav";
 import { eliminarCategoria, listarCategorias } from "@/lib/firestore/categorias";
 import type { Categoria } from "@/types";
 
@@ -24,9 +23,8 @@ export default function CategoriasAdmin() {
   }
 
   return (
-    <>
-      <AdminNav />
-      <main className="mx-auto max-w-[1200px] px-4 py-10">
+    <main className="px-4 py-10 lg:px-10">
+      <div className="mx-auto max-w-[1200px]">
         <div className="flex items-center justify-between">
           <h1 className="text-[20px] font-semibold tracking-[-0.03em]">Categorías</h1>
           <Link href="/admin/categorias/nueva" className="rounded-chips bg-mundo-blue px-4 py-2 text-[14px] font-semibold text-pure-white shadow-lg-2">
@@ -49,7 +47,7 @@ export default function CategoriasAdmin() {
             </li>
           ))}
         </ul>
-      </main>
-    </>
+      </div>
+    </main>
   );
 }

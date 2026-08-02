@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { AdminNav } from "@/components/admin/AdminNav";
 import { CategoriaForm } from "@/components/admin/CategoriaForm";
 import { listarCategorias } from "@/lib/firestore/categorias";
 import type { Categoria } from "@/types";
@@ -31,9 +30,8 @@ export default function EditarCategoria() {
   }, [id]);
 
   return (
-    <>
-      <AdminNav />
-      <main className="mx-auto max-w-[1200px] px-4 py-10">
+    <main className="px-4 py-10 lg:px-10">
+      <div className="mx-auto max-w-[1200px]">
         <h1 className="mb-6 text-[20px] font-semibold tracking-[-0.03em]">Editar categoría</h1>
         {estado === "lista" && categoria ? (
           <CategoriaForm categoria={categoria} />
@@ -54,7 +52,7 @@ export default function EditarCategoria() {
             </Link>
           </div>
         )}
-      </main>
-    </>
+      </div>
+    </main>
   );
 }

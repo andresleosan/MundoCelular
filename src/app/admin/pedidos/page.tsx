@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AdminNav } from "@/components/admin/AdminNav";
 import { listarPedidos, actualizarEstadoPedido } from "@/lib/firestore/pedidos";
 import { useAuth } from "@/hooks/useAuth";
 import { formatearCOP } from "@/lib/format";
@@ -42,9 +41,8 @@ export default function PedidosAdmin() {
   }
 
   return (
-    <>
-      <AdminNav />
-      <main className="mx-auto max-w-[1200px] px-4 py-10">
+    <main className="px-4 py-10 lg:px-10">
+      <div className="mx-auto max-w-[1200px]">
         <div className="flex items-center justify-between">
           <h1 className="text-[20px] font-semibold tracking-[-0.03em]">Pedidos</h1>
           <select value={filtro} onChange={(e) => setFiltro(e.target.value)} className="rounded-chips border border-faint-border px-3 py-2 text-[14px]">
@@ -92,7 +90,7 @@ export default function PedidosAdmin() {
             </li>
           ))}
         </ul>
-      </main>
-    </>
+      </div>
+    </main>
   );
 }

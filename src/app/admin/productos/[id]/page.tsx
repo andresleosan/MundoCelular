@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { AdminNav } from "@/components/admin/AdminNav";
 import { ProductoForm } from "@/components/admin/ProductoForm";
 import { listarCategorias } from "@/lib/firestore/categorias";
 import { listarProductos } from "@/lib/firestore/productos";
@@ -36,9 +35,8 @@ export default function EditarProducto() {
   }, [id]);
 
   return (
-    <>
-      <AdminNav />
-      <main className="mx-auto max-w-[1200px] px-4 py-10">
+    <main className="px-4 py-10 lg:px-10">
+      <div className="mx-auto max-w-[1200px]">
         <h1 className="mb-6 text-[20px] font-semibold tracking-[-0.03em]">Editar producto</h1>
         {estado === "lista" && producto ? (
           <ProductoForm categorias={categorias} producto={producto} />
@@ -59,7 +57,7 @@ export default function EditarProducto() {
             </Link>
           </div>
         )}
-      </main>
-    </>
+      </div>
+    </main>
   );
 }

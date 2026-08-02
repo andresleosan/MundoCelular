@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { AdminNav } from "@/components/admin/AdminNav";
 import { obtenerPedido, actualizarEstadoPedido } from "@/lib/firestore/pedidos";
 import { useAuth } from "@/hooks/useAuth";
 import { formatearCOP } from "@/lib/format";
@@ -45,12 +44,11 @@ export default function DetallePedido() {
     }
   }
 
-  if (!pedido) return <><AdminNav /><main className="mx-auto max-w-[800px] px-4 py-10 text-steel-blue-gray">Cargando\u2026</main></>;
+  if (!pedido) return <main className="px-4 py-10 lg:px-10"><div className="mx-auto max-w-[800px] text-steel-blue-gray">Cargando\u2026</div></main>;
 
   return (
-    <>
-      <AdminNav />
-      <main className="mx-auto max-w-[800px] px-4 py-10">
+    <main className="px-4 py-10 lg:px-10">
+      <div className="mx-auto max-w-[800px]">
         <button onClick={() => router.back()} className="text-[12px] text-mundo-blue mb-4">\u2190 Volver</button>
         <h1 className="text-[20px] font-semibold tracking-[-0.03em]">Pedido #{id.slice(0, 8)}</h1>
 
@@ -108,7 +106,7 @@ export default function DetallePedido() {
         </div>
 
         {error && <p className="mt-4 text-[12px] text-mundo-blue">{error}</p>}
-      </main>
-    </>
+      </div>
+    </main>
   );
 }
