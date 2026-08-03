@@ -69,7 +69,7 @@ export function ProductDetail({
       <div className="flex flex-col gap-8 lg:flex-row lg:gap-12">
         {/* Galería */}
         <div className="flex flex-col gap-3 lg:flex-1">
-          <div className="relative aspect-square w-full overflow-hidden rounded-cards border border-faint-border bg-bg">
+          <div className="relative aspect-square w-full overflow-hidden rounded-cards border border-fog-white/15 bg-navy-surface/20">
             {imagenes.length > 0 ? (
               <Image
                 src={imagenes[imgActiva]?.url || ""}
@@ -95,7 +95,7 @@ export function ProductDetail({
                   className={`relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-cards-sm border-2 transition-all duration-200 ${
                     i === imgActiva
                       ? "border-glow-cyan"
-                      : "border-faint-border hover:border-glow-cyan/50"
+                      : "border-fog-white/15 hover:border-glow-cyan/50"
                   }`}
                 >
                   <Image
@@ -128,7 +128,7 @@ export function ProductDetail({
                 Marca: {producto.marca}
               </p>
             )}
-            <h1 className="font-inter-tight text-[28px] font-bold tracking-[-0.03em] text-text sm:text-[40px]">
+            <h1 className="font-inter-tight text-[28px] font-bold tracking-[-0.03em] text-fog-white sm:text-[40px]">
               {producto.nombre}
             </h1>
           </div>
@@ -146,12 +146,12 @@ export function ProductDetail({
           )}
 
           {tieneVariantes && (producto.atributosDisponibles ?? []).length > 0 && (
-            <div className="flex flex-col gap-3 rounded-cards border border-faint-border bg-surface p-4">
+            <div className="flex flex-col gap-3 rounded-cards border border-fog-white/10 bg-navy-surface/40 p-4">
               {(producto.atributosDisponibles ?? []).map((attr) => (
                 <div key={attr}>
                   <label
                     htmlFor={`attr-${attr}`}
-                    className="mb-1.5 block text-[12px] font-semibold uppercase tracking-wide text-text-secondary"
+                    className="mb-1.5 block text-[12px] font-semibold uppercase tracking-wide text-fog-white/70"
                   >
                     {attr}
                   </label>
@@ -161,7 +161,7 @@ export function ProductDetail({
                     onChange={(e) =>
                       setSelecciones((prev) => ({ ...prev, [attr]: e.target.value }))
                     }
-                    className="w-full rounded-pills border border-faint-border bg-pure-white px-4 py-3 text-[14px] text-text outline-none transition-all duration-200 focus:border-glow-cyan focus:shadow-[0_0_0_3px_rgba(0,212,255,0.2)]"
+                    className="w-full rounded-pills border border-fog-white/15 bg-navy-surface px-4 py-3 text-[14px] text-fog-white outline-none transition-all duration-200 focus:border-glow-cyan focus:shadow-[0_0_0_3px_rgba(0,212,255,0.2)]"
                   >
                     <option value="">Seleccionar…</option>
                     {(opcionesPorAtributo[attr] ?? []).map((op) => (
@@ -176,7 +176,7 @@ export function ProductDetail({
           )}
 
           {producto.descripcion && (
-            <p className="text-[16px] leading-relaxed text-text">
+            <p className="text-[16px] leading-relaxed text-fog-white">
               {producto.descripcion}
             </p>
           )}
@@ -194,7 +194,7 @@ export function ProductDetail({
               href={urlWhatsApp}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-12 items-center justify-center rounded-pills border-2 border-glow-cyan bg-pure-white px-6 text-[14px] font-semibold text-primary transition-all duration-200 hover:bg-glow-cyan hover:text-navy-deep hover:shadow-cyan-glow focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-glow-cyan/40"
+              className="inline-flex h-12 items-center justify-center rounded-pills border-2 border-glow-cyan bg-fog-white px-6 text-[14px] font-semibold text-navy-deep transition-all duration-200 hover:bg-glow-cyan hover:text-navy-deep hover:shadow-cyan-glow focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-glow-cyan/40"
             >
               <Icon name="message-circle" size={18} className="mr-2" />
               Comprar por WhatsApp
@@ -202,18 +202,18 @@ export function ProductDetail({
           </div>
 
           {Object.keys(producto.specs).length > 0 && (
-            <div className="rounded-cards border border-faint-border bg-surface p-4">
-              <h3 className="mb-3 font-inter-tight text-[16px] font-semibold text-text">
+            <div className="rounded-cards border border-fog-white/10 bg-navy-surface/40 p-4">
+              <h3 className="mb-3 font-inter-tight text-[16px] font-semibold text-fog-white">
                 Especificaciones
               </h3>
               <dl className="space-y-2">
                 {Object.entries(producto.specs).map(([k, v]) => (
                   <div
                     key={k}
-                    className="flex justify-between border-b border-faint-border py-2 last:border-0"
+                    className="flex justify-between border-b border-fog-white/10 py-2 last:border-0"
                   >
-                    <dt className="text-[13px] text-text-secondary">{k}</dt>
-                    <dd className="font-jetbrains-mono text-[14px] font-medium text-text">
+                    <dt className="text-[13px] text-fog-white/70">{k}</dt>
+                    <dd className="font-jetbrains-mono text-[14px] font-medium text-fog-white">
                       {v}
                     </dd>
                   </div>
@@ -226,10 +226,10 @@ export function ProductDetail({
 
       {/* Mobile sticky CTA */}
       {isMobile && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-faint-border bg-surface/95 p-4 backdrop-blur-sm">
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-fog-white/15 bg-navy-base/95 p-4 backdrop-blur-sm">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-[12px] text-text-secondary">Precio</p>
+              <p className="text-[12px] text-fog-white/70">Precio</p>
               <p className="font-inter-tight text-[18px] font-bold text-glow-cyan">
                 {formatearCOP(precioMostrar)}
               </p>
