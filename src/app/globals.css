@@ -344,3 +344,38 @@
     @apply font-sans;
   }
 }
+
+/* ============================================================
+   PANEL ADMIN — scope claro
+   Re-declara los tokens (shadcn + custom) a la paleta clara
+   para que el admin se mantenga blanco aunque el sitio sea navy.
+   ============================================================ */
+.admin-light-scope {
+  --background: #FFFFFF;
+  --foreground: #0A0F1F;
+  --card: #FFFFFF;
+  --card-foreground: #0A0F1F;
+  --popover: #FFFFFF;
+  --popover-foreground: #0A0F1F;
+  --secondary: #FAFAFA;
+  --secondary-foreground: #0A0F1F;
+  --muted: #FAFAFA;
+  --muted-foreground: #5A6478;
+  --accent: #E0F4FF;
+  --accent-foreground: #001B5B;
+  --border: #E8E8E8;
+  --input: #E8E8E8;
+  --color-bg: #FFFFFF;
+  --color-surface: #FAFAFA;
+  --color-surface-elevated: #FFFFFF;
+  --color-text: #0A0F1F;
+  --color-text-secondary: #5A6478;
+  --color-text-muted: #8A93A8;
+  --color-canvas-frost: #FAFAFA;
+  --color-faint-border: #E8E8E8;
+  --color-steel-blue-gray: #5A6478;
+  --color-blue-wash: #E0F4FF;
+  --color-mist-blue: #8A93B3;
+  --color-ink-navy: #0A0F1F;
+  --color-border-strong: #D0D0D0;
+}
