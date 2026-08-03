@@ -34,6 +34,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setCargando(true);
       setUsuario(user);
       if (user) {
+        user.getIdToken().then((token) => {
+          fetch("/api/auth/sync", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+          }).catch(() => {});
+        });
+      }
+      if (user) {
         try {
           const token = await user.getIdTokenResult();
           if (sesion !== sesionRef.current) return;
