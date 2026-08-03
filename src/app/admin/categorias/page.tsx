@@ -41,13 +41,6 @@ export default function CategoriasAdmin() {
       ),
     },
     {
-      header: "Orden",
-      className: "w-[80px]",
-      cell: (c) => (
-        <span className="text-[14px] text-muted-foreground">{c.orden}</span>
-      ),
-    },
-    {
       header: "Estado",
       className: "w-[100px]",
       cell: (c) =>
