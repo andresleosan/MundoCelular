@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, Trash2, Circle } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface AdminUser {
   email: string;
@@ -14,27 +15,38 @@ interface AdminUser {
 }
 
 export function AdminUsuarios() {
+  const { usuario } = useAuth();
   const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [email, setEmail] = useState("");
   const [cargando, setCargando] = useState(false);
   const [mensaje, setMensaje] = useState<{ tipo: "exito" | "error"; texto: string } | null>(null);
   const [cargandoLista, setCargandoLista] = useState(true);
 
-  useEffect(() => {
-    cargarAdmins();
-  }, []);
+  const headersConAuth = useCallback(async (): Promise<Record<string, string>> => {
+    const token = await usuario?.getIdToken();
+    const headers: Record<string, string> = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+    return headers;
+  }, [usuario]);
 
-  async function cargarAdmins() {
+  const cargarAdmins = useCallback(async () => {
     setCargandoLista(true);
     try {
-      const res = await fetch("/api/admin/usuarios");
+      const res = await fetch("/api/admin/usuarios", {
+        headers: await headersConAuth(),
+      });
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "No autorizado");
       setAdmins(data.admins || []);
     } catch {
       setMensaje({ tipo: "error", texto: "Error al cargar administradores" });
     }
     setCargandoLista(false);
-  }
+  }, [headersConAuth]);
+
+  useEffect(() => {
+    cargarAdmins();
+  }, [cargarAdmins]);
 
   async function handleAsignar(e: React.FormEvent) {
     e.preventDefault();
@@ -44,7 +56,7 @@ export function AdminUsuarios() {
     try {
       const res = await fetch("/api/admin/usuarios", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...(await headersConAuth()) },
         body: JSON.stringify({ email: email.trim() }),
       });
       const data = await res.json();
@@ -68,7 +80,7 @@ export function AdminUsuarios() {
     try {
       const res = await fetch("/api/admin/usuarios", {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...(await headersConAuth()) },
         body: JSON.stringify({ email: adminEmail }),
       });
       const data = await res.json();

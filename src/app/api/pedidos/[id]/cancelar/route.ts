@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuth } from "firebase-admin/auth";
 import { FieldValue } from "firebase-admin/firestore";
-import { getAdminDb } from "@/lib/firebase-admin";
+import { getAdminApp, getAdminDb } from "@/lib/firebase-admin";
 
 export async function POST(
   req: NextRequest,
@@ -16,7 +16,7 @@ export async function POST(
 
   let decoded;
   try {
-    decoded = await getAuth().verifyIdToken(authHeader.slice(7));
+    decoded = await getAuth(getAdminApp()).verifyIdToken(authHeader.slice(7));
   } catch {
     return NextResponse.json({ error: "Token inv\u00e1lido" }, { status: 401 });
   }

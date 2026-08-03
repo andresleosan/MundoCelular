@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { loginConGoogle, loginConEmail } from "@/lib/auth-client";
+import { loginConGoogle, loginConEmail, traducirErrorAuth } from "@/lib/auth-client";
 import { useAuth } from "@/hooks/useAuth";
 import { Icon } from "@/components/ui/Icon";
 
@@ -33,8 +33,8 @@ export function LoginForm() {
     setError("");
     try {
       await loginConGoogle();
-    } catch {
-      setError("No se pudo iniciar sesión. Intenta de nuevo.");
+    } catch (e: unknown) {
+      setError(traducirErrorAuth(e));
       setCargando(null);
     }
   }
@@ -45,7 +45,7 @@ export function LoginForm() {
     try {
       await loginConEmail(email, password);
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "No se pudo iniciar sesión. Intenta de nuevo.");
+      setError(traducirErrorAuth(e));
       setCargando(null);
     }
   }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuth } from "firebase-admin/auth";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { getR2Client, R2_BUCKET } from "@/lib/r2";
+import { getAdminApp } from "@/lib/firebase-admin";
 
 export async function DELETE(
   req: NextRequest,
@@ -16,7 +17,7 @@ export async function DELETE(
 
   let decoded;
   try {
-    decoded = await getAuth().verifyIdToken(authHeader.slice(7));
+    decoded = await getAuth(getAdminApp()).verifyIdToken(authHeader.slice(7));
   } catch {
     return NextResponse.json({ error: "Token inv\u00e1lido" }, { status: 401 });
   }

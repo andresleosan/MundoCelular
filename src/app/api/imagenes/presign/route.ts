@@ -3,6 +3,7 @@ import { getAuth } from "firebase-admin/auth";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { getR2Client, R2_BUCKET } from "@/lib/r2";
+import { getAdminApp } from "@/lib/firebase-admin";
 
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const MAX_SIZE = 5 * 1024 * 1024;
@@ -15,7 +16,7 @@ export async function POST(req: NextRequest) {
 
   let decoded;
   try {
-    decoded = await getAuth().verifyIdToken(authHeader.slice(7));
+    decoded = await getAuth(getAdminApp()).verifyIdToken(authHeader.slice(7));
   } catch {
     return NextResponse.json({ error: "Token inv\u00e1lido" }, { status: 401 });
   }
