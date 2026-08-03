@@ -53,8 +53,8 @@ export default async function PaginaCategoria({
     <main className="mx-auto max-w-[1200px] px-4 py-10">
       <JsonLd data={jsonldCategoria(cat, productos)} />
 
-      <nav className="text-[12px] text-steel-blue-gray">
-        <Link href="/" className="hover:text-ink-navy">
+      <nav className="text-[12px] text-fog-white/60">
+        <Link href="/" className="hover:text-glow-cyan">
           Inicio
         </Link>{" "}
         / {cat.nombre}

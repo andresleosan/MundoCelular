@@ -39,7 +39,7 @@ export default async function PaginaProducto({ params }: PageProps) {
 
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-10">
-      <nav className="text-[12px] text-steel-blue-gray">
+      <nav className="text-[12px] text-fog-white/60">
         <Link href="/">Inicio</Link> /{" "}
         {cat && <a href={`/categoria/${cat.slug}`}>{cat.nombre}</a>} /{" "}
         {prod.nombre}

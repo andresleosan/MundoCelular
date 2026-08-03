@@ -60,7 +60,7 @@ export function ProductCard({
 
   const containerClasses = {
     default:
-      "group relative block overflow-hidden rounded-cards bg-surface border border-faint-border transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md hover:border-glow-cyan/30",
+      "group relative block overflow-hidden rounded-cards bg-navy-surface/40 border border-fog-white/10 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md hover:border-glow-cyan/30",
     compact:
       "group relative block overflow-hidden rounded-cards bg-navy-surface/40 border border-fog-white/10 transition-all duration-200 hover:-translate-y-1 hover:shadow-cyan-glow hover:border-glow-cyan/30",
     featured:
@@ -68,7 +68,7 @@ export function ProductCard({
   };
 
   const aspectClass = variant === "featured" ? "aspect-[4/5]" : "aspect-square";
-  const bgClass = variant === "default" ? "bg-canvas-frost" : "bg-navy-surface/20";
+  const bgClass = "bg-navy-surface/20";
 
   return (
     <Link href={href} className={cn(containerClasses[variant])}>
@@ -88,7 +88,7 @@ export function ProductCard({
             <Icon
               name="smartphone"
               size={32}
-              className={variant === "default" ? "text-text-muted/40" : "text-fog-white/30"}
+              className="text-fog-white/30"
             />
           </div>
         )}
@@ -111,7 +111,7 @@ export function ProductCard({
             "absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full backdrop-blur-sm transition-all duration-200 hover:scale-110",
             isWishlisted
               ? "bg-danger/90 text-pure-white"
-              : "bg-pure-white/80 text-text hover:bg-pure-white",
+              : "bg-fog-white/80 text-navy-deep hover:bg-fog-white",
           )}
         >
           <Icon name="heart" size={14} className={isWishlisted ? "fill-current" : ""} />
@@ -128,7 +128,7 @@ export function ProductCard({
                 "flex h-9 w-full items-center justify-center gap-2 rounded-pills text-[13px] font-semibold transition-all duration-200",
                 isAdding
                   ? "bg-success text-pure-white"
-                  : "bg-primary text-pure-white hover:bg-primary-light hover:shadow-cyan-glow",
+                  : "bg-glow-cyan text-navy-deep hover:bg-glow-cyan-soft hover:shadow-cyan-glow",
               )}
             >
               {isAdding ? (
@@ -148,7 +148,7 @@ export function ProductCard({
       {/* === Info === */}
       <div className={cn("px-4", variant === "featured" ? "py-5 sm:py-6" : "py-3")}>
         {categoriaNombre && variant === "default" && (
-          <span className="inline-block rounded-chips bg-accent/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+          <span className="inline-block rounded-chips bg-glow-cyan/10 px-2 py-0.5 text-[11px] font-medium text-glow-cyan">
             {categoriaNombre}
           </span>
         )}
@@ -166,7 +166,7 @@ export function ProductCard({
               ? "mt-2 text-[18px] text-fog-white sm:text-[20px]"
               : variant === "compact"
                 ? "text-[14px] text-fog-white"
-                : "mt-2 text-[14px] text-text",
+                : "mt-2 text-[14px] text-fog-white",
           )}
         >
           {producto.nombre}
@@ -175,7 +175,7 @@ export function ProductCard({
         <div
           className={cn(
             "mt-1.5 flex items-baseline gap-2 font-jetbrains-mono font-bold",
-            variant === "featured" ? "text-[20px] text-glow-cyan sm:text-[22px]" : "text-[14px] text-primary",
+            variant === "featured" ? "text-[20px] text-glow-cyan sm:text-[22px]" : "text-[14px] text-glow-cyan-soft",
           )}
         >
           <span>{mostrarDesde ? `Desde ${formatearCOP(precioMinimo!)}` : formatearCOP(producto.precio)}</span>
