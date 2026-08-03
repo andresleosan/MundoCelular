@@ -12,7 +12,6 @@ const COL = "categorias";
 export interface CategoriaInput {
   nombre: string;
   descripcion: string;
-  orden: number;
   activa: boolean;
 }
 
@@ -28,6 +27,12 @@ async function slugsExistentes(): Promise<string[]> {
   return snap.docs.map((d) => d.data().slug as string);
 }
 
+async function obtenerProximoOrden(): Promise<number> {
+  const db = getDb();
+  const snap = await getDocs(query(collection(db, COL), orderBy("orden", "desc"), limit(1)));
+  return snap.empty ? 1 : ((snap.docs[0].data().orden as number) ?? 0) + 1;
+}
+
 export async function crearCategoria(input: CategoriaInput): Promise<string> {
   const errores = validarCategoria(input);
   if (errores.length > 0) throw new Error(errores.join(". "));
@@ -36,7 +41,12 @@ export async function crearCategoria(input: CategoriaInput): Promise<string> {
   if (esSlugReservado(base)) throw new Error("Ese nombre usa una URL reservada del sistema");
   const slug = asegurarSlugUnico(base, await slugsExistentes());
   const db = getDb();
-  const ref = await addDoc(collection(db, COL), { ...input, nombre: input.nombre.trim(), slug });
+  const ref = await addDoc(collection(db, COL), {
+    ...input,
+    nombre: input.nombre.trim(),
+    slug,
+    orden: await obtenerProximoOrden(),
+  });
   await avisarRevalidacion(["categorias"]);
   return ref.id;
 }
