@@ -68,12 +68,12 @@ export function LoginForm() {
 
   const roleCards = (
     <div className="space-y-2">
-      <p className="text-[13px] font-medium">Selecciona tu tipo de acceso</p>
+      <p className="text-[13px] font-medium text-foreground">Selecciona tu tipo de acceso</p>
       <div className="grid grid-cols-2 gap-3">
         <button
           type="button"
           onClick={() => { setSelectedRole("customer"); setError(""); }}
-          className={`flex flex-col items-center gap-2 rounded-lg border p-4 transition-all ${
+          className={`flex flex-col items-center gap-2 rounded-lg border p-4 text-foreground transition-all ${
             selectedRole === "customer"
               ? "border-primary bg-primary/8"
               : "border-input hover:border-muted-foreground/30"
@@ -86,7 +86,7 @@ export function LoginForm() {
         <button
           type="button"
           onClick={() => { setSelectedRole("admin"); setError(""); }}
-          className={`flex flex-col items-center gap-2 rounded-lg border p-4 transition-all ${
+          className={`flex flex-col items-center gap-2 rounded-lg border p-4 text-foreground transition-all ${
             selectedRole === "admin"
               ? "border-primary bg-primary/8"
               : "border-input hover:border-muted-foreground/30"
@@ -111,31 +111,26 @@ export function LoginForm() {
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-[20px] font-semibold tracking-[-0.03em]">Iniciar sesión</h2>
-        <p className="mt-1 text-[14px] text-muted-foreground">Accede con tu cuenta</p>
-      </div>
-
       <div className="space-y-2">
-        <label htmlFor="email" className="text-[13px] font-medium">Email</label>
+        <label htmlFor="email" className="text-[13px] font-medium text-foreground">Email</label>
         <input
           id="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           placeholder="correo@ejemplo.com"
         />
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="password" className="text-[13px] font-medium">Contraseña</label>
+        <label htmlFor="password" className="text-[13px] font-medium text-foreground">Contraseña</label>
         <input
           id="password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           placeholder="••••••••"
         />
       </div>
@@ -151,7 +146,7 @@ export function LoginForm() {
           type="button"
           onClick={handleLoginGoogle}
           disabled={cargando}
-          className="flex w-full items-center justify-center gap-2 rounded-lg border border-input bg-background px-4 py-2.5 text-[14px] font-medium transition hover:bg-muted disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-lg border border-input bg-background px-4 py-2.5 text-[14px] font-medium text-foreground transition hover:bg-muted disabled:opacity-50"
         >
           <GoogleIcon />
           {cargando ? "Ingresando…" : "Iniciar sesión con Google"}
