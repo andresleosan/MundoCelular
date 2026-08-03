@@ -44,7 +44,7 @@ export function Header() {
   async function handleLogout() {
     await cerrarSesion();
     setUserMenuOpen(false);
-    router.push("/");
+    router.replace("/");
   }
 
   function inicial(nombre: string | null | undefined): string {

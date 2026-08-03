@@ -35,12 +35,12 @@ export function CheckoutForm() {
         <p className="mt-3 text-[15px] text-fog-white/70">
           Necesitas iniciar sesión para confirmar tu pedido
         </p>
-        <Link
-          href="/admin/login"
+        <button
+          onClick={() => router.push("/")}
           className="mt-6 inline-flex h-11 items-center justify-center rounded-[12px] bg-glow-cyan px-6 text-[14px] font-semibold text-navy-deep transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
         >
           Iniciar sesión
-        </Link>
+        </button>
       </main>
     );
   }
