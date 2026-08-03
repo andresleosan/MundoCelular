@@ -4,6 +4,10 @@ config({ path: ".env.local" });
 import { getAuth } from "firebase-admin/auth";
 import { getAdminApp } from "../src/lib/firebase-admin";
 
+function isAuthError(error: unknown): error is { code: string; message?: string } {
+  return typeof error === "object" && error !== null && "code" in error && typeof error.code === "string";
+}
+
 async function main() {
   const auth = getAuth(getAdminApp());
 
@@ -20,8 +24,8 @@ async function main() {
         await auth.setCustomUserClaims(user.uid, { admin: true });
         console.log(`  → admin claim set`);
       }
-    } catch (e: any) {
-      if (e.code === "auth/email-already-exists") {
+    } catch (e: unknown) {
+      if (isAuthError(e) && e.code === "auth/email-already-exists") {
         const existing = await auth.getUserByEmail(u.email);
         console.log(`${u.email} already exists → UID: ${existing.uid}`);
         if (u.admin) {
@@ -29,7 +33,7 @@ async function main() {
           console.log(`  → admin claim re-set`);
         }
       } else {
-        console.error(`Error with ${u.email}:`, e.message);
+        console.error(`Error with ${u.email}:`, e instanceof Error ? e.message : String(e));
       }
     }
   }

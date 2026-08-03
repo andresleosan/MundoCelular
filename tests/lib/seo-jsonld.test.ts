@@ -35,6 +35,14 @@ describe("jsonldCategoria", () => {
     expect(j["@type"]).toBe("ItemList");
     expect((j as Record<string, unknown>).itemListElement).toHaveLength(1);
   });
+  it("usa las rutas públicas de categoría y producto", () => {
+    const j = jsonldCategoria(cat, prods) as Record<string, unknown>;
+    const items = j.itemListElement as Record<string, unknown>[];
+    const item = items[0].item as Record<string, unknown>;
+
+    expect(j.url).toBe("http://localhost:3000/categoria/celulares");
+    expect(item.url).toBe("http://localhost:3000/producto/iphone-13");
+  });
 });
 
 describe("jsonldProducto", () => {
@@ -55,6 +63,13 @@ describe("jsonldProducto", () => {
   it("incluye sku = prod.id", () => {
     const j = jsonldProducto(prod, cat);
     expect((j as Record<string, unknown>).sku).toBe(prod.id);
+  });
+  it("usa la ruta pública del producto", () => {
+    const j = jsonldProducto(prod, cat) as Record<string, unknown>;
+    const offers = j.offers as Record<string, unknown>[];
+
+    expect(j.url).toBe("http://localhost:3000/producto/iphone-13");
+    expect(offers[0].url).toBe("http://localhost:3000/producto/iphone-13");
   });
 });
 

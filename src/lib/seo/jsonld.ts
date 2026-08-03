@@ -42,6 +42,7 @@ export function jsonldCategoria(cat: Categoria, productos: Producto[]): JsonLdOb
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: cat.nombre,
+    url: url(`/categoria/${cat.slug}`),
     description: cat.descripcion ?? undefined,
     numberOfItems: productos.length,
     itemListElement: productos.map((p, i) => ({
@@ -50,7 +51,7 @@ export function jsonldCategoria(cat: Categoria, productos: Producto[]): JsonLdOb
       item: {
         "@type": "Product",
         name: p.nombre,
-        url: url(`/${cat.slug}/${p.slug}`),
+        url: url(`/producto/${p.slug}`),
         image: p.imagenes[0]?.url,
         offers: {
           "@type": "Offer",
@@ -69,7 +70,9 @@ export function jsonldProducto(prod: Producto, cat: Categoria): JsonLdObject {
     "@type": "Product",
     sku: prod.id,
     name: prod.nombre,
+    url: url(`/producto/${prod.slug}`),
     description: prod.descripcion,
+    category: cat.nombre,
     brand: { "@type": "Brand", name: prod.marca || undefined },
     image: prod.imagenes.map((im) => im.url),
     offers: [
@@ -78,7 +81,7 @@ export function jsonldProducto(prod: Producto, cat: Categoria): JsonLdObject {
         price: String(prod.precio),
         priceCurrency: "COP",
         availability: prod.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-        url: url(`/${cat.slug}/${prod.slug}`),
+        url: url(`/producto/${prod.slug}`),
         seller: {
           "@type": "Organization",
           name: "Mundo Celular",

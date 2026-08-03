@@ -110,3 +110,18 @@ Plan: `docs/superpowers/plans/2026-07-31-rediseno-premium-v2.md` (pendiente)
 - [x] T6 — ProductDetail premium (layout 2 cols, galería, CTAs, mobile sticky CTA)
 - [x] T7 — Carrito premium (layout 2 cols, item cards, resumen sticky, estado vacío SVG)
 - [x] T8 — Checkout premium (layout 2 cols, cards, radio redesign, inputs premium)
+
+## Auditoría Admin-Firestore-Home-Marcas
+
+**Estado: revisión**
+
+- [x] Tasks 1-4 y correcciones QA verificadas con la suite completa: 187/187 pruebas pasan.
+- [x] TypeScript y build Turbopack verificados.
+- [x] Lint global sin errores; se corrigió el `any` preexistente de `scripts/create-test-users.ts` con `unknown` y type guard mínimo.
+- [x] Expectativas obsoletas de `ProductoForm` actualizadas a roles accesibles reales, sin cambiar lógica de negocio.
+- [x] QA pública en `localhost:3000` verificada en `1440x900`, `1024x768` y `390x844`: 30/30 rutas responden `200`, sin overflow ni errores de consola.
+- [x] Fondo animado del teléfono y seis tarjetas de marcas restaurados y verificados durante el scroll.
+- [ ] Flujo CRUD Admin-Firestore autenticado pendiente de credenciales de prueba autorizadas.
+- [ ] Despliegue del índice compuesto y decisión sobre vulnerabilidades/rate limiting quedan como tareas operativas separadas.
+
+Reporte: `docs/superpowers/reports/2026-08-03-auditoria-admin-firestore-home-marcas.md`

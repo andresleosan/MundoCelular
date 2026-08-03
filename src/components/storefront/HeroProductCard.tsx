@@ -7,17 +7,16 @@ import type { Producto } from "@/types";
  */
 export function HeroProductCard({
   producto,
-  categoriaSlug,
   precioMinimo,
 }: {
   producto: Producto;
-  categoriaSlug: string;
+  /** Kept for existing search result callers; ProductCard owns the canonical URL. */
+  categoriaSlug?: string;
   precioMinimo?: number;
 }) {
   return (
     <ProductCard
       producto={producto}
-      categoriaSlug={categoriaSlug}
       precioMinimo={precioMinimo}
       variant="compact"
     />

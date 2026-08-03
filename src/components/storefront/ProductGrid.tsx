@@ -4,11 +4,13 @@ import type { Producto } from "@/types";
 export function ProductGrid({
   productos,
   categoriaNombre,
-  categoriaSlug,
+  variant = "default",
 }: {
   productos: Producto[];
-  categoriaNombre: string;
-  categoriaSlug: string;
+  categoriaNombre?: string;
+  variant?: "default" | "compact" | "featured";
+  /** Kept for existing category and brand page callers; product URLs are canonical. */
+  categoriaSlug?: string;
 }) {
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
@@ -17,7 +19,7 @@ export function ProductGrid({
           key={p.id}
           producto={p}
           categoriaNombre={categoriaNombre}
-          categoriaSlug={categoriaSlug}
+          variant={variant}
           priority={i < 4}
         />
       ))}

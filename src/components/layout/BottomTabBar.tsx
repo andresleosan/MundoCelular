@@ -16,7 +16,7 @@ export function BottomTabBar() {
 
   const navItems = [
     { href: "/", label: "Inicio", icon: "home" as IconName },
-    { href: "/#categorias", label: "Categorías", icon: "grid" as IconName },
+    { href: "/categoria", label: "Categorías", icon: "grid" as IconName },
     { href: "/buscar", label: "Buscar", icon: "search" as IconName },
     { href: "/carrito", label: "Carrito", icon: "shopping-bag" as IconName },
     { href: whatsappHref, label: "WhatsApp", icon: "message-circle" as IconName, external: true },

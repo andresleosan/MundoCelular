@@ -40,6 +40,8 @@ export async function crearProducto(input: ProductoInput): Promise<string> {
     activo: input.activo,
     destacado: input.destacado,
     imagenes: input.imagenes ?? [],
+    tieneVariantes: input.tieneVariantes ?? false,
+    atributosDisponibles: input.atributosDisponibles ?? [],
     slug,
     creadoEn: serverTimestamp(),
     actualizadoEn: serverTimestamp(),
@@ -63,6 +65,8 @@ export async function actualizarProducto(id: string, input: ProductoInput): Prom
     activo: input.activo,
     destacado: input.destacado,
     imagenes: input.imagenes ?? [],
+    tieneVariantes: input.tieneVariantes ?? false,
+    atributosDisponibles: input.atributosDisponibles ?? [],
     actualizadoEn: serverTimestamp(),
   });
   await avisarRevalidacion(["productos"]);

@@ -11,6 +11,8 @@ export interface ProductoInput {
   activo: boolean;
   destacado: boolean;
   imagenes?: ImagenProducto[];
+  tieneVariantes?: boolean;
+  atributosDisponibles?: string[];
 }
 
 export interface VarianteInput {

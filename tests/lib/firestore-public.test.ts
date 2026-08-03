@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 const mockCategoriaData = {
   nombre: "Celulares",
@@ -42,11 +42,19 @@ function makeDocData(id: string, data: Record<string, unknown>): DocData {
 
 const mockGetFn = vi.fn<() => Promise<MockQueryResult>>();
 const mockDocGetFn = vi.fn<() => Promise<{ exists: boolean; data: () => Record<string, unknown> | null }>>();
+const mockWhere = vi.fn<(...args: unknown[]) => void>();
+const mockOrderBy = vi.fn<(...args: unknown[]) => void>();
 
 function makeChain(): Record<string, unknown> {
   const chain: Record<string, unknown> = {};
-  chain.where = vi.fn(() => chain);
-  chain.orderBy = vi.fn(() => chain);
+  chain.where = vi.fn((...args: unknown[]) => {
+    mockWhere(...args);
+    return chain;
+  });
+  chain.orderBy = vi.fn((...args: unknown[]) => {
+    mockOrderBy(...args);
+    return chain;
+  });
   chain.limit = vi.fn(() => ({ get: mockGetFn }));
   chain.get = mockGetFn;
   return chain;
@@ -67,6 +75,7 @@ vi.mock("next/cache", () => ({
 
 import {
   listarCategoriasPublic,
+  listarProductosActivos,
   getCategoriaPorSlug,
   listarProductosCategoria,
   getProductoPorSlug,
@@ -84,6 +93,10 @@ describe("lecturas servidor del catálogo", () => {
       empty: false,
     });
     mockDocGetFn.mockResolvedValue({ exists: true, data: () => mockConfigTienda });
+  });
+
+  afterEach(() => {
+    mockOrderBy.mockReset();
   });
 
   describe("listarCategoriasPublic", () => {
@@ -137,6 +150,106 @@ describe("lecturas servidor del catálogo", () => {
       expect(prods[0]).toHaveProperty("id");
       expect(prods[0]).toHaveProperty("nombre");
       expect(prods[0]).toHaveProperty("precio");
+    });
+  });
+
+  describe("listarProductosActivos", () => {
+    it("expone productos planos sin timestamps internos de Firestore", async () => {
+      mockGetFn.mockResolvedValue({
+        docs: [makeDocData("p1", {
+          ...mockProductoData,
+          creadoEn: { toMillis: () => 20 },
+          actualizadoEn: { toMillis: () => 21 },
+        })],
+        empty: false,
+      });
+
+      const productos = await listarProductosActivos();
+
+      expect(productos[0]).toMatchObject({ id: "p1", nombre: "iPhone 13", activo: true });
+      expect(productos[0]).not.toHaveProperty("creadoEn");
+      expect(productos[0]).not.toHaveProperty("actualizadoEn");
+    });
+
+    it("ordena productos activos por creadoEn sin depender del índice compuesto", async () => {
+      mockOrderBy.mockImplementation(() => {
+        throw new Error("FAILED_PRECONDITION: The query requires an index");
+      });
+      mockGetFn.mockResolvedValue({
+        docs: [
+          makeDocData("p-sin-fecha", { ...mockProductoData, creadoEn: undefined }),
+          makeDocData("p-plano", {
+            ...mockProductoData,
+            creadoEn: { _seconds: 1, _nanoseconds: 500_000_000 },
+          }),
+          makeDocData("p-timestamp", {
+            ...mockProductoData,
+            creadoEn: { toMillis: () => 2_500 },
+          }),
+        ],
+        empty: false,
+      });
+
+      const productos = await listarProductosActivos();
+
+      expect(productos.map((producto) => producto.id)).toEqual([
+        "p-timestamp",
+        "p-plano",
+        "p-sin-fecha",
+      ]);
+      expect(productos.every((producto) => producto.activo)).toBe(true);
+      expect(mockOrderBy).not.toHaveBeenCalled();
+    });
+
+    it("conserva metadatos SEO y sanitiza estructuras anidadas", async () => {
+      const timestamp = { toMillis: () => 20 };
+      mockGetFn.mockResolvedValue({
+        docs: [makeDocData("p1", {
+          ...mockProductoData,
+          metaTitle: "iPhone 13 | Mundo Celular",
+          metaDescription: "Compra el iPhone 13 en Mundo Celular.",
+          specs: {
+            Capacidad: "128GB",
+            interno: timestamp,
+            precioInterno: 1000,
+          },
+          imagenes: [
+            {
+              url: "https://img.test/full.webp",
+              thumb: "https://img.test/thumb.webp",
+              alt: "iPhone 13",
+              creadoEn: timestamp,
+            },
+            { url: timestamp, thumb: "https://img.test/second.webp", alt: { toMillis: () => 21 } },
+            timestamp,
+          ],
+          atributosDisponibles: ["Color", timestamp, 128],
+        })],
+        empty: false,
+      });
+
+      const productos = await listarProductosActivos();
+
+      expect(productos[0]).toMatchObject({
+        metaTitle: "iPhone 13 | Mundo Celular",
+        metaDescription: "Compra el iPhone 13 en Mundo Celular.",
+        specs: { Capacidad: "128GB" },
+        imagenes: [
+          { url: "https://img.test/full.webp", thumb: "https://img.test/thumb.webp", alt: "iPhone 13" },
+          { url: "", thumb: "https://img.test/second.webp", alt: "" },
+        ],
+        atributosDisponibles: ["Color"],
+      });
+      expect(productos[0].specs).not.toHaveProperty("interno");
+      expect(productos[0].imagenes[0]).not.toHaveProperty("creadoEn");
+    });
+
+    it("consulta únicamente productos activos", async () => {
+      mockGetFn.mockResolvedValue({ docs: [], empty: true });
+
+      await listarProductosActivos();
+
+      expect(mockWhere).toHaveBeenCalledWith("activo", "==", true);
     });
   });
 
@@ -229,6 +342,43 @@ describe("variantes", () => {
       mockGetFn.mockResolvedValue({ docs: [], empty: true });
       const variantes = await obtenerVariantesPorProducto("prod1");
       expect(variantes).toEqual([]);
+    });
+
+    it("devuelve variantes planas y sanea estructuras internas de Firestore", async () => {
+      const timestamp = { toMillis: () => 20 };
+      mockGetFn.mockResolvedValue({
+        docs: [
+          makeDocData("v1", {
+            productId: "prod1",
+            attributes: { Color: "Negro", interno: timestamp, unidades: 8 },
+            precio: 1850000,
+            stock: 5,
+            imagenes: [
+              { url: "https://img.test/variant.webp", thumb: "https://img.test/variant-thumb.webp", alt: "Variante" },
+              { url: timestamp, thumb: "", alt: "" },
+            ],
+            activo: true,
+            creadoEn: timestamp,
+          }),
+        ],
+        empty: false,
+      });
+
+      const variantes = await obtenerVariantesPorProducto("prod1");
+
+      expect(variantes[0]).toEqual({
+        id: "v1",
+        productId: "prod1",
+        attributes: { Color: "Negro" },
+        precio: 1850000,
+        stock: 5,
+        imagenes: [
+          { url: "https://img.test/variant.webp", thumb: "https://img.test/variant-thumb.webp", alt: "Variante" },
+          { url: "", thumb: "", alt: "" },
+        ],
+        activo: true,
+      });
+      expect(variantes[0]).not.toHaveProperty("creadoEn");
     });
   });
 });

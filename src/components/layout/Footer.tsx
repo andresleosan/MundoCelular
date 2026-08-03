@@ -68,7 +68,7 @@ export async function Footer() {
             <ul className="mt-4 space-y-3">
               <li>
                 <Link
-                  href="/"
+                  href="/categoria"
                   className="text-[14px] text-fog-white/70 transition-colors hover:text-glow-cyan"
                 >
                   Categorías

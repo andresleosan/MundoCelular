@@ -32,7 +32,7 @@ describe("HeroProductCard", () => {
   it("renderiza link al producto", () => {
     render(<HeroProductCard producto={mockProducto} categoriaSlug="celulares" />);
     const link = screen.getByRole("link");
-    expect(link.getAttribute("href")).toBe("/celulares/iphone-15-pro");
+    expect(link.getAttribute("href")).toBe("/producto/iphone-15-pro");
   });
 
   it("renderiza imagen con alt correcto", () => {

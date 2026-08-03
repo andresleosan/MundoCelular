@@ -10,16 +10,30 @@ interface Resultado { producto: Producto; categoriaSlug: string; }
 export function Buscador() {
   const params = useSearchParams();
   const q = params.get("q") ?? "";
+  const marca = params.get("marca") ?? "";
   const [resultados, setResultados] = useState<Resultado[] | null>(null);
 
   useEffect(() => {
-    if (!q.trim()) { setResultados([]); return; }
-    fetch(`/api/buscar?q=${encodeURIComponent(q)}`).then((r) => r.json()).then((d) => setResultados(d.resultados ?? [])).catch(() => setResultados([]));
-  }, [q]);
+    const filtros = new URLSearchParams();
+    if (q.trim()) filtros.set("q", q.trim());
+    if (marca.trim()) filtros.set("marca", marca.trim());
+    if (!filtros.size) { setResultados([]); return; }
+
+    setResultados(null);
+    fetch(`/api/buscar?${filtros.toString()}`)
+      .then((r) => {
+        if (!r.ok) throw new Error("No se pudo buscar");
+        return r.json();
+      })
+      .then((d) => setResultados(d.resultados ?? []))
+      .catch(() => setResultados([]));
+  }, [q, marca]);
 
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-10">
-      <h1 className="text-[24px] font-semibold tracking-[-0.03em] text-fog-white">Resultados para &ldquo;{q}&rdquo;</h1>
+      <h1 className="text-[24px] font-semibold tracking-[-0.03em] text-fog-white">
+        {marca ? `Productos de ${marca}` : `Resultados para "${q}"`}
+      </h1>
       {resultados === null ? (
         <p className="mt-6 text-[14px] text-fog-white/70">Buscando…</p>
       ) : resultados.length === 0 ? (

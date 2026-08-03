@@ -1,19 +1,18 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { PhoneStack } from "@/components/storefront/PhoneStack";
 import { Icon, type IconName } from "@/components/ui/Icon";
-import type { ConfigTienda, Producto } from "@/types";
+import type { ConfigTienda } from "@/types";
 
 gsap.registerPlugin(ScrollTrigger);
 
 interface HeroProps {
   config: ConfigTienda;
-  productoDestacado?: Producto | null;
 }
 
 const trustBadges: { icon: IconName; text: string }[] = [
@@ -30,56 +29,38 @@ export function Hero({ config }: HeroProps) {
   const [reducedMotion, setReducedMotion] = useState(true);
 
   useEffect(() => {
-    setReducedMotion(
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-    );
+    setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   }, []);
 
   useEffect(() => {
     if (reducedMotion) return;
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
+      const timeline = gsap.timeline({
         scrollTrigger: {
           trigger: ref.current,
           start: "top top",
-          // "+=X" en ScrollTrigger se suma al start, no a la altura del trigger:
-          // incluir offsetHeight evita que la transformación se apriete y
-          // desaparezca dentro de la sección Marcas. El despiece completo se
-          // ve dentro de Marcas y el fade termina ~1800px después del hero.
           end: () => "+=" + ((ref.current?.offsetHeight ?? 1200) + 1800),
           scrub: 1.2,
         },
       });
 
-      // Stage 1: Armado1 → Desarmadom1  (timeline 0 → 0.35)
-      tl.to(
-        armadoRef.current,
-        { opacity: 0, scale: 1.07, duration: 0.35 },
-        0,
-      ).fromTo(
-        desarmadomRef.current,
-        { opacity: 0, scale: 0.93 },
-        { opacity: 0.6, scale: 1, duration: 0.35 },
-        0,
-      )
-      // Stage 2: Desarmadom1 → Desarmado1  (timeline 0.35 → 0.7)
-        .to(
+      timeline
+        .to(armadoRef.current, { opacity: 0, scale: 1.07, duration: 0.35 }, 0)
+        .fromTo(
           desarmadomRef.current,
-          { opacity: 0, scale: 1.07, duration: 0.35 },
-          0.35,
-        ).fromTo(
+          { opacity: 0, scale: 0.93 },
+          { opacity: 0.6, scale: 1, duration: 0.35 },
+          0,
+        )
+        .to(desarmadomRef.current, { opacity: 0, scale: 1.07, duration: 0.35 }, 0.35)
+        .fromTo(
           desarmadoRef.current,
           { opacity: 0, scale: 0.93 },
           { opacity: 1, scale: 1, duration: 0.35 },
           0.35,
         )
-        // Stage 3: fade out completo (timeline 0.7 → 1)
-        .to(
-          desarmadoRef.current,
-          { opacity: 0, duration: 0.3 },
-          0.7,
-        );
+        .to(desarmadoRef.current, { opacity: 0, duration: 0.3 }, 0.7);
     }, ref);
 
     return () => ctx.revert();
@@ -91,11 +72,6 @@ export function Hero({ config }: HeroProps) {
       className="relative flex min-h-[88vh] items-center overflow-hidden bg-navy-base py-20 sm:min-h-[92vh]"
       aria-label="Bienvenida a Mundo Celular"
     >
-      {/* ================================================================
-          SCROLL ANIMATION BACKGROUND LAYER
-          Fixed, z-0, pointer-events-none. Spans entire page scroll.
-          mix-blend-mode: screen eliminates black background.
-          ================================================================ */}
       {!reducedMotion && (
         <div
           aria-hidden="true"
@@ -128,9 +104,6 @@ export function Hero({ config }: HeroProps) {
         </div>
       )}
 
-      {/* ================================================================
-          ORIGINAL BACKGROUND DEPTH (gradient mesh + radial glows + noise)
-          ================================================================ */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-0"
@@ -153,9 +126,6 @@ export function Hero({ config }: HeroProps) {
         />
       </div>
 
-      {/* ================================================================
-          ORIGINAL CONTENT (z-10)
-          ================================================================ */}
       <div className="relative z-10 mx-auto grid w-full max-w-[1280px] grid-cols-1 items-center gap-12 px-4 lg:grid-cols-2 lg:gap-16 lg:py-24">
         {/* Copy column */}
         <div className={`text-center lg:text-left ${visible ? "animate-fade-up" : "opacity-0"}`}>
@@ -175,13 +145,13 @@ export function Hero({ config }: HeroProps) {
 
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
             <Link
-              href="#ofertas"
+              href="#destacados"
               className="inline-flex h-12 items-center justify-center rounded-pills bg-glow-cyan px-7 text-[14px] font-semibold text-navy-deep shadow-cyan-glow transition-all duration-200 hover:-translate-y-0.5 hover:shadow-cyan-glow-hover focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-glow-cyan/40"
             >
               Comprar ahora
             </Link>
             <Link
-              href="#categorias"
+              href="/categoria"
               className="inline-flex h-12 items-center justify-center rounded-xl border border-fog-white/15 bg-fog-white/5 px-7 text-[14px] font-semibold text-fog-white backdrop-blur-sm transition-all duration-200 hover:border-glow-cyan/40 hover:bg-fog-white/10 focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-glow-cyan/30"
             >
               Ver catálogo
@@ -206,8 +176,8 @@ export function Hero({ config }: HeroProps) {
 
       {/* Scroll indicator */}
       <Link
-        href="#ofertas"
-        aria-label="Ver ofertas"
+        href="#destacados"
+        aria-label="Ver productos destacados"
         className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 text-fog-white/40 lg:block motion-reduce:animate-none z-10"
       >
         <Icon name="chevron-down" size={28} className="animate-bounce-down" />

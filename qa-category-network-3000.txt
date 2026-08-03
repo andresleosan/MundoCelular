@@ -1,0 +1,8 @@
+54. [GET] http://localhost:3000/categoria/celulares => [500] Internal Server Error
+64. [GET] http://localhost:3000/categoria/celulares => [500] Internal Server Error
+74. [GET] http://localhost:3000/categoria/celulares => [500] Internal Server Error
+212. [GET] http://localhost:3000/categoria/celulares => [404] Not Found
+639. [GET] http://localhost:3000/categoria/celulares => [404] Not Found
+1064. [GET] http://localhost:3000/categoria/celulares => [404] Not Found
+
+Note: 1141 static requests not shown, run with "static" option to see them.

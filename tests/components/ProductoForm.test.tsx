@@ -25,17 +25,18 @@ describe("ProductoForm", () => {
 
   it("muestra las categorías disponibles en el select", () => {
     render(<ProductoForm categorias={categorias} />);
+    fireEvent.click(screen.getByRole("combobox"));
     expect(screen.getByRole("option", { name: "Celulares" })).toBeInTheDocument();
   });
 
   it("incluye switch de variantes", () => {
     render(<ProductoForm categorias={categorias} />);
-    expect(screen.getByLabelText(/tiene variantes/i)).toBeInTheDocument();
+    expect(screen.getByRole("checkbox", { name: /tiene variantes/i })).toBeInTheDocument();
   });
 
   it("muestra input de atributos al activar variantes", () => {
     render(<ProductoForm categorias={categorias} />);
-    const switchEl = screen.getByLabelText(/tiene variantes/i);
+    const switchEl = screen.getByRole("checkbox", { name: /tiene variantes/i });
     expect(screen.queryByLabelText(/atributos disponibles/i)).not.toBeInTheDocument();
     fireEvent.click(switchEl);
     expect(screen.getByLabelText(/atributos disponibles/i)).toBeInTheDocument();

@@ -1,15 +1,109 @@
 import { unstable_cache } from "next/cache";
 import { getAdminDb } from "@/lib/firebase-admin";
-import type { Categoria, Producto, ConfigTienda, VarianteProducto } from "@/types";
+import type { Categoria, Producto, ConfigTienda, VarianteProducto, ImagenProducto } from "@/types";
+
+type FirestoreData = Record<string, unknown>;
+
+function esObjetoPlano(value: unknown): value is FirestoreData {
+  if (value === null || typeof value !== "object" || Array.isArray(value)) return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
+function stringSeguro(value: unknown): string {
+  return typeof value === "string" ? value : "";
+}
+
+function toSpecs(value: unknown): Record<string, string> {
+  if (!esObjetoPlano(value)) return {};
+  return Object.entries(value).reduce<Record<string, string>>((specs, [key, item]) => {
+    if (typeof item === "string") specs[key] = item;
+    return specs;
+  }, {});
+}
+
+function toImagenes(value: unknown): ImagenProducto[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter((item): item is FirestoreData =>
+      esObjetoPlano(item) && ["url", "thumb", "alt"].some((field) => field in item)
+    )
+    .map((item) => ({
+      url: stringSeguro(item.url),
+      thumb: stringSeguro(item.thumb),
+      alt: stringSeguro(item.alt),
+    }));
+}
+
+function toAtributosDisponibles(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+}
+
+function toAttributes(value: unknown): Record<string, string> {
+  if (!esObjetoPlano(value)) return {};
+  return Object.entries(value).reduce<Record<string, string>>((attributes, [key, item]) => {
+    if (typeof item === "string") attributes[key] = item;
+    return attributes;
+  }, {});
+}
+
+function toCreadoEnMillis(value: unknown): number {
+  if (typeof value !== "object" || value === null) return 0;
+
+  const timestamp = value as {
+    toMillis?: unknown;
+    _seconds?: unknown;
+    _nanoseconds?: unknown;
+  };
+
+  if (typeof timestamp.toMillis === "function") {
+    const millis = timestamp.toMillis();
+    return typeof millis === "number" && Number.isFinite(millis) ? millis : 0;
+  }
+
+  if (typeof timestamp._seconds === "number" && typeof timestamp._nanoseconds === "number") {
+    return timestamp._seconds * 1000 + timestamp._nanoseconds / 1_000_000;
+  }
+
+  return 0;
+}
 
 function toCategoria(snap: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>): Categoria {
   return { id: snap.id, ...(snap.data() as Omit<Categoria, "id">) };
 }
 function toProducto(snap: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>): Producto {
-  return { id: snap.id, ...(snap.data() as Omit<Producto, "id">) };
+  const data = snap.data();
+  const producto: Producto = {
+    id: snap.id,
+    nombre: typeof data.nombre === "string" ? data.nombre : "",
+    slug: typeof data.slug === "string" ? data.slug : "",
+    descripcion: typeof data.descripcion === "string" ? data.descripcion : "",
+    precio: typeof data.precio === "number" ? data.precio : 0,
+    stock: typeof data.stock === "number" ? data.stock : 0,
+    categoriaId: typeof data.categoriaId === "string" ? data.categoriaId : "",
+    marca: typeof data.marca === "string" ? data.marca : "",
+    specs: toSpecs(data.specs),
+    imagenes: toImagenes(data.imagenes),
+    activo: data.activo === true,
+    destacado: data.destacado === true,
+    tieneVariantes: data.tieneVariantes === true,
+    atributosDisponibles: toAtributosDisponibles(data.atributosDisponibles),
+  };
+  if (typeof data.metaTitle === "string") producto.metaTitle = data.metaTitle;
+  if (typeof data.metaDescription === "string") producto.metaDescription = data.metaDescription;
+  return producto;
 }
 function toVariante(snap: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>): VarianteProducto {
-  return { id: snap.id, ...(snap.data() as Omit<VarianteProducto, "id">) };
+  const data = snap.data();
+  return {
+    id: snap.id,
+    productId: typeof data.productId === "string" ? data.productId : "",
+    attributes: toAttributes(data.attributes),
+    precio: typeof data.precio === "number" ? data.precio : 0,
+    stock: typeof data.stock === "number" ? data.stock : 0,
+    imagenes: toImagenes(data.imagenes),
+    activo: data.activo === true,
+  };
 }
 
 export const listarCategoriasPublic = unstable_cache(
@@ -40,6 +134,19 @@ export const listarProductosCategoria = unstable_cache(
   },
   ["productos-categoria"],
   { tags: ["productos"] }
+);
+
+export const listarProductosActivos = unstable_cache(
+  async (): Promise<Producto[]> => {
+    const db = getAdminDb();
+    const snap = await db.collection("productos").where("activo", "==", true).get();
+    return snap.docs
+      .slice()
+      .sort((a, b) => toCreadoEnMillis(b.data().creadoEn) - toCreadoEnMillis(a.data().creadoEn))
+      .map(toProducto);
+  },
+  ["productos-activos"],
+  { tags: ["productos"] },
 );
 
 export const getProductoPorSlug = unstable_cache(

@@ -14,7 +14,8 @@ type ProductCardVariant = "default" | "compact" | "featured";
 interface ProductCardProps {
   producto: Producto;
   categoriaNombre?: string;
-  categoriaSlug: string;
+  /** Kept for existing callers; product links do not depend on category. */
+  categoriaSlug?: string;
   precioMinimo?: number;
   variant?: ProductCardVariant;
   priority?: boolean;
@@ -31,7 +32,6 @@ interface ProductCardProps {
 export function ProductCard({
   producto,
   categoriaNombre,
-  categoriaSlug,
   precioMinimo,
   variant = "default",
   priority = false,
@@ -41,7 +41,7 @@ export function ProductCard({
   const [isAdding, setIsAdding] = useState(false);
 
   const mostrarDesde = Boolean(producto.tieneVariantes) && typeof precioMinimo === "number";
-  const href = `/${categoriaSlug}/${producto.slug}`;
+  const href = `/producto/${producto.slug}`;
   const hasDiscount = specsDiscount(producto);
 
   const handleAdd = (e: React.MouseEvent) => {
@@ -193,5 +193,5 @@ export function ProductCard({
 }
 
 function specsDiscount(p: Producto): boolean {
-  return p.destacado || p.precio > 0;
+  return p.destacado;
 }

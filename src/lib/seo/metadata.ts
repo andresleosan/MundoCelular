@@ -45,15 +45,16 @@ export function metadataInicio(config: ConfigTienda): Metadata {
 export function metadataCategoria(cat: Categoria, config: ConfigTienda): Metadata {
   const description = cat.descripcion || `Comprar ${cat.nombre.toLowerCase()} en ${config.ciudad}. ${siteName(config)}`;
   const title = `${cat.nombre} en ${config.ciudad} | ${siteName(config)}`;
+  const canonical = `/categoria/${cat.slug}`;
   return {
     title,
     description,
-    alternates: { canonical: `/${cat.slug}` },
+    alternates: { canonical },
     openGraph: {
       type: "website",
       title,
       description,
-      url: ogUrl(`/${cat.slug}`),
+      url: ogUrl(canonical),
       siteName: siteName(config),
       locale: OG_LOCALE,
       images: [{ url: OG_DEFAULT_IMAGE, width: 1200, height: 630, alt: title }],
@@ -73,7 +74,7 @@ export function metadataProducto(prod: Producto, cat: Categoria | null, config: 
     : `${prod.nombre} | ${siteName(config)}`;
   const description = prod.metaDescription?.trim()
     || `${prod.nombre} ${prod.marca ? `de ${prod.marca} ` : ""}por ${formatearCOP(prod.precio)} en ${config.ciudad}. Stock: ${prod.stock}.`;
-  const canonical = cat ? `/${cat.slug}/${prod.slug}` : `/producto/${prod.slug}`;
+  const canonical = `/producto/${prod.slug}`;
   const ogImages = prod.imagenes.length
     ? [{ url: prod.imagenes[0].url, width: 1200, height: 1200, alt: prod.imagenes[0].alt }]
     : [{ url: OG_DEFAULT_IMAGE, width: 1200, height: 630, alt: prod.nombre }];
@@ -95,6 +96,33 @@ export function metadataProducto(prod: Producto, cat: Categoria | null, config: 
       title,
       description,
       images: ogImages.map((i) => i.url),
+    },
+  };
+}
+
+export function metadataMarca(nombre: string, slug: string, cantidad: number, config: ConfigTienda): Metadata {
+  const title = `${nombre} | ${siteName(config)}`;
+  const description = `${cantidad} productos de ${nombre} disponibles en ${siteName(config)}, en ${config.ciudad}.`;
+  const canonical = `/marca/${slug}`;
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    robots: { index: true, follow: true },
+    openGraph: {
+      type: "website",
+      title,
+      description,
+      url: ogUrl(canonical),
+      siteName: siteName(config),
+      locale: OG_LOCALE,
+      images: [{ url: OG_DEFAULT_IMAGE, width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [OG_DEFAULT_IMAGE],
     },
   };
 }

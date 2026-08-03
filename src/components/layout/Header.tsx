@@ -53,9 +53,9 @@ export function Header() {
   }
 
   const navLinks = [
-    { href: "/#categorias", label: "Categorías" },
+    { href: "/categoria", label: "Catálogo" },
     { href: "/#marcas", label: "Marcas" },
-    { href: "/#ofertas", label: "Ofertas" },
+    { href: "/#destacados", label: "Destacados" },
     { href: "/contacto", label: "Sobre nosotros" },
   ];
 
