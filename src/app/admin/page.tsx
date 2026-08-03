@@ -76,7 +76,7 @@ export default function AdminDashboard() {
       )
       .then((res) => res.json())
       .then((data) => {
-        if (data.totalUsuarios !== undefined) setStats(data);
+        if (data.success && data.data) setStats(data.data);
       })
       .catch(() => {})
       .finally(() => setStatsCargando(false));

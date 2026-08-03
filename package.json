@@ -11,6 +11,7 @@
     "test:rules": "vitest run --config vitest.rules.config.ts",
     "seed:config": "tsx scripts/seed-config.ts",
     "set:admin": "tsx scripts/set-admin.ts",
+    "r2:cors": "tsx scripts/config-r2-cors.ts",
     "build:icons": "node scripts/build-icons.mjs",
     "deploy:firestore": "firebase deploy --only firestore --project mundocelular-id",
     "deploy:rules": "firebase deploy --only firestore:rules --project mundocelular-id",

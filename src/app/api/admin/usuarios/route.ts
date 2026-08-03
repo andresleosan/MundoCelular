@@ -5,49 +5,51 @@ import { listarAdmins, listarClientes, asignarAdmin, revocarAdmin } from "@/lib/
 export async function GET(req: NextRequest) {
   try {
     const admin = await verificarAdmin(req);
-    if (!admin) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    if (!admin) return NextResponse.json({ success: false, error: "No autorizado" }, { status: 401 });
     const url = new URL(req.url);
     const role = url.searchParams.get("role");
     if (role === "customer") {
       const clientes = await listarClientes();
-      return NextResponse.json({ clientes });
+      return NextResponse.json({ success: true, data: { clientes } });
     }
     const admins = await listarAdmins();
-    return NextResponse.json({ admins });
+    return NextResponse.json({ success: true, data: { admins } });
   } catch (error) {
-    console.error("[admin/usuarios GET]", error);
-    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
+    console.error("[api/admin/usuarios GET] Error:", error instanceof Error ? error.message : error);
+    return NextResponse.json({ success: false, error: "Error interno del servidor" }, { status: 500 });
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
     const admin = await verificarAdmin(req);
-    if (!admin) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    if (!admin) return NextResponse.json({ success: false, error: "No autorizado" }, { status: 401 });
     const { uid } = await req.json();
     if (!uid || typeof uid !== "string" || !uid.trim()) {
-      return NextResponse.json({ error: "UID requerido" }, { status: 400 });
+      return NextResponse.json({ success: false, error: "UID requerido" }, { status: 400 });
     }
     await asignarAdmin(uid.trim());
+    console.log(`[api/admin/usuarios POST] Admin asignado uid=${uid.trim()}`);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("[admin/usuarios POST]", error);
-    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
+    console.error("[api/admin/usuarios POST] Error:", error instanceof Error ? error.message : error);
+    return NextResponse.json({ success: false, error: "Error interno del servidor" }, { status: 500 });
   }
 }
 
 export async function DELETE(req: NextRequest) {
   try {
     const admin = await verificarAdmin(req);
-    if (!admin) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    if (!admin) return NextResponse.json({ success: false, error: "No autorizado" }, { status: 401 });
     const { uid } = await req.json();
     if (!uid || typeof uid !== "string" || !uid.trim()) {
-      return NextResponse.json({ error: "UID requerido" }, { status: 400 });
+      return NextResponse.json({ success: false, error: "UID requerido" }, { status: 400 });
     }
     await revocarAdmin(uid.trim());
+    console.log(`[api/admin/usuarios DELETE] Admin revocado uid=${uid.trim()}`);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("[admin/usuarios DELETE]", error);
-    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
+    console.error("[api/admin/usuarios DELETE] Error:", error instanceof Error ? error.message : error);
+    return NextResponse.json({ success: false, error: "Error interno del servidor" }, { status: 500 });
   }
 }

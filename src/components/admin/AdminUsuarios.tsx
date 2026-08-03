@@ -41,7 +41,7 @@ export function AdminUsuarios() {
         throw new Error(data.error || "Error del servidor");
       }
       const data = await res.json();
-      setAdmins(data.admins || []);
+      setAdmins(data.data?.admins || []);
       setError("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al cargar administradores");
@@ -54,7 +54,7 @@ export function AdminUsuarios() {
       const res = await fetch("/api/admin/usuarios?role=customer", { headers: h });
       if (!res.ok) throw new Error("Error del servidor");
       const data = await res.json();
-      setClientes(data.clientes || []);
+      setClientes(data.data?.clientes || []);
     } catch {
       // silencioso en tab secundaria
     }

@@ -28,10 +28,12 @@ export function useImageUpload() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ filename: `${file.name}-full`, contentType: "image/webp", size: full.blob.size }),
       });
-      const fullData = await resFull.json();
-      if (!resFull.ok) throw new Error(fullData.error || "Error al generar URL de subida");
+      const fullJson = await resFull.json();
+      if (!resFull.ok || !fullJson.success) throw new Error(fullJson.error || "Error al generar URL de subida");
+      const { url: fullSignedUrl, key: fullKey } = fullJson.data;
 
-      await fetch(fullData.url, { method: "PUT", body: full.blob, headers: { "Content-Type": "image/webp" } });
+      const uploadRes = await fetch(fullSignedUrl, { method: "PUT", body: full.blob, headers: { "Content-Type": "image/webp" } });
+      if (!uploadRes.ok) throw new Error("Error al subir imagen completa a R2");
       setProgreso(60);
 
       const resThumb = await fetch("/api/imagenes/presign", {
@@ -39,15 +41,17 @@ export function useImageUpload() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ filename: `${file.name}-thumb`, contentType: "image/webp", size: thumb.blob.size }),
       });
-      const thumbData = await resThumb.json();
-      if (!resThumb.ok) throw new Error(thumbData.error || "Error al generar URL de subida thumb");
+      const thumbJson = await resThumb.json();
+      if (!resThumb.ok || !thumbJson.success) throw new Error(thumbJson.error || "Error al generar URL de subida thumb");
+      const { url: thumbSignedUrl, key: thumbKey } = thumbJson.data;
 
-      await fetch(thumbData.url, { method: "PUT", body: thumb.blob, headers: { "Content-Type": "image/webp" } });
+      const thumbUploadRes = await fetch(thumbSignedUrl, { method: "PUT", body: thumb.blob, headers: { "Content-Type": "image/webp" } });
+      if (!thumbUploadRes.ok) throw new Error("Error al subir thumbnail a R2");
       setProgreso(100);
 
       const publicBase = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
-      const fullUrlPublic = `${publicBase}/${fullData.key}`;
-      const thumbUrlPublic = `${publicBase}/${thumbData.key}`;
+      const fullUrlPublic = `${publicBase}/${fullKey}`;
+      const thumbUrlPublic = `${publicBase}/${thumbKey}`;
 
       return { url: fullUrlPublic, thumb: thumbUrlPublic, alt: alt || file.name };
     } finally {
@@ -59,10 +63,12 @@ export function useImageUpload() {
   async function eliminarImagen(key: string): Promise<void> {
     if (!usuario) throw new Error("No autenticado");
     const token = await usuario.getIdToken();
-    await fetch(`/api/imagenes/${encodeURIComponent(key)}`, {
+    const res = await fetch(`/api/imagenes/${encodeURIComponent(key)}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.error || "Error al eliminar imagen");
   }
 
   return { subirImagen, eliminarImagen, subiendo, progreso };

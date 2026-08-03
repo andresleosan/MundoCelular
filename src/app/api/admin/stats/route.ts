@@ -5,7 +5,7 @@ import { getAdminDb } from "@/lib/firebase-admin";
 export async function GET(req: NextRequest) {
   try {
     const admin = await verificarAdmin(req);
-    if (!admin) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    if (!admin) return NextResponse.json({ success: false, error: "No autorizado" }, { status: 401 });
     const db = getAdminDb();
     const [usersSnap, adminsSnap, customersSnap, pedidosSnap] = await Promise.all([
       db.collection("users").get(),
@@ -21,14 +21,17 @@ export async function GET(req: NextRequest) {
       if (ts && ts.toDate && ts.toDate() >= mesInicio) nuevosEsteMes++;
     });
     return NextResponse.json({
-      totalUsuarios: usersSnap.size,
-      totalAdmins: adminsSnap.size,
-      totalClientes: customersSnap.size,
-      nuevosEsteMes,
-      totalPedidos: pedidosSnap.size,
+      success: true,
+      data: {
+        totalUsuarios: usersSnap.size,
+        totalAdmins: adminsSnap.size,
+        totalClientes: customersSnap.size,
+        nuevosEsteMes,
+        totalPedidos: pedidosSnap.size,
+      },
     });
   } catch (error) {
-    console.error("[admin/stats]", error);
-    return NextResponse.json({ error: "Error interno" }, { status: 500 });
+    console.error("[api/admin/stats] Error:", error instanceof Error ? error.message : error);
+    return NextResponse.json({ success: false, error: "Error interno" }, { status: 500 });
   }
 }
