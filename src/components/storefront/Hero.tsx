@@ -43,8 +43,12 @@ export function Hero({ config }: HeroProps) {
         scrollTrigger: {
           trigger: ref.current,
           start: "top top",
-          end: "bottom top",
-          scrub: 1.5,
+          // "+=X" en ScrollTrigger se suma al start, no a la altura del trigger:
+          // incluir offsetHeight evita que la transformación se apriete y
+          // desaparezca dentro de la sección Marcas. El despiece completo se
+          // ve dentro de Marcas y el fade termina ~1800px después del hero.
+          end: () => "+=" + ((ref.current?.offsetHeight ?? 1200) + 1800),
+          scrub: 1.2,
         },
       });
 
@@ -56,7 +60,7 @@ export function Hero({ config }: HeroProps) {
       ).fromTo(
         desarmadomRef.current,
         { opacity: 0, scale: 0.93 },
-        { opacity: 0.4, scale: 1, duration: 0.35 },
+        { opacity: 0.6, scale: 1, duration: 0.35 },
         0,
       )
       // Stage 2: Desarmadom1 → Desarmado1  (timeline 0.35 → 0.7)
@@ -67,10 +71,10 @@ export function Hero({ config }: HeroProps) {
         ).fromTo(
           desarmadoRef.current,
           { opacity: 0, scale: 0.93 },
-          { opacity: 0.4, scale: 1, duration: 0.35 },
+          { opacity: 1, scale: 1, duration: 0.35 },
           0.35,
         )
-        // Stage 3: fade out completo antes de salir del hero (timeline 0.7 → 1)
+        // Stage 3: fade out completo (timeline 0.7 → 1)
         .to(
           desarmadoRef.current,
           { opacity: 0, duration: 0.3 },
