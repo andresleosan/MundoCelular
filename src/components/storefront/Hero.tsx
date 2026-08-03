@@ -1,10 +1,15 @@
 "use client";
 
+import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { PhoneStack } from "@/components/storefront/PhoneStack";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import type { ConfigTienda, Producto } from "@/types";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface HeroProps {
   config: ConfigTienda;
@@ -19,6 +24,55 @@ const trustBadges: { icon: IconName; text: string }[] = [
 
 export function Hero({ config }: HeroProps) {
   const { ref, visible } = useScrollAnimation<HTMLDivElement>();
+  const armadoRef = useRef<HTMLImageElement>(null);
+  const desarmadomRef = useRef<HTMLImageElement>(null);
+  const desarmadoRef = useRef<HTMLImageElement>(null);
+  const [reducedMotion, setReducedMotion] = useState(true);
+
+  useEffect(() => {
+    setReducedMotion(
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    );
+  }, []);
+
+  useEffect(() => {
+    if (reducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          start: 0,
+          end: "max",
+          scrub: 1.5,
+        },
+      });
+
+      // Stage 1: Armado1 → Desarmadom1  (timeline 0 → 0.5)
+      tl.to(
+        armadoRef.current,
+        { opacity: 0, scale: 1.07, duration: 0.5 },
+        0,
+      ).fromTo(
+        desarmadomRef.current,
+        { opacity: 0, scale: 0.93 },
+        { opacity: 0.4, scale: 1, duration: 0.5 },
+        0,
+      )
+      // Stage 2: Desarmadom1 → Desarmado1  (timeline 0.5 → 1.0)
+        .to(
+          desarmadomRef.current,
+          { opacity: 0, scale: 1.07, duration: 0.5 },
+          0.5,
+        ).fromTo(
+          desarmadoRef.current,
+          { opacity: 0, scale: 0.93 },
+          { opacity: 0.4, scale: 1, duration: 0.5 },
+          0.5,
+        );
+    }, ref);
+
+    return () => ctx.revert();
+  }, [reducedMotion, ref]);
 
   return (
     <section
@@ -26,10 +80,49 @@ export function Hero({ config }: HeroProps) {
       className="relative flex min-h-[88vh] items-center overflow-hidden bg-navy-base py-20 sm:min-h-[92vh]"
       aria-label="Bienvenida a Mundo Celular"
     >
-      {/* Background depth: gradient mesh + radial glows */}
+      {/* ================================================================
+          SCROLL ANIMATION BACKGROUND LAYER
+          Fixed, z-0, pointer-events-none. Spans entire page scroll.
+          mix-blend-mode: screen eliminates black background.
+          ================================================================ */}
+      {!reducedMotion && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-0 z-0 flex items-center justify-center"
+        >
+          <img
+            ref={armadoRef}
+            src="/Armado1.png"
+            alt=""
+            className="max-h-[75vh] w-auto object-contain"
+            style={{ willChange: "transform, opacity", mixBlendMode: "screen" }}
+            loading="eager"
+          />
+          <img
+            ref={desarmadomRef}
+            src="/Desarmadom1.png"
+            alt=""
+            className="absolute max-h-[75vh] w-auto object-contain"
+            style={{ opacity: 0, willChange: "transform, opacity", mixBlendMode: "screen" }}
+            loading="lazy"
+          />
+          <img
+            ref={desarmadoRef}
+            src="/Desarmado1.png"
+            alt=""
+            className="absolute max-h-[75vh] w-auto object-contain"
+            style={{ opacity: 0, willChange: "transform, opacity", mixBlendMode: "screen" }}
+            loading="lazy"
+          />
+        </div>
+      )}
+
+      {/* ================================================================
+          ORIGINAL BACKGROUND DEPTH (gradient mesh + radial glows + noise)
+          ================================================================ */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 z-0"
       >
         <div className="absolute inset-0 bg-gradient-to-br from-navy-deep via-navy-base to-navy-surface opacity-90" />
         <div
@@ -40,7 +133,6 @@ export function Hero({ config }: HeroProps) {
           className="absolute -right-10 bottom-10 h-96 w-96 rounded-full opacity-20 blur-3xl"
           style={{ background: "radial-gradient(circle, #0035A8 0%, transparent 70%)" }}
         />
-        {/* Noise texture overlay for premium feel */}
         <div
           className="absolute inset-0 opacity-[0.03] mix-blend-overlay"
           style={{
@@ -50,7 +142,10 @@ export function Hero({ config }: HeroProps) {
         />
       </div>
 
-      <div className="relative mx-auto grid w-full max-w-[1280px] grid-cols-1 items-center gap-12 px-4 lg:grid-cols-2 lg:gap-16 lg:py-24">
+      {/* ================================================================
+          ORIGINAL CONTENT (z-10)
+          ================================================================ */}
+      <div className="relative z-10 mx-auto grid w-full max-w-[1280px] grid-cols-1 items-center gap-12 px-4 lg:grid-cols-2 lg:gap-16 lg:py-24">
         {/* Copy column */}
         <div className={`text-center lg:text-left ${visible ? "animate-fade-up" : "opacity-0"}`}>
           <p className="mb-5 inline-flex items-center gap-2 rounded-chips border border-glow-cyan/20 bg-glow-cyan/5 px-3 py-1.5 text-[12px] font-medium text-glow-cyan-soft backdrop-blur-sm">
@@ -102,7 +197,7 @@ export function Hero({ config }: HeroProps) {
       <Link
         href="#ofertas"
         aria-label="Ver ofertas"
-        className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 text-fog-white/40 lg:block motion-reduce:animate-none"
+        className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 text-fog-white/40 lg:block motion-reduce:animate-none z-10"
       >
         <Icon name="chevron-down" size={28} className="animate-bounce-down" />
       </Link>
