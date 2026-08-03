@@ -41,33 +41,40 @@ export function Hero({ config }: HeroProps) {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
-          start: 0,
-          end: "max",
+          trigger: ref.current,
+          start: "top top",
+          end: "bottom top",
           scrub: 1.5,
         },
       });
 
-      // Stage 1: Armado1 → Desarmadom1  (timeline 0 → 0.5)
+      // Stage 1: Armado1 → Desarmadom1  (timeline 0 → 0.35)
       tl.to(
         armadoRef.current,
-        { opacity: 0, scale: 1.07, duration: 0.5 },
+        { opacity: 0, scale: 1.07, duration: 0.35 },
         0,
       ).fromTo(
         desarmadomRef.current,
         { opacity: 0, scale: 0.93 },
-        { opacity: 0.4, scale: 1, duration: 0.5 },
+        { opacity: 0.4, scale: 1, duration: 0.35 },
         0,
       )
-      // Stage 2: Desarmadom1 → Desarmado1  (timeline 0.5 → 1.0)
+      // Stage 2: Desarmadom1 → Desarmado1  (timeline 0.35 → 0.7)
         .to(
           desarmadomRef.current,
-          { opacity: 0, scale: 1.07, duration: 0.5 },
-          0.5,
+          { opacity: 0, scale: 1.07, duration: 0.35 },
+          0.35,
         ).fromTo(
           desarmadoRef.current,
           { opacity: 0, scale: 0.93 },
-          { opacity: 0.4, scale: 1, duration: 0.5 },
-          0.5,
+          { opacity: 0.4, scale: 1, duration: 0.35 },
+          0.35,
+        )
+        // Stage 3: fade out completo antes de salir del hero (timeline 0.7 → 1)
+        .to(
+          desarmadoRef.current,
+          { opacity: 0, duration: 0.3 },
+          0.7,
         );
     }, ref);
 

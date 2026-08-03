@@ -1,0 +1,137 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Mundo Celular - Inicio" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e5]: MUNDO CELULAR
+      - navigation "Navegación principal" [ref=e6]:
+        - link "Categorías" [ref=e7] [cursor=pointer]:
+          - /url: /#categorias
+        - link "Marcas" [ref=e8] [cursor=pointer]:
+          - /url: /#marcas
+        - link "Ofertas" [ref=e9] [cursor=pointer]:
+          - /url: /#ofertas
+        - link "Sobre nosotros" [ref=e10] [cursor=pointer]:
+          - /url: /contacto
+      - generic [ref=e12]:
+        - searchbox "Buscar productos" [ref=e16]
+        - button "Buscar" [ref=e17]
+      - generic [ref=e20]:
+        - link "Carrito (0 productos)" [ref=e21] [cursor=pointer]:
+          - /url: /carrito
+        - button "Iniciar sesión" [ref=e26]
+  - region "Bienvenida a Mundo Celular" [ref=e30]:
+    - generic [ref=e31]:
+      - generic [ref=e32]:
+        - paragraph [ref=e33]: Tienda de confianza en Medellín
+        - heading "La mejor tecnología, al mejor precio." [level=1] [ref=e35]
+        - paragraph [ref=e36]: Smartphones, accesorios y equipos originales con garantía real y respaldo en Medellín.
+        - generic [ref=e37]:
+          - link "Comprar ahora" [ref=e38] [cursor=pointer]:
+            - /url: "#ofertas"
+          - link "Ver catálogo" [ref=e39] [cursor=pointer]:
+            - /url: "#categorias"
+        - list [ref=e40]:
+          - listitem [ref=e41]:
+            - generic [ref=e45]: Garantía 12 meses
+          - listitem [ref=e46]:
+            - generic [ref=e52]: Envío gratis en Medellín
+          - listitem [ref=e53]:
+            - generic [ref=e56]: Soporte WhatsApp
+      - generic [ref=e70]:
+        - generic [ref=e71]: 5G
+        - generic [ref=e72]: 128GB
+        - generic [ref=e73]: 48MP
+        - generic [ref=e74]: 12 meses
+    - link "Ver ofertas" [ref=e87] [cursor=pointer]:
+      - /url: "#ofertas"
+  - region "Marcas" [ref=e91]:
+    - generic [ref=e92]:
+      - heading "Las marcas que distribuimos y reparamos" [level=2] [ref=e93]
+      - paragraph [ref=e94]: Equipos originales con respaldo directo
+    - generic [ref=e95]:
+      - generic [ref=e96]: Apple
+      - generic [ref=e99]: Samsung
+      - generic [ref=e102]: Xiaomi
+      - generic [ref=e105]: Motorola
+      - generic [ref=e108]: Honor
+      - generic [ref=e111]: Redmi
+  - region "Categorías" [ref=e114]:
+    - generic [ref=e115]:
+      - heading "Compra por categoría" [level=2] [ref=e117]
+      - generic [ref=e119]:
+        - searchbox "Buscar productos" [ref=e123]
+        - button "Buscar" [ref=e124]
+  - region "Reparaciones" [ref=e127]:
+    - generic [ref=e130]:
+      - heading "¿Necesitas reparar tu celular?" [level=2] [ref=e131]
+      - paragraph [ref=e132]: Servicio técnico profesional. Diagnóstico gratis y repuestos originales.
+      - link "Ver servicios" [ref=e133] [cursor=pointer]:
+        - /url: /reparaciones
+  - region "Beneficios" [ref=e135]:
+    - generic [ref=e136]:
+      - heading "¿Por qué elegir MundoCelular?" [level=2] [ref=e137]
+      - paragraph [ref=e138]: Tu tienda de tecnología de confianza en Medellín
+    - generic [ref=e139]:
+      - article [ref=e140]:
+        - heading "Equipos originales" [level=3] [ref=e145]
+        - paragraph [ref=e146]: Productos 100% originales con respaldo de garantía directa del fabricante.
+      - article [ref=e147]:
+        - heading "Envíos rápidos" [level=3] [ref=e154]
+        - paragraph [ref=e155]: Despachamos el mismo día en Medellín y al día siguiente en el resto del país.
+      - article [ref=e156]:
+        - heading "Garantía real" [level=3] [ref=e161]
+        - paragraph [ref=e162]: 12 meses cubriendo defectos de fábrica, no fallos por uso.
+      - article [ref=e163]:
+        - heading "Soporte 24/7" [level=3] [ref=e167]
+        - paragraph [ref=e168]: Atención por WhatsApp antes y después de tu compra.
+      - article [ref=e169]:
+        - heading "Pagos seguros" [level=3] [ref=e173]
+        - paragraph [ref=e174]: Sin manejo de tarjetas en línea — pagas al recibir.
+      - article [ref=e175]:
+        - heading "Atención personalizada" [level=3] [ref=e182]
+        - paragraph [ref=e183]: Te ayudamos a elegir el equipo ideal según tu presupuesto.
+  - contentinfo [ref=e184]:
+    - generic [ref=e185]:
+      - generic [ref=e186]:
+        - generic [ref=e187]:
+          - img "Mundo Celular" [ref=e188]
+          - heading "MUNDO CELULAR" [level=3] [ref=e189]
+          - generic [ref=e190]:
+            - paragraph [ref=e191]: "Cra 36 # 38 - 33, Barrio El Salvador"
+            - paragraph [ref=e192]: Medellín, Antioquia
+          - generic [ref=e193]:
+            - 'link "WhatsApp: +57 311 355 4021" [ref=e194] [cursor=pointer]':
+              - /url: https://wa.me/573113554021
+            - paragraph [ref=e197]: Lun–Sáb 9:00 AM – 7:00 PM
+        - generic [ref=e198]:
+          - heading "Enlaces" [level=4] [ref=e199]
+          - list [ref=e200]:
+            - listitem [ref=e201]:
+              - link "Categorías" [ref=e202] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=e203]:
+              - link "Reparaciones" [ref=e204] [cursor=pointer]:
+                - /url: /reparaciones
+            - listitem [ref=e205]:
+              - link "Carrito" [ref=e206] [cursor=pointer]:
+                - /url: /carrito
+            - listitem [ref=e207]:
+              - link "Contacto" [ref=e208] [cursor=pointer]:
+                - /url: /contacto
+            - listitem [ref=e209]:
+              - link "Preguntas frecuentes" [ref=e210] [cursor=pointer]:
+                - /url: /preguntas
+        - generic [ref=e211]:
+          - heading "Redes sociales" [level=4] [ref=e212]
+          - list [ref=e213]:
+            - listitem [ref=e214]:
+              - link "Instagram" [ref=e215] [cursor=pointer]:
+                - /url: https://www.instagram.com/mundo_celular_75/
+            - listitem [ref=e219]:
+              - link "Facebook" [ref=e220] [cursor=pointer]:
+                - /url: https://www.facebook.com/Mundo.Celular.01
+            - listitem [ref=e223]:
+              - link "TikTok" [ref=e224] [cursor=pointer]:
+                - /url: https://www.tiktok.com/@mundocelular75
+      - generic [ref=e229]: © 2026 Mundo Celular. Todos los derechos reservados.
