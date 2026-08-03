@@ -83,3 +83,14 @@ export interface ConfigTienda {
   horario: string;
   redes: { instagram: string; facebook: string; tiktok: string };
 }
+
+export interface Usuario {
+  uid: string;
+  email: string;
+  displayName: string;
+  photoURL: string;
+  role: "admin" | "customer";
+  active: boolean;
+  createdAt: Date;
+  lastLogin: Date;
+}

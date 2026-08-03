@@ -1,82 +1,53 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAdminDb } from "@/lib/firebase-admin";
 import { verificarAdmin } from "@/lib/api-auth";
+import { listarAdmins, listarClientes, asignarAdmin, revocarAdmin } from "@/lib/firestore/usuarios";
 
 export async function GET(req: NextRequest) {
-  const admin = await verificarAdmin(req);
-  if (!admin) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  try {
+    const admin = await verificarAdmin(req);
+    if (!admin) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    const url = new URL(req.url);
+    const role = url.searchParams.get("role");
+    if (role === "customer") {
+      const clientes = await listarClientes();
+      return NextResponse.json({ clientes });
+    }
+    const admins = await listarAdmins();
+    return NextResponse.json({ admins });
+  } catch (error) {
+    console.error("[admin/usuarios GET]", error);
+    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
   }
-
-  const db = getAdminDb();
-  const snapshot = await db.collection("usuarios").where("admin", "==", true).get();
-  const admins = snapshot.docs.map((doc) => doc.data());
-
-  return NextResponse.json({ admins });
 }
 
 export async function POST(req: NextRequest) {
-  const admin = await verificarAdmin(req);
-  if (!admin) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  try {
+    const admin = await verificarAdmin(req);
+    if (!admin) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    const { uid } = await req.json();
+    if (!uid || typeof uid !== "string" || !uid.trim()) {
+      return NextResponse.json({ error: "UID requerido" }, { status: 400 });
+    }
+    await asignarAdmin(uid.trim());
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("[admin/usuarios POST]", error);
+    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
   }
-
-  const { email } = (await req.json()) as { email?: string };
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return NextResponse.json({ error: "Email inválido" }, { status: 400 });
-  }
-
-  const normalizedEmail = email.toLowerCase().trim();
-  const db = getAdminDb();
-  const docRef = db.collection("usuarios").doc(normalizedEmail);
-  const doc = await docRef.get();
-
-  if (doc.exists && doc.data()?.admin === true) {
-    return NextResponse.json({ error: "Este usuario ya tiene permisos de administrador." }, { status: 409 });
-  }
-
-  await docRef.set(
-    {
-      email: normalizedEmail,
-      admin: true,
-      pendiente: true,
-      creadoEn: new Date(),
-    },
-    { merge: true }
-  );
-
-  return NextResponse.json({
-    ok: true,
-    mensaje: "Permiso asignado. El usuario debe cerrar sesión y volver a entrar.",
-  });
 }
 
 export async function DELETE(req: NextRequest) {
-  const admin = await verificarAdmin(req);
-  if (!admin) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  try {
+    const admin = await verificarAdmin(req);
+    if (!admin) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    const { uid } = await req.json();
+    if (!uid || typeof uid !== "string" || !uid.trim()) {
+      return NextResponse.json({ error: "UID requerido" }, { status: 400 });
+    }
+    await revocarAdmin(uid.trim());
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("[admin/usuarios DELETE]", error);
+    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
   }
-
-  const { email } = (await req.json()) as { email?: string };
-  if (!email) {
-    return NextResponse.json({ error: "Email requerido" }, { status: 400 });
-  }
-
-  const normalizedEmail = email.toLowerCase().trim();
-
-  if (normalizedEmail === (admin.email || "").toLowerCase()) {
-    return NextResponse.json({ error: "No puedes quitarte tu propio permiso." }, { status: 400 });
-  }
-
-  const db = getAdminDb();
-  const docRef = db.collection("usuarios").doc(normalizedEmail);
-  const doc = await docRef.get();
-
-  if (!doc.exists || doc.data()?.admin !== true) {
-    return NextResponse.json({ error: "Este usuario no es administrador." }, { status: 404 });
-  }
-
-  await docRef.update({ admin: false });
-
-  return NextResponse.json({ ok: true, mensaje: "Permiso revocado." });
 }
