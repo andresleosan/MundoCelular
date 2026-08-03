@@ -38,30 +38,30 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
       role="dialog"
       aria-modal="true"
       aria-label="Iniciar sesión"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-text/60 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-modal-overlay"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="relative rounded-cards bg-pure-white p-8 shadow-lg-2 max-w-[400px] w-[calc(100%-32px)]">
+      <div className="admin-light-scope relative w-[calc(100%-32px)] max-w-[520px] animate-modal-enter rounded-[28px] bg-white p-10 shadow-[0_30px_80px_rgba(0,0,0,0.18)] max-h-[95vh] overflow-y-auto">
         <button
           ref={closeBtnRef}
           type="button"
           onClick={onClose}
           aria-label="Cerrar"
-          className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-chips text-steel-blue-gray hover:bg-canvas-frost"
+          className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full text-[#4B5A7D] transition-colors hover:bg-[#F0F3FA] hover:text-[#22335C]"
         >
           <Icon name="x" size={20} />
         </button>
 
-        <h2 className="font-inter-tight text-[24px] font-semibold tracking-[-0.03em] text-navy-deep">
+        <h2 className="font-sora text-[36px] font-extrabold tracking-[-0.02em] text-[#081B4B] leading-tight">
           Iniciar sesión
         </h2>
-        <p className="mt-1 text-[14px] text-steel-blue-gray">
+        <p className="mt-2 text-[15px] font-medium text-[#4B5A7D]">
           Accede con tu cuenta Google
         </p>
 
-        <div className="mt-6">
+        <div className="mt-8">
           <LoginForm />
         </div>
       </div>

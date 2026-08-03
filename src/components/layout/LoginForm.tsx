@@ -8,6 +8,11 @@ import { Icon } from "@/components/ui/Icon";
 
 type RoleSelection = "customer" | "admin" | null;
 
+const inputClasses =
+  "w-full h-[52px] rounded-[14px] border-2 border-[#D8E2FF] bg-[#F8FAFF] px-4 text-[15px] text-[#081B4B] outline-none placeholder:text-[#7A89AF] transition-all duration-200 focus:border-[#00CFFF] focus:shadow-[0_0_0_4px_rgba(0,207,255,0.15)]";
+
+const labelClasses = "block text-[14px] font-semibold text-[#22335C] mb-2";
+
 export function LoginForm() {
   const router = useRouter();
   const { usuario, esAdmin, cargando: authCargando } = useAuth();
@@ -66,42 +71,8 @@ export function LoginForm() {
     }
   }
 
-  const roleCards = (
-    <div className="space-y-2">
-      <p className="text-[13px] font-medium text-foreground">Selecciona tu tipo de acceso</p>
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          onClick={() => { setSelectedRole("customer"); setError(""); }}
-          className={`flex flex-col items-center gap-2 rounded-lg border p-4 text-foreground transition-all ${
-            selectedRole === "customer"
-              ? "border-primary bg-primary/8"
-              : "border-input hover:border-muted-foreground/30"
-          }`}
-        >
-          <Icon name="user" className="size-5" />
-          <span className="text-[13px] font-medium">Cliente</span>
-          <span className="text-[11px] text-muted-foreground">Ir a la tienda</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => { setSelectedRole("admin"); setError(""); }}
-          className={`flex flex-col items-center gap-2 rounded-lg border p-4 text-foreground transition-all ${
-            selectedRole === "admin"
-              ? "border-primary bg-primary/8"
-              : "border-input hover:border-muted-foreground/30"
-          }`}
-        >
-          <Icon name="badge-check" className="size-5" />
-          <span className="text-[13px] font-medium">Administrador</span>
-          <span className="text-[11px] text-muted-foreground">Panel de control</span>
-        </button>
-      </div>
-    </div>
-  );
-
   const GoogleIcon = () => (
-    <svg viewBox="0 0 24 24" className="size-4" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 24 24" className="size-5" xmlns="http://www.w3.org/2000/svg">
       <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
       <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
       <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
@@ -111,34 +82,64 @@ export function LoginForm() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <label htmlFor="email" className="text-[13px] font-medium text-foreground">Email</label>
+      <div>
+        <label htmlFor="email" className={labelClasses}>Email</label>
         <input
           id="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          className={inputClasses}
           placeholder="correo@ejemplo.com"
         />
       </div>
 
-      <div className="space-y-2">
-        <label htmlFor="password" className="text-[13px] font-medium text-foreground">Contraseña</label>
+      <div>
+        <label htmlFor="password" className={labelClasses}>Contraseña</label>
         <input
           id="password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          className={inputClasses}
           placeholder="••••••••"
         />
       </div>
 
-      {roleCards}
+      <div className="space-y-3">
+        <p className="text-[14px] font-semibold text-[#22335C]">Selecciona tu tipo de acceso</p>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => { setSelectedRole("customer"); setError(""); }}
+            className={`flex flex-col items-center gap-2 rounded-[16px] border-2 bg-[#F8FAFF] p-5 transition-all duration-200 ${
+              selectedRole === "customer"
+                ? "border-[#00CFFF] bg-[rgba(0,207,255,0.08)] shadow-[0_10px_30px_rgba(0,207,255,0.15)]"
+                : "border-[#D8E2FF] hover:border-[#B8C8F0]"
+            }`}
+          >
+            <Icon name="user" size={28} className={selectedRole === "customer" ? "text-[#00CFFF]" : "text-[#4B5A7D]"} />
+            <span className="text-[14px] font-semibold text-[#22335C]">Cliente</span>
+            <span className="text-[12px] font-medium text-[#4B5A7D]">Ir a la tienda</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => { setSelectedRole("admin"); setError(""); }}
+            className={`flex flex-col items-center gap-2 rounded-[16px] border-2 bg-[#F8FAFF] p-5 transition-all duration-200 ${
+              selectedRole === "admin"
+                ? "border-[#00CFFF] bg-[rgba(0,207,255,0.08)] shadow-[0_10px_30px_rgba(0,207,255,0.15)]"
+                : "border-[#D8E2FF] hover:border-[#B8C8F0]"
+            }`}
+          >
+            <Icon name="badge-check" size={28} className={selectedRole === "admin" ? "text-[#00CFFF]" : "text-[#4B5A7D]"} />
+            <span className="text-[14px] font-semibold text-[#22335C]">Administrador</span>
+            <span className="text-[12px] font-medium text-[#4B5A7D]">Panel de control</span>
+          </button>
+        </div>
+      </div>
 
       {error && (
-        <p className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-[13px] text-destructive">{error}</p>
+        <p className="rounded-[12px] border border-[#DC2626]/25 bg-[#DC2626]/5 p-3 text-[13px] font-medium text-[#DC2626]">{error}</p>
       )}
 
       <div className="space-y-3">
@@ -146,7 +147,7 @@ export function LoginForm() {
           type="button"
           onClick={handleLoginGoogle}
           disabled={cargando}
-          className="flex w-full items-center justify-center gap-2 rounded-lg border border-input bg-background px-4 py-2.5 text-[14px] font-medium text-foreground transition hover:bg-muted disabled:opacity-50"
+          className="flex h-[54px] w-full items-center justify-center gap-3 rounded-[14px] border border-[#D8E2FF] bg-white px-4 text-[15px] font-semibold text-[#081B4B] transition-all duration-200 hover:-translate-y-[2px] hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none"
         >
           <GoogleIcon />
           {cargando ? "Ingresando…" : "Iniciar sesión con Google"}
@@ -156,7 +157,7 @@ export function LoginForm() {
           type="button"
           onClick={handleLoginEmail}
           disabled={cargando}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-[14px] font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+          className="flex h-[52px] w-full items-center justify-center gap-2 rounded-[14px] bg-gradient-to-r from-[#003DAA] to-[#00CFFF] px-4 text-[15px] font-bold text-white transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_15px_35px_rgba(0,61,170,0.25)] disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
         >
           {cargando ? "Ingresando…" : "Iniciar sesión"}
         </button>
