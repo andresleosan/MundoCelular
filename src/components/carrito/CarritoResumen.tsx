@@ -15,10 +15,10 @@ export function CarritoResumen() {
         <span className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-glow-cyan/10">
           <Icon name="shopping-bag" size={32} className="text-glow-cyan" />
         </span>
-        <h2 className="font-inter-tight text-[20px] font-semibold text-text sm:text-[24px]">
+        <h2 className="font-inter-tight text-[20px] font-semibold text-fog-white sm:text-[24px]">
           Tu carrito está vacío
         </h2>
-        <p className="text-[15px] text-text-secondary">
+        <p className="text-[15px] text-fog-white/70">
           Explora nuestro catálogo y encuentra lo que necesitas
         </p>
         <Link
@@ -58,25 +58,25 @@ export function CarritoResumen() {
 
       {/* Resumen sticky */}
       <div className="lg:sticky lg:top-24 lg:h-fit lg:w-[320px] lg:flex-shrink-0">
-        <div className="rounded-cards border border-faint-border bg-surface p-6 shadow-sm-2 sm:p-8">
-          <h2 className="mb-6 font-inter-tight text-[18px] font-semibold text-text">
+        <div className="rounded-cards border border-fog-white/10 bg-navy-surface/40 p-6 shadow-sm-2 sm:p-8">
+          <h2 className="mb-6 font-inter-tight text-[18px] font-semibold text-fog-white">
             Resumen del pedido
           </h2>
 
           <div className="space-y-3">
-            <div className="flex justify-between text-[14px] text-text">
+            <div className="flex justify-between text-[14px] text-fog-white">
               <span>Subtotal</span>
               <span className="font-jetbrains-mono font-medium">{formatearCOP(total)}</span>
             </div>
-            <div className="flex justify-between text-[14px] text-text">
+            <div className="flex justify-between text-[14px] text-fog-white">
               <span>Envío</span>
               <span className="font-medium text-success">Gratis</span>
             </div>
           </div>
 
-          <div className="my-4 border-t border-faint-border" />
+          <div className="my-4 border-t border-fog-white/10" />
 
-          <div className="flex justify-between text-[18px] font-bold text-text">
+          <div className="flex justify-between text-[18px] font-bold text-fog-white">
             <span>Total</span>
             <span className="font-jetbrains-mono">{formatearCOP(total)}</span>
           </div>
@@ -91,7 +91,7 @@ export function CarritoResumen() {
 
             <button
               onClick={vaciar}
-              className="text-[13px] font-medium text-text-secondary transition-colors hover:text-danger"
+              className="text-[13px] font-medium text-fog-white/70 transition-colors hover:text-danger"
             >
               Vaciar carrito
             </button>

@@ -12,7 +12,7 @@ export function CarritoContador() {
     <Link
       href="/carrito"
       aria-label={`Carrito (${count} ${count === 1 ? "producto" : "productos"})`}
-      className="relative flex h-9 w-9 items-center justify-center rounded-full text-text transition-colors hover:bg-canvas-frost"
+      className="relative flex h-9 w-9 items-center justify-center rounded-full text-fog-white transition-colors hover:bg-glow-cyan/10"
     >
       <Icon name="shopping-bag" size={20} />
       {count > 0 && (
