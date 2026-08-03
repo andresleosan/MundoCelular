@@ -5,6 +5,18 @@ import { useRouter } from "next/navigation";
 import { crearProducto, actualizarProducto } from "@/lib/firestore/productos";
 import { validarProducto } from "@/lib/validacion";
 import { ImageUploader } from "./ImageUploader";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { Categoria, Producto, ImagenProducto } from "@/types";
 
 export function ProductoForm({ categorias, producto }: { categorias: Categoria[]; producto?: Producto }) {
@@ -68,71 +80,88 @@ export function ProductoForm({ categorias, producto }: { categorias: Categoria[]
     }
   }
 
-  const inputClase =
-    "w-full rounded-chips border border-faint-border bg-pure-white px-4 py-2 text-[14px] text-ink-navy outline-none focus:border-mundo-blue";
-  const labelClase = "mb-1 block text-[12px] font-medium text-steel-blue-gray";
-
   return (
-    <form onSubmit={onSubmit} className="flex max-w-xl flex-col gap-4 rounded-cards bg-pure-white p-6 shadow-sm-2">
-      <div>
-        <label htmlFor="nombre" className={labelClase}>Nombre</label>
-        <input id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} className={inputClase} />
+    <form onSubmit={onSubmit} className="max-w-xl space-y-5 rounded-lg border bg-card p-6">
+      <div className="space-y-2">
+        <Label htmlFor="nombre">Nombre</Label>
+        <Input id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} />
       </div>
-      <div>
-        <label htmlFor="descripcion" className={labelClase}>Descripción</label>
-        <textarea id="descripcion" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} rows={3} className={inputClase} />
+
+      <div className="space-y-2">
+        <Label htmlFor="descripcion">Descripción</Label>
+        <Textarea id="descripcion" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} rows={3} />
       </div>
+
       <div className="flex gap-4">
-        <div className="flex-1">
-          <label htmlFor="precio" className={labelClase}>Precio (COP, entero)</label>
-          <input id="precio" type="number" min="1" step="1" value={precio} onChange={(e) => setPrecio(e.target.value)} className={`${inputClase} font-jetbrains-mono`} />
+        <div className="flex-1 space-y-2">
+          <Label htmlFor="precio">Precio (COP, entero)</Label>
+          <Input id="precio" type="number" min="1" step="1" value={precio} onChange={(e) => setPrecio(e.target.value)} />
         </div>
-        <div className="flex-1">
-          <label htmlFor="stock" className={labelClase}>Stock</label>
-          <input id="stock" type="number" min="0" step="1" value={stock} onChange={(e) => setStock(e.target.value)} className={`${inputClase} font-jetbrains-mono`} />
+        <div className="flex-1 space-y-2">
+          <Label htmlFor="stock">Stock</Label>
+          <Input id="stock" type="number" min="0" step="1" value={stock} onChange={(e) => setStock(e.target.value)} />
         </div>
       </div>
+
       <div className="flex gap-4">
-        <div className="flex-1">
-          <label htmlFor="categoria" className={labelClase}>Categoría</label>
-          <select id="categoria" value={categoriaId} onChange={(e) => setCategoriaId(e.target.value)} className={inputClase}>
-            <option value="">Seleccionar…</option>
-            {categorias.map((c) => (
-              <option key={c.id} value={c.id}>{c.nombre}</option>
-            ))}
-          </select>
+        <div className="flex-1 space-y-2">
+          <Label>Categoría</Label>
+          <Select value={categoriaId || undefined} onValueChange={(v) => setCategoriaId(v ?? "")}>
+            <SelectTrigger>
+              <SelectValue placeholder="Seleccionar…" />
+            </SelectTrigger>
+            <SelectContent>
+              {categorias.map((c) => (
+                <SelectItem key={c.id} value={c.id}>{c.nombre}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-        <div className="flex-1">
-          <label htmlFor="marca" className={labelClase}>Marca</label>
-          <input id="marca" value={marca} onChange={(e) => setMarca(e.target.value)} className={inputClase} placeholder="Apple, Samsung, Xiaomi…" />
+        <div className="flex-1 space-y-2">
+          <Label htmlFor="marca">Marca</Label>
+          <Input id="marca" value={marca} onChange={(e) => setMarca(e.target.value)} placeholder="Apple, Samsung, Xiaomi…" />
         </div>
       </div>
-      <div>
-        <label htmlFor="specs" className={labelClase}>Specs (una por línea, formato &quot;Clave: Valor&quot;)</label>
-        <textarea id="specs" value={specsTexto} onChange={(e) => setSpecsTexto(e.target.value)} rows={3} className={`${inputClase} font-jetbrains-mono text-[12px]`} placeholder={"Almacenamiento: 128GB\nRAM: 6GB"} />
+
+      <div className="space-y-2">
+        <Label htmlFor="specs">Specs (una por línea, formato &quot;Clave: Valor&quot;)</Label>
+        <Textarea id="specs" value={specsTexto} onChange={(e) => setSpecsTexto(e.target.value)} rows={3} className="font-mono text-[13px]" placeholder={"Almacenamiento: 128GB\nRAM: 6GB"} />
       </div>
-      <div className="flex gap-6">
-        <label className="flex items-center gap-2 text-[14px]"><input type="checkbox" checked={activo} onChange={(e) => setActivo(e.target.checked)} /> Activo</label>
-        <label className="flex items-center gap-2 text-[14px]"><input type="checkbox" checked={destacado} onChange={(e) => setDestacado(e.target.checked)} /> Destacado</label>
-        <label className="flex items-center gap-2 text-[14px]"><input id="tiene-variantes" type="checkbox" checked={tieneVariantes} onChange={(e) => setTieneVariantes(e.target.checked)} /> Tiene variantes</label>
+
+      <div className="flex flex-wrap gap-6">
+        <label className="flex items-center gap-2 text-[14px]">
+          <Checkbox checked={activo} onCheckedChange={(v) => setActivo(!!v)} />
+          Activo
+        </label>
+        <label className="flex items-center gap-2 text-[14px]">
+          <Checkbox checked={destacado} onCheckedChange={(v) => setDestacado(!!v)} />
+          Destacado
+        </label>
+        <label className="flex items-center gap-2 text-[14px]">
+          <Checkbox checked={tieneVariantes} onCheckedChange={(v) => setTieneVariantes(!!v)} />
+          Tiene variantes
+        </label>
       </div>
 
       {tieneVariantes && (
-        <div>
-          <label htmlFor="atributos-disponibles" className={labelClase}>Atributos disponibles (separados por coma)</label>
-          <input id="atributos-disponibles" value={atributosTexto} onChange={(e) => setAtributosTexto(e.target.value)} className={inputClase} placeholder="Color, Capacidad" />
-          <p className="mt-1 text-[11px] text-steel-blue-gray">Después de guardar el producto podrás crear variantes con estos atributos.</p>
+        <div className="space-y-2">
+          <Label htmlFor="atributos-disponibles">Atributos disponibles (separados por coma)</Label>
+          <Input id="atributos-disponibles" value={atributosTexto} onChange={(e) => setAtributosTexto(e.target.value)} placeholder="Color, Capacidad" />
+          <p className="text-[11px] text-muted-foreground">Después de guardar el producto podrás crear variantes con estos atributos.</p>
         </div>
       )}
+
       {errores.length > 0 && (
-        <ul className="text-[12px] text-mundo-blue">
+        <ul className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-[13px] text-destructive">
           {errores.map((err) => <li key={err}>{err}</li>)}
         </ul>
       )}
+
       <ImageUploader imagenes={imagenes} onChange={setImagenes} />
-      <button type="submit" disabled={guardando} className="rounded-chips bg-mundo-blue px-6 py-3 text-[14px] font-semibold text-pure-white shadow-lg-2 disabled:opacity-50">
+
+      <Button type="submit" disabled={guardando}>
         {guardando ? "Guardando…" : "Guardar"}
-      </button>
+      </Button>
     </form>
   );
 }

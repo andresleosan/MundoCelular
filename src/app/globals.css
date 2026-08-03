@@ -1,35 +1,35 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 @theme {
   /* ============================================================
      DESIGN TOKENS — MundoCelular Premium Palette
      Objetivo visual: Apple Store / Samsung Store / ML Premium
      Paleta: #001B5B (navy) · #00D4FF (cyan) · #FFFFFF (white)
+     
+     NOTA: Los tokens shadcn (primary, secondary, accent, etc.)
+     se mapean via @theme inline → :root CSS vars mas abajo.
+     Los tokens aqui definidos son PROPIOS de Mundo Celular.
      ============================================================ */
 
-  /* --- Paleta primaria (navy depth) --- */
-  --color-primary: #001B5B;
+  /* --- Custom colors (no colisionan con shadcn) --- */
   --color-primary-dark: #001345;
   --color-primary-light: #0035A8;
-  --color-accent: #00D4FF;
   --color-accent-glow: #4DE5FF;
 
   /* --- Fondos y superficies --- */
   --color-bg: #FFFFFF;
   --color-surface: #FAFAFA;
   --color-surface-elevated: #FFFFFF;
-  --color-border: #E8E8E8;
   --color-border-strong: #D0D0D0;
 
   /* --- Texto --- */
   --color-text: #0A0F1F;
   --color-text-secondary: #5A6478;
   --color-text-muted: #8A93A8;
-
-  /* --- Estados --- */
-  --color-success: #16A34A;
-  --color-danger: #DC2626;
-  --color-warning: #F59E0B;
 
   /* --- Hero sections / Footer / Dark surfaces --- */
   --color-navy-base: #001B5B;
@@ -69,7 +69,7 @@
   --radius-pills: 12px;
   --radius-inputs: 12px;
 
-  /* --- Shadows: elevation scale (cyan tint en hover) --- */
+  /* --- Shadows: elevation scale (navy tint en hover) --- */
   --shadow-xs: rgba(0, 27, 91, 0.04) 0px 1px 2px 0px;
   --shadow-sm: rgba(0, 27, 91, 0.06) 0px 2px 8px 0px;
   --shadow-sm-2: rgba(0, 27, 91, 0.08) 0px 4px 12px -2px, rgba(0, 27, 91, 0.06) 0px 2px 6px -2px;
@@ -89,11 +89,7 @@
   --shadow-focus: 0 0 0 3px rgba(0, 212, 255, 0.35);
 }
 
-body {
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  font-family: var(--font-inter);
-}
+/* Base body handled by @layer base below (shadcn tokens) */
 
 /* ============================================================
    ANIMACIONES — Motion con easing tokens
@@ -219,4 +215,131 @@ body {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+@theme inline {
+  --font-heading: var(--font-sora-css);
+  --font-sans: var(--font-inter-css);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  /* --- Mundo Celular light theme --- */
+  --background: #FFFFFF;
+  --foreground: #0A0F1F;
+  --card: #FFFFFF;
+  --card-foreground: #0A0F1F;
+  --popover: #FFFFFF;
+  --popover-foreground: #0A0F1F;
+  --primary: #001B5B;
+  --primary-foreground: #FFFFFF;
+  --secondary: #FAFAFA;
+  --secondary-foreground: #0A0F1F;
+  --muted: #FAFAFA;
+  --muted-foreground: #5A6478;
+  --accent: #E0F4FF;
+  --accent-foreground: #001B5B;
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
+  --border: #E8E8E8;
+  --input: #E8E8E8;
+  --ring: #00D4FF;
+  --chart-1: hsl(220 70% 50%);
+  --chart-2: hsl(190 80% 50%);
+  --chart-3: hsl(160 60% 45%);
+  --chart-4: hsl(43 74% 66%);
+  --chart-5: hsl(27 87% 67%);
+  --radius: 0.75rem;
+  --sidebar: #001B5B;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #00D4FF;
+  --sidebar-primary-foreground: #001B5B;
+  --sidebar-accent: #00246E;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: rgba(255, 255, 255, 0.12);
+  --sidebar-ring: #00D4FF;
+}
+
+.dark {
+  --background: #0A0F1F;
+  --foreground: #F5F7FB;
+  --card: #001B5B;
+  --card-foreground: #F5F7FB;
+  --popover: #001B5B;
+  --popover-foreground: #F5F7FB;
+  --primary: #00D4FF;
+  --primary-foreground: #001B5B;
+  --secondary: #00246E;
+  --secondary-foreground: #F5F7FB;
+  --muted: #00246E;
+  --muted-foreground: #8A93B3;
+  --accent: #0035A8;
+  --accent-foreground: #F5F7FB;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: rgba(255, 255, 255, 0.12);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: #00D4FF;
+  --chart-1: hsl(220 70% 60%);
+  --chart-2: hsl(190 80% 60%);
+  --chart-3: hsl(160 60% 55%);
+  --chart-4: hsl(43 74% 66%);
+  --chart-5: hsl(27 87% 67%);
+  --sidebar: #00113A;
+  --sidebar-foreground: #F5F7FB;
+  --sidebar-primary: #00D4FF;
+  --sidebar-primary-foreground: #001B5B;
+  --sidebar-accent: #00246E;
+  --sidebar-accent-foreground: #F5F7FB;
+  --sidebar-border: rgba(255, 255, 255, 0.12);
+  --sidebar-ring: #00D4FF;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
 }

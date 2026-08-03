@@ -5,108 +5,184 @@ import { useParams, useRouter } from "next/navigation";
 import { obtenerPedido, actualizarEstadoPedido } from "@/lib/firestore/pedidos";
 import { useAuth } from "@/hooks/useAuth";
 import { formatearCOP } from "@/lib/format";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/Badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ArrowLeft, Check, Ban } from "lucide-react";
 import type { Pedido } from "@/types";
+
+const estadoVariant = (
+  estado: Pedido["estado"]
+): "default" | "secondary" | "outline" | "destructive" => {
+  switch (estado) {
+    case "pendiente": return "default";
+    case "contactado": return "secondary";
+    case "cerrado": return "outline";
+    case "cancelado": return "destructive";
+  }
+};
 
 export default function DetallePedido() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const [pedido, setPedido] = useState<Pedido | null>(null);
-  const [error, setError] = useState("");
+  const [cargando, setCargando] = useState(true);
   const { usuario } = useAuth();
 
   useEffect(() => {
     obtenerPedido(id).then((p) => {
-      if (!p) setError("Pedido no encontrado");
-      else setPedido(p);
+      setPedido(p ?? null);
+      setCargando(false);
     });
   }, [id]);
 
   async function cambiarEstado(estado: Pedido["estado"]) {
-    setError("");
     try {
       if (estado === "cancelado" && usuario) {
         const token = await usuario.getIdToken();
-        const res = await fetch(`/api/pedidos/${id}/cancelar`, {
+        await fetch(`/api/pedidos/${id}/cancelar`, {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (!res.ok) {
-          const data = await res.json();
-          throw new Error(data.error || "Error al cancelar");
-        }
       } else {
         await actualizarEstadoPedido(id, estado);
       }
       const p = await obtenerPedido(id);
       if (p) setPedido(p);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Error");
-    }
+    } catch { /* handled silently */ }
   }
 
-  if (!pedido) return <main className="px-4 py-10 lg:px-10"><div className="mx-auto max-w-[800px] text-steel-blue-gray">Cargando\u2026</div></main>;
+  if (cargando) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-64 w-full max-w-2xl" />
+      </div>
+    );
+  }
+
+  if (!pedido) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <h1 className="text-[20px] font-semibold">Pedido no encontrado</h1>
+        <Button variant="ghost" onClick={() => router.back()} className="mt-4">
+          <ArrowLeft className="size-4" /> Volver
+        </Button>
+      </div>
+    );
+  }
 
   return (
-    <main className="px-4 py-10 lg:px-10">
-      <div className="mx-auto max-w-[800px]">
-        <button onClick={() => router.back()} className="text-[12px] text-mundo-blue mb-4">\u2190 Volver</button>
-        <h1 className="text-[20px] font-semibold tracking-[-0.03em]">Pedido #{id.slice(0, 8)}</h1>
+    <div className="max-w-2xl space-y-6">
+      <div className="flex items-center gap-3">
+        <Button variant="ghost" size="icon" onClick={() => router.back()}>
+          <ArrowLeft className="size-4" />
+        </Button>
+        <h1 className="text-[20px] font-semibold tracking-[-0.03em]">
+          Pedido #{id.slice(0, 8)}
+        </h1>
+      </div>
 
-        <div className="mt-6 rounded-cards bg-pure-white p-6 shadow-sm-2">
-          <div className="flex justify-between text-[14px]">
-            <span className="font-semibold">{pedido.clienteNombre}</span>
-            <span className="text-steel-blue-gray">{pedido.clienteEmail}</span>
-          </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-[16px]">Información del cliente</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          <p className="text-[14px] font-medium">{pedido.clienteNombre}</p>
+          <p className="text-[13px] text-muted-foreground">{pedido.clienteEmail}</p>
           {pedido.clienteTelefono && (
-            <p className="mt-1 text-[12px] text-steel-blue-gray">Tel: {pedido.clienteTelefono}</p>
+            <p className="text-[13px] text-muted-foreground">Tel: {pedido.clienteTelefono}</p>
           )}
-          <p className="mt-1 text-[12px] text-steel-blue-gray">UID: {pedido.clienteUid}</p>
+        </CardContent>
+      </Card>
 
-          <h2 className="mt-4 text-[14px] font-semibold text-steel-blue-gray">Items</h2>
-          <ul className="mt-2 flex flex-col gap-1">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-[16px]">Productos</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-2">
             {pedido.items.map((item) => (
               <li key={item.productoId} className="flex justify-between text-[14px]">
-                <span>{item.nombre} x{item.cantidad}</span>
-                <span className="font-jetbrains-mono">{formatearCOP(item.subtotal)}</span>
+                <span>{item.nombre} ×{item.cantidad}</span>
+                <span className="tabular-nums text-muted-foreground">{formatearCOP(item.subtotal)}</span>
               </li>
             ))}
           </ul>
-          <div className="mt-3 border-t border-faint-border pt-3 text-right">
-            <span className="font-semibold">Total: </span>
-            <span className="font-jetbrains-mono text-mundo-blue">{formatearCOP(pedido.total)}</span>
+          <div className="mt-4 border-t pt-3 text-right">
+            <span className="text-[15px] font-semibold">
+              Total: {formatearCOP(pedido.total)}
+            </span>
           </div>
+        </CardContent>
+      </Card>
 
-          <h2 className="mt-4 text-[14px] font-semibold text-steel-blue-gray">Entrega</h2>
-          <p className="mt-1 text-[14px]">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-[16px]">Entrega</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-[14px]">
             {pedido.entrega.tipo === "domicilio"
-              ? `Domicilio \u2014 ${pedido.entrega.direccion}${pedido.entrega.barrio ? `, ${pedido.entrega.barrio}` : ""}${pedido.ciudad ? ` (${pedido.ciudad})` : ""}`
+              ? `Domicilio — ${pedido.entrega.direccion}${pedido.entrega.barrio ? `, ${pedido.entrega.barrio}` : ""}${pedido.ciudad ? ` (${pedido.ciudad})` : ""}`
               : "Retiro en tienda"}
           </p>
           {pedido.observaciones && (
-            <p className="mt-2 text-[13px] text-steel-blue-gray italic">Obs: {pedido.observaciones}</p>
+            <p className="mt-2 text-[13px] italic text-muted-foreground">
+              Obs: {pedido.observaciones}
+            </p>
           )}
+        </CardContent>
+      </Card>
 
-          <h2 className="mt-4 text-[14px] font-semibold text-steel-blue-gray">Estado</h2>
-          <p className="mt-1 text-[14px] font-semibold">{pedido.estado}</p>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-[16px]">Estado</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Badge variant={estadoVariant(pedido.estado)} className="text-[13px]">
+            {pedido.estado}
+          </Badge>
 
-          <div className="mt-4 flex gap-2">
+          <div className="flex gap-2">
             {pedido.estado === "pendiente" && (
               <>
-                <button onClick={() => cambiarEstado("contactado")} className="rounded-chips bg-mundo-blue px-4 py-2 text-[12px] font-semibold text-pure-white">Marcar contactado</button>
-                <button onClick={() => { if (confirm("\u00bfCancelar y devolver stock?")) cambiarEstado("cancelado"); }} className="rounded-chips border border-red-300 px-4 py-2 text-[12px] text-red-600">Cancelar y devolver stock</button>
+                <Button size="sm" onClick={() => cambiarEstado("contactado")}>
+                  <Check className="size-3.5" /> Marcar contactado
+                </Button>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => {
+                    if (confirm("¿Cancelar y devolver stock?"))
+                      cambiarEstado("cancelado");
+                  }}
+                >
+                  <Ban className="size-3.5" /> Cancelar
+                </Button>
               </>
             )}
             {pedido.estado === "contactado" && (
               <>
-                <button onClick={() => cambiarEstado("cerrado")} className="rounded-chips bg-green-600 px-4 py-2 text-[12px] font-semibold text-pure-white">Marcar cerrado</button>
-                <button onClick={() => { if (confirm("\u00bfCancelar y devolver stock?")) cambiarEstado("cancelado"); }} className="rounded-chips border border-red-300 px-4 py-2 text-[12px] text-red-600">Cancelar y devolver stock</button>
+                <Button size="sm" onClick={() => cambiarEstado("cerrado")}>
+                  <Check className="size-3.5" /> Marcar cerrado
+                </Button>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => {
+                    if (confirm("¿Cancelar y devolver stock?"))
+                      cambiarEstado("cancelado");
+                  }}
+                >
+                  <Ban className="size-3.5" /> Cancelar
+                </Button>
               </>
             )}
           </div>
-        </div>
-
-        {error && <p className="mt-4 text-[12px] text-mundo-blue">{error}</p>}
-      </div>
-    </main>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

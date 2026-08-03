@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { CategoriaForm } from "@/components/admin/CategoriaForm";
 import { listarCategorias } from "@/lib/firestore/categorias";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ArrowLeft } from "lucide-react";
 import type { Categoria } from "@/types";
 
 type Estado = "cargando" | "no-encontrada" | "error" | "lista";
@@ -30,29 +33,34 @@ export default function EditarCategoria() {
   }, [id]);
 
   return (
-    <main className="px-4 py-10 lg:px-10">
-      <div className="mx-auto max-w-[1200px]">
-        <h1 className="mb-6 text-[20px] font-semibold tracking-[-0.03em]">Editar categoría</h1>
-        {estado === "lista" && categoria ? (
-          <CategoriaForm categoria={categoria} />
-        ) : estado === "cargando" ? (
-          <p className="text-[14px] text-steel-blue-gray">Cargando…</p>
-        ) : (
-          <div className="rounded-cards bg-pure-white p-6 shadow-sm-2">
-            <h2 className="mb-2 text-[16px] font-semibold">
-              {estado === "no-encontrada" ? "Categoría no encontrada" : "No se pudo cargar la categoría"}
-            </h2>
-            <p className="mb-4 text-[14px] text-steel-blue-gray">
-              {estado === "no-encontrada"
-                ? "La categoría que buscás no existe o fue eliminada."
-                : "Ocurrió un error al cargar la categoría. Intentá de nuevo más tarde."}
-            </p>
-            <Link href="/admin/categorias" className="rounded-chips border border-faint-border px-3 py-1 text-[12px]">
+    <div className="space-y-6">
+      <h1 className="text-[20px] font-semibold tracking-[-0.03em]">Editar categoría</h1>
+      {estado === "lista" && categoria ? (
+        <CategoriaForm categoria={categoria} />
+      ) : estado === "cargando" ? (
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-36" />
+          <Skeleton className="h-10 w-full max-w-xl" />
+          <Skeleton className="h-24 w-full max-w-xl" />
+        </div>
+      ) : (
+        <div className="rounded-lg border bg-card p-8 text-center">
+          <h2 className="text-[16px] font-semibold">
+            {estado === "no-encontrada" ? "Categoría no encontrada" : "No se pudo cargar la categoría"}
+          </h2>
+          <p className="mt-2 text-[14px] text-muted-foreground">
+            {estado === "no-encontrada"
+              ? "La categoría que buscás no existe o fue eliminada."
+              : "Ocurrió un error al cargar. Intentá de nuevo más tarde."}
+          </p>
+          <Link href="/admin/categorias" className="mt-4 inline-block">
+            <Button variant="outline" size="sm">
+              <ArrowLeft className="size-3.5" />
               Volver a categorías
-            </Link>
-          </div>
-        )}
-      </div>
-    </main>
+            </Button>
+          </Link>
+        </div>
+      )}
+    </div>
   );
 }

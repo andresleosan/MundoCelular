@@ -1,49 +1,141 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { eliminarProducto, listarProductos } from "@/lib/firestore/productos";
 import { formatearCOP } from "@/lib/format";
+import { DataTable, type Column } from "@/components/admin/DataTable";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/Badge";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import type { Producto } from "@/types";
 
 export default function ProductosAdmin() {
   const [productos, setProductos] = useState<Producto[]>([]);
+  const [cargando, setCargando] = useState(true);
 
-  const cargar = () => listarProductos().then(setProductos);
-  useEffect(() => { cargar(); }, []);
+  const cargar = useCallback(() => {
+    setCargando(true);
+    listarProductos().then(setProductos).finally(() => setCargando(false));
+  }, []);
+
+  useEffect(() => {
+    cargar();
+  }, [cargar]);
 
   async function eliminar(id: string) {
+    if (!confirm("¿Eliminar este producto?")) return;
     await eliminarProducto(id);
     await cargar();
   }
 
-  return (
-    <main className="px-4 py-10 lg:px-10">
-      <div className="mx-auto max-w-[1200px]">
-        <div className="flex items-center justify-between">
-          <h1 className="text-[20px] font-semibold tracking-[-0.03em]">Productos</h1>
-          <Link href="/admin/productos/nueva" className="rounded-chips bg-mundo-blue px-4 py-2 text-[14px] font-semibold text-pure-white shadow-lg-2">
-            Nuevo producto
-          </Link>
+  const columns: Column<Producto>[] = [
+    {
+      header: "Nombre",
+      cell: (p) => (
+        <div className="flex items-center gap-3">
+          {p.imagenes?.[0]?.thumb && (
+            <img
+              src={p.imagenes[0].thumb}
+              alt={p.nombre}
+              className="size-9 rounded-lg object-cover"
+            />
+          )}
+          <div>
+            <p className="text-[14px] font-medium">{p.nombre}</p>
+            <p className="text-[12px] text-muted-foreground">/{p.slug}</p>
+          </div>
+          {p.destacado && (
+            <Badge variant="secondary" className="ml-1 text-[10px]">
+              destacado
+            </Badge>
+          )}
         </div>
-        <ul className="mt-6 flex flex-col gap-3">
-          {productos.map((p) => (
-            <li key={p.id} className="flex items-center gap-4 rounded-cards bg-pure-white px-6 py-4 shadow-sm-2">
-              <div>
-                <p className="text-[14px] font-semibold">{p.nombre} {p.destacado && <span className="ml-1 rounded-chips bg-canvas-frost px-2 py-0.5 text-[11px] text-mundo-blue">destacado</span>}</p>
-                <p className="font-jetbrains-mono text-[12px] text-steel-blue-gray">
-                  {formatearCOP(p.precio)} · stock {p.stock} · /{p.slug}
-                </p>
-              </div>
-              {!p.activo && <span className="rounded-chips bg-canvas-frost px-2 py-1 text-[11px] text-steel-blue-gray">inactivo</span>}
-              <span className="ml-auto flex gap-2">
-                <Link href={`/admin/productos/${p.id}`} className="rounded-chips border border-faint-border px-3 py-1 text-[12px]">Editar</Link>
-                <button onClick={() => eliminar(p.id)} className="rounded-chips border border-faint-border px-3 py-1 text-[12px] text-steel-blue-gray">Eliminar</button>
-              </span>
-            </li>
-          ))}
-        </ul>
+      ),
+    },
+    {
+      header: "Precio",
+      className: "tabular-nums w-[120px]",
+      cell: (p) => <span className="text-[14px]">{formatearCOP(p.precio)}</span>,
+    },
+    {
+      header: "Stock",
+      className: "w-[80px]",
+      cell: (p) => (
+        <span
+          className={`text-[14px] ${p.stock <= 3 ? "font-medium text-destructive" : ""}`}
+        >
+          {p.stock}
+        </span>
+      ),
+    },
+    {
+      header: "Estado",
+      className: "w-[100px]",
+      cell: (p) =>
+        p.activo ? (
+          <Badge variant="default">Activo</Badge>
+        ) : (
+          <Badge variant="secondary">Inactivo</Badge>
+        ),
+    },
+    {
+      header: "Acciones",
+      className: "w-[120px] text-right",
+      cell: (p) => (
+        <div className="flex justify-end gap-1">
+          <Link href={`/admin/productos/${p.id}`}>
+            <Button variant="ghost" size="icon" className="size-8">
+              <Pencil className="size-3.5" />
+            </Button>
+          </Link>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-8 text-muted-foreground hover:text-destructive"
+            onClick={(e) => {
+              e.stopPropagation();
+              eliminar(p.id);
+            }}
+          >
+            <Trash2 className="size-3.5" />
+          </Button>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-[20px] font-semibold tracking-[-0.03em]">
+            Productos
+          </h1>
+          <p className="text-[13px] text-muted-foreground">
+            Gestiona el catálogo de la tienda.
+          </p>
+        </div>
+        <Link href="/admin/productos/nueva">
+          <Button size="sm">
+            <Plus className="size-4" />
+            Nuevo producto
+          </Button>
+        </Link>
       </div>
-    </main>
+
+      <DataTable
+        columns={columns}
+        data={productos}
+        keyField="id"
+        loading={cargando}
+        loadingRows={8}
+        emptyTitle="No hay productos"
+        emptyDescription="Crea tu primer producto para empezar a vender."
+        onRowClick={(p) =>
+          (window.location.href = `/admin/productos/${p.id}`)
+        }
+      />
+    </div>
   );
 }

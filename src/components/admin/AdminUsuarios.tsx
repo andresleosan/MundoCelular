@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Plus, Trash2, Circle } from "lucide-react";
 
 interface AdminUser {
   email: string;
@@ -34,10 +39,8 @@ export function AdminUsuarios() {
   async function handleAsignar(e: React.FormEvent) {
     e.preventDefault();
     if (!validarEmail(email)) return;
-
     setCargando(true);
     setMensaje(null);
-
     try {
       const res = await fetch("/api/admin/usuarios", {
         method: "POST",
@@ -45,7 +48,6 @@ export function AdminUsuarios() {
         body: JSON.stringify({ email: email.trim() }),
       });
       const data = await res.json();
-
       if (res.ok) {
         setMensaje({ tipo: "exito", texto: data.mensaje });
         setEmail("");
@@ -61,10 +63,8 @@ export function AdminUsuarios() {
 
   async function handleRevocar(adminEmail: string) {
     if (!confirm(`¿Quitar permisos de admin a ${adminEmail}?`)) return;
-
     setCargando(true);
     setMensaje(null);
-
     try {
       const res = await fetch("/api/admin/usuarios", {
         method: "DELETE",
@@ -72,7 +72,6 @@ export function AdminUsuarios() {
         body: JSON.stringify({ email: adminEmail }),
       });
       const data = await res.json();
-
       if (res.ok) {
         setMensaje({ tipo: "exito", texto: data.mensaje });
         cargarAdmins();
@@ -90,63 +89,87 @@ export function AdminUsuarios() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-cards bg-pure-white p-6 shadow-sm-2">
-        <h2 className="text-[16px] font-semibold text-ink-navy">Agregar administrador</h2>
-        <form onSubmit={handleAsignar} className="mt-4 flex gap-3">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="email@ejemplo.com"
-            required
-            className="flex-1 rounded-chips border border-faint-border px-4 py-2 text-[14px] focus:border-mundo-blue focus:outline-none"
-          />
-          <button
-            type="submit"
-            disabled={cargando || !validarEmail(email)}
-            className="rounded-chips bg-mundo-blue px-6 py-2 text-[14px] font-medium text-pure-white transition hover:opacity-90 disabled:opacity-50"
-          >
-            {cargando ? "Asignando…" : "Dar permiso"}
-          </button>
-        </form>
-      </div>
+    <div className="max-w-xl space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-[16px]">Agregar administrador</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleAsignar} className="flex gap-3">
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="email@ejemplo.com"
+              required
+              className="flex-1"
+            />
+            <Button type="submit" disabled={cargando || !validarEmail(email)}>
+              <Plus className="size-4" />
+              Dar permiso
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
 
       {mensaje && (
-        <div className={`rounded-chips px-4 py-3 text-[14px] ${mensaje.tipo === "exito" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}>
+        <div className={`rounded-lg border px-4 py-3 text-[14px] ${
+          mensaje.tipo === "exito"
+            ? "border-green-200 bg-green-50 text-green-700"
+            : "border-destructive/30 bg-destructive/5 text-destructive"
+        }`}>
           {mensaje.texto}
         </div>
       )}
 
-      <div className="rounded-cards bg-pure-white p-6 shadow-sm-2">
-        <h2 className="text-[16px] font-semibold text-ink-navy">Administradores actuales</h2>
-        {cargandoLista ? (
-          <p className="mt-4 text-[14px] text-steel-blue-gray">Cargando…</p>
-        ) : admins.length === 0 ? (
-          <p className="mt-4 text-[14px] text-steel-blue-gray">No hay administradores registrados.</p>
-        ) : (
-          <ul className="mt-4 divide-y divide-faint-border">
-            {admins.map((admin) => (
-              <li key={admin.email} className="flex items-center justify-between py-3">
-                <div className="flex items-center gap-3">
-                  <span className={`h-2 w-2 rounded-full ${admin.pendiente ? "bg-yellow-500" : "bg-green-500"}`} />
-                  <span className="text-[14px] text-ink-navy">{admin.email}</span>
-                  {admin.pendiente && (
-                    <span className="text-[12px] text-yellow-600">(pendiente)</span>
-                  )}
-                </div>
-                <button
-                  onClick={() => handleRevocar(admin.email)}
-                  disabled={cargando}
-                  className="text-[14px] text-red-600 hover:text-red-800 disabled:opacity-50"
-                >
-                  Quitar
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-[16px]">Administradores actuales</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {cargandoLista ? (
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-10 w-full" />
+              ))}
+            </div>
+          ) : admins.length === 0 ? (
+            <div className="py-8 text-center">
+              <p className="text-[14px] text-muted-foreground">
+                No hay administradores registrados.
+              </p>
+            </div>
+          ) : (
+            <ul className="divide-y">
+              {admins.map((admin) => (
+                <li key={admin.email} className="flex items-center justify-between py-3">
+                  <div className="flex items-center gap-3">
+                    <Circle
+                      className={`size-2 fill-current ${
+                        admin.pendiente ? "text-yellow-500" : "text-green-500"
+                      }`}
+                    />
+                    <span className="text-[14px]">{admin.email}</span>
+                    {admin.pendiente && (
+                      <span className="text-[12px] text-yellow-600">(pendiente)</span>
+                    )}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleRevocar(admin.email)}
+                    disabled={cargando}
+                    className="text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="size-3.5" />
+                    Quitar
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

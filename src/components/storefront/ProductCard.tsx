@@ -6,7 +6,7 @@ import { useState } from "react";
 import { formatearCOP } from "@/lib/format";
 import { Icon } from "@/components/ui/Icon";
 import { Badge } from "@/components/ui/Badge";
-import { cn } from "@/lib/cn";
+import { cn } from "@/lib/utils";
 import type { Producto } from "@/types";
 
 type ProductCardVariant = "default" | "compact" | "featured";
