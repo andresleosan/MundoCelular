@@ -15,7 +15,6 @@ export function CategoriaForm({ categoria }: { categoria?: Categoria }) {
   const router = useRouter();
   const [nombre, setNombre] = useState(categoria?.nombre ?? "");
   const [descripcion, setDescripcion] = useState(categoria?.descripcion ?? "");
-  const [orden, setOrden] = useState(categoria?.orden ?? 0);
   const [activa, setActiva] = useState(categoria?.activa ?? true);
   const [error, setError] = useState("");
   const [guardando, setGuardando] = useState(false);
@@ -29,8 +28,8 @@ export function CategoriaForm({ categoria }: { categoria?: Categoria }) {
     setGuardando(true);
     setError("");
     try {
-      if (categoria) await actualizarCategoria(categoria.id, { nombre, descripcion, orden, activa });
-      else await crearCategoria({ nombre, descripcion, orden, activa });
+      if (categoria) await actualizarCategoria(categoria.id, { nombre, descripcion, activa });
+      else await crearCategoria({ nombre, descripcion, activa });
       router.push("/admin/categorias");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al guardar");
@@ -51,16 +50,10 @@ export function CategoriaForm({ categoria }: { categoria?: Categoria }) {
         <Textarea id="descripcion" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} rows={3} />
       </div>
 
-      <div className="flex items-center gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="orden">Orden</Label>
-          <Input id="orden" type="number" value={orden} onChange={(e) => setOrden(Number(e.target.value))} className="w-24" />
-        </div>
-        <label className="flex items-center gap-2 pt-6 text-[14px]">
-          <Checkbox checked={activa} onCheckedChange={(v) => setActiva(!!v)} />
-          Activa
-        </label>
-      </div>
+      <label className="flex items-center gap-2 text-[14px]">
+        <Checkbox checked={activa} onCheckedChange={(v) => setActiva(!!v)} />
+        Activa
+      </label>
 
       {error && (
         <p className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-[13px] text-destructive">{error}</p>
