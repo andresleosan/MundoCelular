@@ -46,23 +46,23 @@ export default async function ReparacionesPage() {
     <>
       {config && <JsonLd data={jsonldReparaciones(config)} />}
       <main className="mx-auto max-w-[800px] px-4 py-14">
-        <h1 className="text-[28px] font-semibold tracking-[-0.03em] text-gray-900">
+        <h1 className="text-[28px] font-semibold tracking-[-0.03em] text-fog-white">
           Reparación de celulares en {ciudad}
         </h1>
-        <p className="mt-4 text-[16px] text-steel-blue-gray">
+        <p className="mt-4 text-[16px] text-fog-white/70">
           Reparamos celulares, tablets y consolas. Diagnóstico gratis y sin compromiso.
         </p>
 
         <section className="mt-8">
-          <h2 className="text-[18px] font-semibold text-gray-900">Servicios</h2>
+          <h2 className="text-[18px] font-semibold text-fog-white">Servicios</h2>
           <div className="mt-4 space-y-3">
             {SERVICIOS.map((s) => (
-              <div key={s.nombre} className="flex items-start justify-between rounded-2xl bg-white p-4 shadow-sm-2">
+              <div key={s.nombre} className="flex items-start justify-between rounded-2xl bg-navy-surface/40 p-4 shadow-sm-2">
                 <div>
-                  <h3 className="text-[14px] font-semibold text-gray-900">{s.nombre}</h3>
-                  <p className="mt-1 text-[13px] text-steel-blue-gray">{s.descripcion}</p>
+                  <h3 className="text-[14px] font-semibold text-fog-white">{s.nombre}</h3>
+                  <p className="mt-1 text-[13px] text-fog-white/70">{s.descripcion}</p>
                 </div>
-                <span className="ml-4 shrink-0 rounded-chips bg-blue-wash px-3 py-1 text-[12px] font-semibold text-mundo-blue">
+                <span className="ml-4 shrink-0 rounded-chips bg-glow-cyan/10 px-3 py-1 text-[12px] font-semibold text-glow-cyan">
                   {s.precio}
                 </span>
               </div>
@@ -70,9 +70,9 @@ export default async function ReparacionesPage() {
           </div>
         </section>
 
-        <section className="mt-8 rounded-2xl bg-canvas-frost p-6 text-center">
-          <p className="text-[14px] text-steel-blue-gray">{direccion}</p>
-          <p className="mt-1 text-[14px] text-steel-blue-gray">{horario}</p>
+        <section className="mt-8 rounded-2xl bg-navy-surface/40 p-6 text-center">
+          <p className="text-[14px] text-fog-white/70">{direccion}</p>
+          <p className="mt-1 text-[14px] text-fog-white/70">{horario}</p>
         </section>
 
         <div className="mt-8 flex flex-wrap justify-center gap-3">
@@ -86,7 +86,7 @@ export default async function ReparacionesPage() {
           </a>
           <Link
             href="/"
-            className="rounded-full border border-faint-border bg-white px-6 py-3 text-[14px] font-semibold text-gray-900 shadow-sm-2"
+            className="rounded-full border border-fog-white/15 bg-navy-surface/40 px-6 py-3 text-[14px] font-semibold text-fog-white shadow-sm-2"
           >
             Ver productos
           </Link>

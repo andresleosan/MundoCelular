@@ -31,23 +31,23 @@ export default async function ContactoPage() {
     <>
       {config && <JsonLd data={jsonldContacto(config)} />}
       <main className="mx-auto max-w-[800px] px-4 py-14">
-        <h1 className="text-[28px] font-semibold tracking-[-0.03em] text-gray-900">
+        <h1 className="text-[28px] font-semibold tracking-[-0.03em] text-fog-white">
           Contacto
         </h1>
 
         <div className="mt-8 space-y-6">
           <section>
-            <h2 className="text-[16px] font-semibold text-gray-900">Dirección</h2>
-            <p className="mt-2 text-[14px] text-steel-blue-gray">{direccion}, {ciudad}</p>
+            <h2 className="text-[16px] font-semibold text-fog-white">Dirección</h2>
+            <p className="mt-2 text-[14px] text-fog-white/70">{direccion}, {ciudad}</p>
           </section>
 
           <section>
-            <h2 className="text-[16px] font-semibold text-gray-900">Horario</h2>
-            <p className="mt-2 text-[14px] text-steel-blue-gray">{horario}</p>
+            <h2 className="text-[16px] font-semibold text-fog-white">Horario</h2>
+            <p className="mt-2 text-[14px] text-fog-white/70">{horario}</p>
           </section>
 
           <section>
-            <h2 className="text-[16px] font-semibold text-gray-900">WhatsApp</h2>
+            <h2 className="text-[16px] font-semibold text-fog-white">WhatsApp</h2>
             <a
               href={`https://wa.me/${whatsapp}`}
               target="_blank"
@@ -60,20 +60,20 @@ export default async function ContactoPage() {
 
           {Object.values(redes).some(Boolean) && (
             <section>
-              <h2 className="text-[16px] font-semibold text-gray-900">Redes sociales</h2>
+              <h2 className="text-[16px] font-semibold text-fog-white">Redes sociales</h2>
               <div className="mt-2 flex flex-wrap gap-3">
                 {redes.instagram && (
-                  <a href={redes.instagram} target="_blank" rel="noopener noreferrer" className="rounded-full border border-faint-border bg-white px-4 py-2 text-[14px] text-ink-navy hover:bg-canvas-frost">
+                  <a href={redes.instagram} target="_blank" rel="noopener noreferrer" className="rounded-full border border-fog-white/15 bg-navy-surface/40 px-4 py-2 text-[14px] text-fog-white hover:bg-navy-surface/60">
                     Instagram
                   </a>
                 )}
                 {redes.facebook && (
-                  <a href={redes.facebook} target="_blank" rel="noopener noreferrer" className="rounded-full border border-faint-border bg-white px-4 py-2 text-[14px] text-ink-navy hover:bg-canvas-frost">
+                  <a href={redes.facebook} target="_blank" rel="noopener noreferrer" className="rounded-full border border-fog-white/15 bg-navy-surface/40 px-4 py-2 text-[14px] text-fog-white hover:bg-navy-surface/60">
                     Facebook
                   </a>
                 )}
                 {redes.tiktok && (
-                  <a href={redes.tiktok} target="_blank" rel="noopener noreferrer" className="rounded-full border border-faint-border bg-white px-4 py-2 text-[14px] text-ink-navy hover:bg-canvas-frost">
+                  <a href={redes.tiktok} target="_blank" rel="noopener noreferrer" className="rounded-full border border-fog-white/15 bg-navy-surface/40 px-4 py-2 text-[14px] text-fog-white hover:bg-navy-surface/60">
                     TikTok
                   </a>
                 )}
@@ -82,8 +82,8 @@ export default async function ContactoPage() {
           )}
 
           <section>
-            <h2 className="text-[16px] font-semibold text-gray-900">Ubicación</h2>
-            <div className="mt-2 overflow-hidden rounded-2xl border border-faint-border">
+            <h2 className="text-[16px] font-semibold text-fog-white">Ubicación</h2>
+            <div className="mt-2 overflow-hidden rounded-2xl border border-fog-white/15">
               <iframe
                 title="Ubicación de Mundo Celular"
                 src={`https://www.openstreetmap.org/export/embed.html?bbox=-75.58,-6.26,-75.54,-6.22&layer=mapnik&marker=-6.24,-75.56`}

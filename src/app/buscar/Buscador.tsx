@@ -19,11 +19,11 @@ export function Buscador() {
 
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-10">
-      <h1 className="text-[24px] font-semibold tracking-[-0.03em] text-gray-900">Resultados para &ldquo;{q}&rdquo;</h1>
+      <h1 className="text-[24px] font-semibold tracking-[-0.03em] text-fog-white">Resultados para &ldquo;{q}&rdquo;</h1>
       {resultados === null ? (
-        <p className="mt-6 text-[14px] text-steel-blue-gray">Buscando…</p>
+        <p className="mt-6 text-[14px] text-fog-white/70">Buscando…</p>
       ) : resultados.length === 0 ? (
-        <p className="mt-6 text-[14px] text-steel-blue-gray">No encontramos productos. Prueba con otra palabra o escríbenos por WhatsApp.</p>
+        <p className="mt-6 text-[14px] text-fog-white/70">No encontramos productos. Prueba con otra palabra o escríbenos por WhatsApp.</p>
       ) : (
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {resultados.map((r) => <HeroProductCard key={r.producto.id} producto={r.producto} categoriaSlug={r.categoriaSlug} />)}

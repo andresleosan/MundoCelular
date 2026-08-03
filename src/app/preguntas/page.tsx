@@ -70,17 +70,17 @@ export default async function PreguntasPage() {
     <>
       <JsonLd data={jsonldPreguntas(preguntas)} />
       <main className="mx-auto max-w-[800px] px-4 py-14">
-        <h1 className="text-[28px] font-semibold tracking-[-0.03em] text-gray-900">
+        <h1 className="text-[28px] font-semibold tracking-[-0.03em] text-fog-white">
           Preguntas frecuentes
         </h1>
 
         <div className="mt-8 space-y-3">
           {preguntas.map((p, i) => (
-            <details key={i} className="group rounded-2xl bg-white p-4 shadow-sm-2">
-              <summary className="cursor-pointer text-[14px] font-semibold text-gray-900 marker:text-steel-blue-gray">
+            <details key={i} className="group rounded-2xl bg-navy-surface/40 p-4 shadow-sm-2">
+              <summary className="cursor-pointer text-[14px] font-semibold text-fog-white marker:text-fog-white/70">
                 {p.pregunta}
               </summary>
-              <p className="mt-3 text-[14px] leading-relaxed text-steel-blue-gray">
+              <p className="mt-3 text-[14px] leading-relaxed text-fog-white/70">
                 {p.respuesta}
               </p>
             </details>
