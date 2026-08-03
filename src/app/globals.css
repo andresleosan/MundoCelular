@@ -21,15 +21,15 @@
   --color-accent-glow: #4DE5FF;
 
   /* --- Fondos y superficies --- */
-  --color-bg: #FFFFFF;
-  --color-surface: #FAFAFA;
-  --color-surface-elevated: #FFFFFF;
-  --color-border-strong: #D0D0D0;
+  --color-bg: #001B5B;
+  --color-surface: #00246E;
+  --color-surface-elevated: #00246E;
+  --color-border-strong: rgba(255, 255, 255, 0.15);
 
   /* --- Texto --- */
-  --color-text: #0A0F1F;
-  --color-text-secondary: #5A6478;
-  --color-text-muted: #8A93A8;
+  --color-text: #F5F7FB;
+  --color-text-secondary: #8A93B3;
+  --color-text-muted: #8A93B3;
 
   /* --- Hero sections / Footer / Dark surfaces --- */
   --color-navy-base: #001B5B;
@@ -43,14 +43,14 @@
 
   /* --- Alias de compatibilidad (mantener nombres existentes) --- */
   --color-mundo-blue: #001B5B;
-  --color-canvas-frost: #FAFAFA;
+  --color-canvas-frost: #00246E;
   --color-pure-white: #FFFFFF;
-  --color-ink-navy: #0A0F1F;
-  --color-faint-border: #E8E8E8;
-  --color-steel-blue-gray: #5A6478;
+  --color-ink-navy: #F5F7FB;
+  --color-faint-border: rgba(255, 255, 255, 0.12);
+  --color-steel-blue-gray: #8A93B3;
 
   /* --- Alias antiguos (deprecados, mantener por compat) --- */
-  --color-blue-wash: #E0F4FF;
+  --color-blue-wash: rgba(0, 212, 255, 0.10);
   --color-abyss-navy: #00113A;
   --color-slate-mist: #00246E;
   --color-cool-frost: #B8CFE6;
@@ -261,26 +261,27 @@
 }
 
 :root {
-  /* --- Mundo Celular light theme --- */
-  --background: #FFFFFF;
-  --foreground: #0A0F1F;
-  --card: #FFFFFF;
-  --card-foreground: #0A0F1F;
-  --popover: #FFFFFF;
-  --popover-foreground: #0A0F1F;
+  /* --- Mundo Celular light theme → navy theme --- */
+  --background: #001B5B;
+  --foreground: #F5F7FB;
+  --card: #00246E;
+  --card-foreground: #F5F7FB;
+  --popover: #00246E;
+  --popover-foreground: #F5F7FB;
   --primary: #001B5B;
   --primary-foreground: #FFFFFF;
-  --secondary: #FAFAFA;
-  --secondary-foreground: #0A0F1F;
-  --muted: #FAFAFA;
-  --muted-foreground: #5A6478;
-  --accent: #E0F4FF;
-  --accent-foreground: #001B5B;
+  --secondary: #00246E;
+  --secondary-foreground: #F5F7FB;
+  --muted: #00246E;
+  --muted-foreground: #8A93B3;
+  --accent: #0035A8;
+  --accent-foreground: #F5F7FB;
   --destructive: #DC2626;
   --destructive-foreground: #FFFFFF;
-  --border: #E8E8E8;
-  --input: #E8E8E8;
+  --border: rgba(255, 255, 255, 0.12);
+  --input: rgba(255, 255, 255, 0.15);
   --ring: #00D4FF;
+  /* chart-* y --radius sin cambios */
   --chart-1: hsl(220 70% 50%);
   --chart-2: hsl(190 80% 50%);
   --chart-3: hsl(160 60% 45%);
