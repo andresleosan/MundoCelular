@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 import { listarCategorias } from "@/lib/firestore/categorias";
 import { listarProductos } from "@/lib/firestore/productos";
 import { listarPedidos } from "@/lib/firestore/pedidos";
@@ -32,6 +33,9 @@ import {
   ClipboardList,
   TrendingUp,
   ArrowUpRight,
+  Users,
+  UserCheck,
+  UserPlus,
 } from "lucide-react";
 import type { Pedido } from "@/types";
 
@@ -50,6 +54,33 @@ export default function AdminDashboard() {
     null
   );
   const [cargando, setCargando] = useState(true);
+
+  const { usuario } = useAuth();
+  const [stats, setStats] = useState({
+    totalUsuarios: 0,
+    totalAdmins: 0,
+    totalClientes: 0,
+    nuevosEsteMes: 0,
+    totalPedidos: 0,
+  });
+  const [statsCargando, setStatsCargando] = useState(true);
+
+  useEffect(() => {
+    if (!usuario) return;
+    usuario
+      .getIdToken()
+      .then((token) =>
+        fetch("/api/admin/stats", {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+      )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.totalUsuarios !== undefined) setStats(data);
+      })
+      .catch(() => {})
+      .finally(() => setStatsCargando(false));
+  }, [usuario]);
 
   useEffect(() => {
     Promise.all([
@@ -156,6 +187,30 @@ export default function AdminDashboard() {
       href: "/admin/pedidos",
       accent: "from-rose-500/10 to-rose-500/5",
     },
+    {
+      title: "Usuarios",
+      value: statsCargando ? "—" : stats.totalUsuarios,
+      description: "Registrados",
+      icon: Users,
+      href: "/admin/usuarios",
+      accent: "from-indigo-500/10 to-indigo-500/5",
+    },
+    {
+      title: "Clientes",
+      value: statsCargando ? "—" : stats.totalClientes,
+      description: "Con rol customer",
+      icon: UserCheck,
+      href: "/admin/usuarios",
+      accent: "from-teal-500/10 to-teal-500/5",
+    },
+    {
+      title: "Nuevos",
+      value: statsCargando ? "—" : stats.nuevosEsteMes,
+      description: "Este mes",
+      icon: UserPlus,
+      href: "/admin/usuarios",
+      accent: "from-orange-500/10 to-orange-500/5",
+    },
   ];
 
   if (cargando) {
@@ -166,7 +221,7 @@ export default function AdminDashboard() {
           <Skeleton className="mt-2 h-4 w-72" />
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[...Array(6)].map((_, i) => (
+          {[...Array(9)].map((_, i) => (
             <Card key={i}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <Skeleton className="h-4 w-24" />
