@@ -2,130 +2,170 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { loginConGoogle, loginConEmail, traducirErrorAuth } from "@/lib/auth-client";
+import { loginConGoogle, loginConEmail, cerrarSesion, traducirErrorAuth } from "@/lib/auth-client";
 import { useAuth } from "@/hooks/useAuth";
 import { Icon } from "@/components/ui/Icon";
 
+type RoleSelection = "customer" | "admin" | null;
+
 export function LoginForm() {
-  const [cargando, setCargando] = useState<"cliente" | "admin" | null>(null);
+  const router = useRouter();
+  const { usuario, esAdmin, cargando: authCargando } = useAuth();
+  const [selectedRole, setSelectedRole] = useState<RoleSelection>(null);
+  const [cargando, setCargando] = useState(false);
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { usuario, esAdmin, cargando: authCargando } = useAuth();
-  const router = useRouter();
 
   useEffect(() => {
     if (authCargando || !cargando || !usuario) return;
-    if (cargando === "admin") {
-      if (esAdmin) {
-        router.push("/admin");
-      } else {
-        setError("Esta cuenta no tiene permisos de administrador.");
-        setCargando(null);
-      }
-    } else {
-      router.push("/");
+    setCargando(false);
+    if (selectedRole === "admin" && !esAdmin) {
+      setError("Esta cuenta no tiene permisos de administrador.");
+      cerrarSesion();
+      return;
     }
-  }, [cargando, usuario, esAdmin, authCargando, router]);
+    if (selectedRole === "customer") {
+      router.push("/");
+    } else if (selectedRole === "admin") {
+      router.push("/admin");
+    }
+  }, [authCargando, usuario, esAdmin, selectedRole, router, cargando]);
 
-  async function handleLoginGoogle(tipo: "cliente" | "admin") {
-    setCargando(tipo);
+  async function handleLoginGoogle() {
+    if (!selectedRole) {
+      setError("Selecciona Cliente o Administrador");
+      return;
+    }
+    setCargando(true);
     setError("");
     try {
       await loginConGoogle();
-    } catch (e: unknown) {
-      setError(traducirErrorAuth(e));
-      setCargando(null);
+    } catch (err) {
+      setError(traducirErrorAuth(err));
+      setCargando(false);
     }
   }
 
-  async function handleLoginEmail(tipo: "cliente" | "admin") {
-    setCargando(tipo);
+  async function handleLoginEmail() {
+    if (!selectedRole) {
+      setError("Selecciona Cliente o Administrador");
+      return;
+    }
+    if (!email || !password) {
+      setError("Ingresa email y contraseña");
+      return;
+    }
+    setCargando(true);
     setError("");
     try {
       await loginConEmail(email, password);
-    } catch (e: unknown) {
-      setError(traducirErrorAuth(e));
-      setCargando(null);
+    } catch (err) {
+      setError(traducirErrorAuth(err));
+      setCargando(false);
     }
   }
 
+  const roleCards = (
+    <div className="space-y-2">
+      <p className="text-[13px] font-medium">Selecciona tu tipo de acceso</p>
+      <div className="grid grid-cols-2 gap-3">
+        <button
+          type="button"
+          onClick={() => { setSelectedRole("customer"); setError(""); }}
+          className={`flex flex-col items-center gap-2 rounded-lg border p-4 transition-all ${
+            selectedRole === "customer"
+              ? "border-primary bg-primary/8"
+              : "border-input hover:border-muted-foreground/30"
+          }`}
+        >
+          <Icon name="user" className="size-5" />
+          <span className="text-[13px] font-medium">Cliente</span>
+          <span className="text-[11px] text-muted-foreground">Ir a la tienda</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => { setSelectedRole("admin"); setError(""); }}
+          className={`flex flex-col items-center gap-2 rounded-lg border p-4 transition-all ${
+            selectedRole === "admin"
+              ? "border-primary bg-primary/8"
+              : "border-input hover:border-muted-foreground/30"
+          }`}
+        >
+          <Icon name="badge-check" className="size-5" />
+          <span className="text-[13px] font-medium">Administrador</span>
+          <span className="text-[11px] text-muted-foreground">Panel de control</span>
+        </button>
+      </div>
+    </div>
+  );
+
+  const GoogleIcon = () => (
+    <svg viewBox="0 0 24 24" className="size-4" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+    </svg>
+  );
+
   return (
-    <div className="flex flex-col items-center gap-6">
-      <div className="flex flex-col gap-4 sm:flex-row">
-        <button
-          type="button"
-          onClick={() => handleLoginGoogle("cliente")}
-          disabled={cargando !== null}
-          className="flex flex-col items-center gap-2 rounded-cards border border-faint-border bg-pure-white px-8 py-6 transition hover:shadow-lg disabled:opacity-50"
-        >
-          <Icon name="user" size={24} className="text-primary" />
-          <span className="text-[14px] font-medium text-navy-deep">Cliente</span>
-          <span className="text-[12px] text-steel-blue-gray">Ir a la tienda</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => handleLoginGoogle("admin")}
-          disabled={cargando !== null}
-          className="flex flex-col items-center gap-2 rounded-cards border border-faint-border bg-pure-white px-8 py-6 transition hover:shadow-lg disabled:opacity-50"
-        >
-          <Icon name="badge-check" size={24} className="text-primary" />
-          <span className="text-[14px] font-medium text-navy-deep">Administrador</span>
-          <span className="text-[12px] text-steel-blue-gray">Panel de control</span>
-        </button>
+    <div className="space-y-6">
+      <div className="text-center">
+        <h2 className="text-[20px] font-semibold tracking-[-0.03em]">Iniciar sesión</h2>
+        <p className="mt-1 text-[14px] text-muted-foreground">Accede con tu cuenta</p>
       </div>
 
-      <div className="w-full max-w-[300px]">
-        <div className="relative my-2">
-          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-faint-border" /></div>
-          <div className="relative flex justify-center text-[12px]"><span className="bg-pure-white px-3 text-steel-blue-gray">o con email</span></div>
-        </div>
-
-        <form onSubmit={(e) => { e.preventDefault(); handleLoginEmail("cliente"); }} className="flex flex-col gap-3">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="rounded-chips border border-faint-border px-4 py-2 text-[14px] text-navy-deep placeholder:text-navy-deep/50 focus:border-mundo-blue focus:outline-none"
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="rounded-chips border border-faint-border px-4 py-2 text-[14px] text-navy-deep placeholder:text-navy-deep/50 focus:border-mundo-blue focus:outline-none"
-          />
-          <div className="flex gap-2">
-            <button
-              type="submit"
-              disabled={cargando !== null || !email || !password}
-              className="flex-1 rounded-chips border border-faint-border bg-pure-white px-4 py-2 text-[14px] font-medium text-navy-deep transition hover:shadow-lg disabled:opacity-50"
-            >
-              Cliente
-            </button>
-            <button
-              type="button"
-              onClick={() => handleLoginEmail("admin")}
-              disabled={cargando !== null || !email || !password}
-              className="flex-1 rounded-chips border border-faint-border bg-pure-white px-4 py-2 text-[14px] font-medium text-navy-deep transition hover:shadow-lg disabled:opacity-50"
-            >
-              Admin
-            </button>
-          </div>
-        </form>
+      <div className="space-y-2">
+        <label htmlFor="email" className="text-[13px] font-medium">Email</label>
+        <input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          placeholder="correo@ejemplo.com"
+        />
       </div>
 
-      {cargando && (
-        <p className="text-[14px] text-steel-blue-gray">
-          Ingresando como {cargando === "cliente" ? "cliente" : "administrador"}…
-        </p>
+      <div className="space-y-2">
+        <label htmlFor="password" className="text-[13px] font-medium">Contraseña</label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          placeholder="••••••••"
+        />
+      </div>
+
+      {roleCards}
+
+      {error && (
+        <p className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-[13px] text-destructive">{error}</p>
       )}
 
-      {error && <p className="text-[14px] text-mundo-blue">{error}</p>}
+      <div className="space-y-3">
+        <button
+          type="button"
+          onClick={handleLoginGoogle}
+          disabled={cargando}
+          className="flex w-full items-center justify-center gap-2 rounded-lg border border-input bg-background px-4 py-2.5 text-[14px] font-medium transition hover:bg-muted disabled:opacity-50"
+        >
+          <GoogleIcon />
+          {cargando ? "Ingresando…" : "Iniciar sesión con Google"}
+        </button>
+
+        <button
+          type="button"
+          onClick={handleLoginEmail}
+          disabled={cargando}
+          className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-[14px] font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+        >
+          {cargando ? "Ingresando…" : "Iniciar sesión"}
+        </button>
+      </div>
     </div>
   );
 }
