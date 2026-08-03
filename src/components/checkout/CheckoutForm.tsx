@@ -184,7 +184,7 @@ export function CheckoutForm() {
                   id="nombre"
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
-                  className="w-full rounded-[12px] border border-fog-white/15 bg-navy-surface px-4 py-3 text-[14px] text-fog-white outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  className="w-full rounded-[12px] border border-fog-white/15 bg-navy-surface px-4 py-3 text-[14px] text-fog-white outline-none transition-all duration-200 focus:border-glow-cyan/60 focus:ring-4 focus:ring-glow-cyan/10"
                   placeholder="Tu nombre"
                 />
               </div>
@@ -197,7 +197,7 @@ export function CheckoutForm() {
                   id="telefono"
                   value={telefono}
                   onChange={(e) => setTelefono(e.target.value)}
-                  className="w-full rounded-[12px] border border-fog-white/15 bg-navy-surface px-4 py-3 text-[14px] text-fog-white outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  className="w-full rounded-[12px] border border-fog-white/15 bg-navy-surface px-4 py-3 text-[14px] text-fog-white outline-none transition-all duration-200 focus:border-glow-cyan/60 focus:ring-4 focus:ring-glow-cyan/10"
                   placeholder="300 123 4567"
                 />
               </div>
@@ -209,7 +209,7 @@ export function CheckoutForm() {
                     name="entrega"
                     checked={tipoEntrega === "retiro"}
                     onChange={() => setTipoEntrega("retiro")}
-                    className="h-5 w-5 accent-primary"
+                    className="h-5 w-5 accent-glow-cyan"
                   />
                   <div>
                     <p className="text-[14px] font-medium text-fog-white">Retiro en tienda</p>
@@ -223,7 +223,7 @@ export function CheckoutForm() {
                     name="entrega"
                     checked={tipoEntrega === "domicilio"}
                     onChange={() => setTipoEntrega("domicilio")}
-                    className="h-5 w-5 accent-primary"
+                    className="h-5 w-5 accent-glow-cyan"
                   />
                   <div>
                     <p className="text-[14px] font-medium text-fog-white">Domicilio</p>
@@ -242,7 +242,7 @@ export function CheckoutForm() {
                       id="direccion"
                       value={direccion}
                       onChange={(e) => setDireccion(e.target.value)}
-                      className="w-full rounded-[12px] border border-fog-white/15 bg-navy-surface px-4 py-3 text-[14px] text-fog-white outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                      className="w-full rounded-[12px] border border-fog-white/15 bg-navy-surface px-4 py-3 text-[14px] text-fog-white outline-none transition-all duration-200 focus:border-glow-cyan/60 focus:ring-4 focus:ring-glow-cyan/10"
                       placeholder="Cra 45 #12-30"
                     />
                   </div>
@@ -254,7 +254,7 @@ export function CheckoutForm() {
                       id="barrio"
                       value={barrio}
                       onChange={(e) => setBarrio(e.target.value)}
-                      className="w-full rounded-[12px] border border-fog-white/15 bg-navy-surface px-4 py-3 text-[14px] text-fog-white outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                      className="w-full rounded-[12px] border border-fog-white/15 bg-navy-surface px-4 py-3 text-[14px] text-fog-white outline-none transition-all duration-200 focus:border-glow-cyan/60 focus:ring-4 focus:ring-glow-cyan/10"
                       placeholder="El Poblado"
                     />
                   </div>
@@ -266,7 +266,7 @@ export function CheckoutForm() {
                       id="ciudad"
                       value={ciudad}
                       onChange={(e) => setCiudad(e.target.value)}
-                      className="w-full rounded-[12px] border border-fog-white/15 bg-navy-surface px-4 py-3 text-[14px] text-fog-white outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                      className="w-full rounded-[12px] border border-fog-white/15 bg-navy-surface px-4 py-3 text-[14px] text-fog-white outline-none transition-all duration-200 focus:border-glow-cyan/60 focus:ring-4 focus:ring-glow-cyan/10"
                       placeholder="Medellín"
                     />
                   </div>
@@ -282,7 +282,7 @@ export function CheckoutForm() {
                   value={observaciones}
                   onChange={(e) => setObservaciones(e.target.value)}
                   rows={3}
-                  className="w-full rounded-[12px] border border-fog-white/15 bg-navy-surface px-4 py-3 text-[14px] text-fog-white outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none"
+                  className="w-full rounded-[12px] border border-fog-white/15 bg-navy-surface px-4 py-3 text-[14px] text-fog-white outline-none transition-all duration-200 focus:border-glow-cyan/60 focus:ring-4 focus:ring-glow-cyan/10 resize-none"
                   placeholder="Instrucciones especiales, referencias, etc."
                 />
               </div>

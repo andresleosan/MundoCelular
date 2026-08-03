@@ -54,10 +54,10 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
           <Icon name="x" size={20} />
         </button>
 
-        <h2 className="font-inter-tight text-[24px] font-semibold tracking-[-0.03em] text-text">
+        <h2 className="font-inter-tight text-[24px] font-semibold tracking-[-0.03em] text-navy-deep">
           Iniciar sesión
         </h2>
-        <p className="mt-1 text-[14px] text-text-secondary">
+        <p className="mt-1 text-[14px] text-steel-blue-gray">
           Accede con tu cuenta Google
         </p>
 

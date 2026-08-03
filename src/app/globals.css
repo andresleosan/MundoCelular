@@ -351,6 +351,7 @@
    para que el admin se mantenga blanco aunque el sitio sea navy.
    ============================================================ */
 .admin-light-scope {
+  color: var(--foreground);
   --background: #FFFFFF;
   --foreground: #0A0F1F;
   --card: #FFFFFF;

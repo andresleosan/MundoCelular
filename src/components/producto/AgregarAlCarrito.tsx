@@ -26,7 +26,7 @@ export function AgregarAlCarrito({
     <button
       onClick={handleClick}
       disabled={disabled}
-      className="rounded-full border border-faint-border bg-white px-6 py-3 text-[14px] font-semibold text-gray-900 shadow-sm-2 disabled:opacity-50"
+      className="rounded-full border border-faint-border bg-glow-cyan px-6 py-3 text-[14px] font-semibold text-navy-deep shadow-sm-2 disabled:opacity-50"
     >
       Agregar al carrito
     </button>

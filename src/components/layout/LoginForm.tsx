@@ -60,7 +60,7 @@ export function LoginForm() {
           className="flex flex-col items-center gap-2 rounded-cards border border-faint-border bg-pure-white px-8 py-6 transition hover:shadow-lg disabled:opacity-50"
         >
           <Icon name="user" size={24} className="text-primary" />
-          <span className="text-[14px] font-medium text-ink-navy">Cliente</span>
+          <span className="text-[14px] font-medium text-navy-deep">Cliente</span>
           <span className="text-[12px] text-steel-blue-gray">Ir a la tienda</span>
         </button>
 
@@ -71,7 +71,7 @@ export function LoginForm() {
           className="flex flex-col items-center gap-2 rounded-cards border border-faint-border bg-pure-white px-8 py-6 transition hover:shadow-lg disabled:opacity-50"
         >
           <Icon name="badge-check" size={24} className="text-primary" />
-          <span className="text-[14px] font-medium text-ink-navy">Administrador</span>
+          <span className="text-[14px] font-medium text-navy-deep">Administrador</span>
           <span className="text-[12px] text-steel-blue-gray">Panel de control</span>
         </button>
       </div>
@@ -89,7 +89,7 @@ export function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="rounded-chips border border-faint-border px-4 py-2 text-[14px] focus:border-mundo-blue focus:outline-none"
+            className="rounded-chips border border-faint-border px-4 py-2 text-[14px] text-navy-deep placeholder:text-navy-deep/50 focus:border-mundo-blue focus:outline-none"
           />
           <input
             type="password"
@@ -97,13 +97,13 @@ export function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="rounded-chips border border-faint-border px-4 py-2 text-[14px] focus:border-mundo-blue focus:outline-none"
+            className="rounded-chips border border-faint-border px-4 py-2 text-[14px] text-navy-deep placeholder:text-navy-deep/50 focus:border-mundo-blue focus:outline-none"
           />
           <div className="flex gap-2">
             <button
               type="submit"
               disabled={cargando !== null || !email || !password}
-              className="flex-1 rounded-chips border border-faint-border bg-pure-white px-4 py-2 text-[14px] font-medium transition hover:shadow-lg disabled:opacity-50"
+              className="flex-1 rounded-chips border border-faint-border bg-pure-white px-4 py-2 text-[14px] font-medium text-navy-deep transition hover:shadow-lg disabled:opacity-50"
             >
               Cliente
             </button>
@@ -111,7 +111,7 @@ export function LoginForm() {
               type="button"
               onClick={() => handleLoginEmail("admin")}
               disabled={cargando !== null || !email || !password}
-              className="flex-1 rounded-chips border border-faint-border bg-pure-white px-4 py-2 text-[14px] font-medium transition hover:shadow-lg disabled:opacity-50"
+              className="flex-1 rounded-chips border border-faint-border bg-pure-white px-4 py-2 text-[14px] font-medium text-navy-deep transition hover:shadow-lg disabled:opacity-50"
             >
               Admin
             </button>

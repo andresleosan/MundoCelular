@@ -26,7 +26,7 @@ export default async function PaginaCategorias() {
             <Link
               key={c.id}
               href={`/categoria/${c.slug}`}
-              className="flex items-center gap-3 rounded-chips border border-faint-border bg-pure-white px-4 py-3 text-[15px] text-ink-navy shadow-sm hover:shadow-sm-2"
+              className="flex items-center gap-3 rounded-chips border border-faint-border bg-pure-white px-4 py-3 text-[15px] text-navy-deep shadow-sm hover:shadow-sm-2"
             >
               <span className="text-mundo-blue">●</span>
               {c.nombre}
