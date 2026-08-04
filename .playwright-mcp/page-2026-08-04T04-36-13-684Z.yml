@@ -1,0 +1,169 @@
+- generic [active] [ref=f12e1]:
+  - banner [ref=f12e2]:
+    - generic [ref=f12e3]:
+      - link "Mundo Celular - Inicio" [ref=f12e4] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f12e5]: MUNDO CELULAR
+      - generic [ref=f12e6]:
+        - link "Carrito (0 productos)" [ref=f12e7] [cursor=pointer]:
+          - /url: /carrito
+        - button "Iniciar sesión" [ref=f12e12]
+        - button "Menú" [ref=f12e16]
+  - region "Bienvenida a Mundo Celular" [ref=f12e18]:
+    - generic [ref=f12e19]:
+      - generic [ref=f12e20]:
+        - paragraph [ref=f12e21]: Tienda de confianza en Medellín
+        - heading "La mejor tecnología, al mejor precio." [level=1] [ref=f12e23]
+        - paragraph [ref=f12e24]: Smartphones, accesorios y equipos originales con garantía real y respaldo en Medellín.
+        - generic [ref=f12e25]:
+          - link "Comprar ahora" [ref=f12e26] [cursor=pointer]:
+            - /url: "#destacados"
+          - link "Ver catálogo" [ref=f12e27] [cursor=pointer]:
+            - /url: /categoria
+        - list [ref=f12e28]:
+          - listitem [ref=f12e29]:
+            - generic [ref=f12e33]: Garantía 12 meses
+          - listitem [ref=f12e34]:
+            - generic [ref=f12e40]: Envío gratis en Medellín
+          - listitem [ref=f12e41]:
+            - generic [ref=f12e44]: Soporte WhatsApp
+      - generic [ref=f12e58]:
+        - generic [ref=f12e59]: 5G
+        - generic [ref=f12e60]: 128GB
+        - generic [ref=f12e61]: 48MP
+        - generic [ref=f12e62]: 12 meses
+  - region "Marcas" [ref=f12e75]:
+    - generic [ref=f12e76]:
+      - heading "Las marcas que distribuimos y reparamos" [level=2] [ref=f12e77]
+      - paragraph [ref=f12e78]: Equipos originales con respaldo directo
+    - generic [ref=f12e79]:
+      - 'link "Apple: 2 productos" [ref=f12e80] [cursor=pointer]':
+        - /url: /marca/apple
+        - generic [ref=f12e82]: Apple
+        - generic [ref=f12e83]: 2 productos
+      - 'link "Samsung: 1 producto" [ref=f12e84] [cursor=pointer]':
+        - /url: /marca/samsung
+        - generic [ref=f12e86]: Samsung
+        - generic [ref=f12e87]: 1 producto
+  - region "Productos destacados" [ref=f12e88]:
+    - generic [ref=f12e89]:
+      - heading "Productos destacados" [level=2] [ref=f12e90]
+      - paragraph [ref=f12e91]: La mejor tecnología al mejor precio
+    - generic [ref=f12e92]:
+      - link "Oferta Añadir a favoritos Apple iPhone 17 Pro Max $ 7.999.000 Ver oferta" [ref=f12e94] [cursor=pointer]:
+        - /url: /producto/iphone-17-pro-max
+        - generic [ref=f12e95]:
+          - generic [ref=f12e99]: Oferta
+          - button "Añadir a favoritos" [ref=f12e101]
+        - generic [ref=f12e104]:
+          - text: Apple
+          - heading "iPhone 17 Pro Max" [level=3] [ref=f12e105]
+          - generic [ref=f12e106]: $ 7.999.000
+          - generic [ref=f12e108]: Ver oferta
+      - link "iPhone 17 Pro Max 256GB Blanco Oferta Añadir a favoritos Apple iPhone 17 Pro Max 256GB $ 4.000.000 Ver oferta" [ref=f12e112] [cursor=pointer]:
+        - /url: /producto/iphone-17-pro-max-256gb
+        - generic [ref=f12e113]:
+          - img "iPhone 17 Pro Max 256GB Blanco" [ref=f12e114]
+          - generic [ref=f12e115]: Oferta
+          - button "Añadir a favoritos" [ref=f12e117]
+        - generic [ref=f12e120]:
+          - text: Apple
+          - heading "iPhone 17 Pro Max 256GB" [level=3] [ref=f12e121]
+          - generic [ref=f12e122]: $ 4.000.000
+          - generic [ref=f12e124]: Ver oferta
+  - region "Nuevos productos" [ref=f12e127]:
+    - generic [ref=f12e128]:
+      - heading "Nuevos productos" [level=2] [ref=f12e129]
+      - paragraph [ref=f12e130]: Lo último que llegó a Mundo Celular
+    - link "Añadir a favoritos Samsung a $ 100" [ref=f12e133] [cursor=pointer]:
+      - /url: /producto/a
+      - button "Añadir a favoritos" [ref=f12e138]
+      - generic [ref=f12e141]:
+        - text: Samsung
+        - heading "a" [level=3] [ref=f12e142]
+        - generic [ref=f12e143]: $ 100
+  - region "Beneficios" [ref=f12e145]:
+    - generic [ref=f12e146]:
+      - heading "¿Por qué elegir MundoCelular?" [level=2] [ref=f12e147]
+      - paragraph [ref=f12e148]: Tu tienda de tecnología de confianza en Medellín
+    - generic [ref=f12e149]:
+      - article [ref=f12e150]:
+        - heading "Equipos originales" [level=3] [ref=f12e155]
+        - paragraph [ref=f12e156]: Productos 100% originales con respaldo de garantía directa del fabricante.
+      - article [ref=f12e157]:
+        - heading "Envíos rápidos" [level=3] [ref=f12e164]
+        - paragraph [ref=f12e165]: Despachamos el mismo día en Medellín y al día siguiente en el resto del país.
+      - article [ref=f12e166]:
+        - heading "Garantía real" [level=3] [ref=f12e171]
+        - paragraph [ref=f12e172]: 12 meses cubriendo defectos de fábrica, no fallos por uso.
+      - article [ref=f12e173]:
+        - heading "Soporte 24/7" [level=3] [ref=f12e177]
+        - paragraph [ref=f12e178]: Atención por WhatsApp antes y después de tu compra.
+      - article [ref=f12e179]:
+        - heading "Pagos seguros" [level=3] [ref=f12e183]
+        - paragraph [ref=f12e184]: Sin manejo de tarjetas en línea — pagas al recibir.
+      - article [ref=f12e185]:
+        - heading "Atención personalizada" [level=3] [ref=f12e192]
+        - paragraph [ref=f12e193]: Te ayudamos a elegir el equipo ideal según tu presupuesto.
+  - region "Reparaciones" [ref=f12e194]:
+    - generic [ref=f12e196]:
+      - heading "¿Necesitas reparar tu celular?" [level=2] [ref=f12e197]
+      - paragraph [ref=f12e198]: Servicio técnico profesional. Diagnóstico gratis y repuestos originales.
+      - link "Ver servicios" [ref=f12e199] [cursor=pointer]:
+        - /url: /reparaciones
+  - contentinfo [ref=f12e200]:
+    - generic [ref=f12e201]:
+      - generic [ref=f12e202]:
+        - generic [ref=f12e203]:
+          - img "Mundo Celular" [ref=f12e204]
+          - heading "MUNDO CELULAR" [level=3] [ref=f12e205]
+          - generic [ref=f12e206]:
+            - paragraph [ref=f12e207]: "Cra 36 # 38 - 33, Barrio El Salvador"
+            - paragraph [ref=f12e208]: Medellín, Antioquia
+          - generic [ref=f12e209]:
+            - 'link "WhatsApp: +57 311 355 4021" [ref=f12e210] [cursor=pointer]':
+              - /url: https://wa.me/573113554021
+            - paragraph [ref=f12e213]: Lun–Sáb 9:00 AM – 7:00 PM
+        - generic [ref=f12e214]:
+          - heading "Enlaces" [level=4] [ref=f12e215]
+          - list [ref=f12e216]:
+            - listitem [ref=f12e217]:
+              - link "Categorías" [ref=f12e218] [cursor=pointer]:
+                - /url: /categoria
+            - listitem [ref=f12e219]:
+              - link "Reparaciones" [ref=f12e220] [cursor=pointer]:
+                - /url: /reparaciones
+            - listitem [ref=f12e221]:
+              - link "Carrito" [ref=f12e222] [cursor=pointer]:
+                - /url: /carrito
+            - listitem [ref=f12e223]:
+              - link "Contacto" [ref=f12e224] [cursor=pointer]:
+                - /url: /contacto
+            - listitem [ref=f12e225]:
+              - link "Preguntas frecuentes" [ref=f12e226] [cursor=pointer]:
+                - /url: /preguntas
+        - generic [ref=f12e227]:
+          - heading "Redes sociales" [level=4] [ref=f12e228]
+          - list [ref=f12e229]:
+            - listitem [ref=f12e230]:
+              - link "Instagram" [ref=f12e231] [cursor=pointer]:
+                - /url: https://www.instagram.com/mundo_celular_75/
+            - listitem [ref=f12e235]:
+              - link "Facebook" [ref=f12e236] [cursor=pointer]:
+                - /url: https://www.facebook.com/Mundo.Celular.01
+            - listitem [ref=f12e239]:
+              - link "TikTok" [ref=f12e240] [cursor=pointer]:
+                - /url: https://www.tiktok.com/@mundocelular75
+      - generic [ref=f12e245]: © 2026 Mundo Celular. Todos los derechos reservados.
+  - navigation "Navegación principal" [ref=f12e246]:
+    - generic [ref=f12e247]:
+      - link "Inicio" [ref=f12e248] [cursor=pointer]:
+        - /url: /
+      - link "Categorías" [ref=f12e255] [cursor=pointer]:
+        - /url: /categoria
+      - link "Buscar" [ref=f12e264] [cursor=pointer]:
+        - /url: /buscar
+      - link "Carrito" [ref=f12e271] [cursor=pointer]:
+        - /url: /carrito
+      - link "WhatsApp" [ref=f12e278] [cursor=pointer]:
+        - /url: https://wa.me/573113554021

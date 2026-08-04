@@ -1,0 +1,170 @@
+- generic [active] [ref=f4e1]:
+  - banner [ref=f4e2]:
+    - generic [ref=f4e3]:
+      - link "Mundo Celular - Inicio" [ref=f4e4] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f4e5]: MUNDO CELULAR
+      - navigation "Navegación principal" [ref=f4e6]:
+        - link "Catálogo" [ref=f4e7] [cursor=pointer]:
+          - /url: /categoria
+        - link "Marcas" [ref=f4e8] [cursor=pointer]:
+          - /url: /#marcas
+        - link "Destacados" [ref=f4e9] [cursor=pointer]:
+          - /url: /#destacados
+        - link "Sobre nosotros" [ref=f4e10] [cursor=pointer]:
+          - /url: /contacto
+      - generic [ref=f4e12]:
+        - searchbox "Buscar productos" [ref=f4e16]
+        - button "Buscar" [ref=f4e17]
+      - generic [ref=f4e20]:
+        - link "Carrito (0 productos)" [ref=f4e21] [cursor=pointer]:
+          - /url: /carrito
+        - button "Iniciar sesión" [ref=f4e26]
+  - region "Bienvenida a Mundo Celular" [ref=f4e30]:
+    - generic [ref=f4e31]:
+      - generic [ref=f4e32]:
+        - paragraph [ref=f4e33]: Tienda de confianza en Medellín
+        - heading "La mejor tecnología, al mejor precio." [level=1] [ref=f4e35]
+        - paragraph [ref=f4e36]: Smartphones, accesorios y equipos originales con garantía real y respaldo en Medellín.
+        - generic [ref=f4e37]:
+          - link "Comprar ahora" [ref=f4e38] [cursor=pointer]:
+            - /url: "#destacados"
+          - link "Ver catálogo" [ref=f4e39] [cursor=pointer]:
+            - /url: /categoria
+        - list [ref=f4e40]:
+          - listitem [ref=f4e41]:
+            - generic [ref=f4e45]: Garantía 12 meses
+          - listitem [ref=f4e46]:
+            - generic [ref=f4e52]: Envío gratis en Medellín
+          - listitem [ref=f4e53]:
+            - generic [ref=f4e56]: Soporte WhatsApp
+      - generic [ref=f4e70]:
+        - generic [ref=f4e71]: 5G
+        - generic [ref=f4e72]: 128GB
+        - generic [ref=f4e73]: 48MP
+        - generic [ref=f4e74]: 12 meses
+    - link "Ver productos destacados" [ref=f4e87] [cursor=pointer]:
+      - /url: "#destacados"
+  - region "Marcas" [ref=f4e90]:
+    - generic [ref=f4e91]:
+      - heading "Las marcas que distribuimos y reparamos" [level=2] [ref=f4e92]
+      - paragraph [ref=f4e93]: Equipos originales con respaldo directo
+    - generic [ref=f4e94]:
+      - 'link "Apple: 2 productos" [ref=f4e95] [cursor=pointer]':
+        - /url: /marca/apple
+        - generic [ref=f4e97]: Apple
+        - generic [ref=f4e98]: 2 productos
+      - 'link "Samsung: 1 producto" [ref=f4e99] [cursor=pointer]':
+        - /url: /marca/samsung
+        - generic [ref=f4e101]: Samsung
+        - generic [ref=f4e102]: 1 producto
+  - region "Productos destacados" [ref=f4e103]:
+    - generic [ref=f4e104]:
+      - heading "Productos destacados" [level=2] [ref=f4e105]
+      - paragraph [ref=f4e106]: La mejor tecnología al mejor precio
+    - generic [ref=f4e107]:
+      - link "Oferta Añadir a favoritos Apple iPhone 17 Pro Max $ 7.999.000 Ver oferta" [ref=f4e109] [cursor=pointer]:
+        - /url: /producto/iphone-17-pro-max
+        - generic [ref=f4e110]:
+          - generic [ref=f4e114]: Oferta
+          - button "Añadir a favoritos" [ref=f4e116]
+        - generic [ref=f4e119]:
+          - text: Apple
+          - heading "iPhone 17 Pro Max" [level=3] [ref=f4e120]
+          - generic [ref=f4e121]: $ 7.999.000
+          - generic [ref=f4e123]: Ver oferta
+      - link "iPhone 17 Pro Max 256GB Blanco Oferta Añadir a favoritos Apple iPhone 17 Pro Max 256GB $ 4.000.000 Ver oferta" [ref=f4e127] [cursor=pointer]:
+        - /url: /producto/iphone-17-pro-max-256gb
+        - generic [ref=f4e128]:
+          - img "iPhone 17 Pro Max 256GB Blanco" [ref=f4e129]
+          - generic [ref=f4e130]: Oferta
+          - button "Añadir a favoritos" [ref=f4e132]
+        - generic [ref=f4e135]:
+          - text: Apple
+          - heading "iPhone 17 Pro Max 256GB" [level=3] [ref=f4e136]
+          - generic [ref=f4e137]: $ 4.000.000
+          - generic [ref=f4e139]: Ver oferta
+  - region "Nuevos productos" [ref=f4e142]:
+    - generic [ref=f4e143]:
+      - heading "Nuevos productos" [level=2] [ref=f4e144]
+      - paragraph [ref=f4e145]: Lo último que llegó a Mundo Celular
+    - link "Añadir a favoritos Samsung a $ 100" [ref=f4e148] [cursor=pointer]:
+      - /url: /producto/a
+      - button "Añadir a favoritos" [ref=f4e153]
+      - generic [ref=f4e156]:
+        - text: Samsung
+        - heading "a" [level=3] [ref=f4e157]
+        - generic [ref=f4e158]: $ 100
+  - region "Beneficios" [ref=f4e160]:
+    - generic [ref=f4e161]:
+      - heading "¿Por qué elegir MundoCelular?" [level=2] [ref=f4e162]
+      - paragraph [ref=f4e163]: Tu tienda de tecnología de confianza en Medellín
+    - generic [ref=f4e164]:
+      - article [ref=f4e165]:
+        - heading "Equipos originales" [level=3] [ref=f4e170]
+        - paragraph [ref=f4e171]: Productos 100% originales con respaldo de garantía directa del fabricante.
+      - article [ref=f4e172]:
+        - heading "Envíos rápidos" [level=3] [ref=f4e179]
+        - paragraph [ref=f4e180]: Despachamos el mismo día en Medellín y al día siguiente en el resto del país.
+      - article [ref=f4e181]:
+        - heading "Garantía real" [level=3] [ref=f4e186]
+        - paragraph [ref=f4e187]: 12 meses cubriendo defectos de fábrica, no fallos por uso.
+      - article [ref=f4e188]:
+        - heading "Soporte 24/7" [level=3] [ref=f4e192]
+        - paragraph [ref=f4e193]: Atención por WhatsApp antes y después de tu compra.
+      - article [ref=f4e194]:
+        - heading "Pagos seguros" [level=3] [ref=f4e198]
+        - paragraph [ref=f4e199]: Sin manejo de tarjetas en línea — pagas al recibir.
+      - article [ref=f4e200]:
+        - heading "Atención personalizada" [level=3] [ref=f4e207]
+        - paragraph [ref=f4e208]: Te ayudamos a elegir el equipo ideal según tu presupuesto.
+  - region "Reparaciones" [ref=f4e209]:
+    - generic [ref=f4e211]:
+      - heading "¿Necesitas reparar tu celular?" [level=2] [ref=f4e212]
+      - paragraph [ref=f4e213]: Servicio técnico profesional. Diagnóstico gratis y repuestos originales.
+      - link "Ver servicios" [ref=f4e214] [cursor=pointer]:
+        - /url: /reparaciones
+  - contentinfo [ref=f4e215]:
+    - generic [ref=f4e216]:
+      - generic [ref=f4e217]:
+        - generic [ref=f4e218]:
+          - img "Mundo Celular" [ref=f4e219]
+          - heading "MUNDO CELULAR" [level=3] [ref=f4e220]
+          - generic [ref=f4e221]:
+            - paragraph [ref=f4e222]: "Cra 36 # 38 - 33, Barrio El Salvador"
+            - paragraph [ref=f4e223]: Medellín, Antioquia
+          - generic [ref=f4e224]:
+            - 'link "WhatsApp: +57 311 355 4021" [ref=f4e225] [cursor=pointer]':
+              - /url: https://wa.me/573113554021
+            - paragraph [ref=f4e228]: Lun–Sáb 9:00 AM – 7:00 PM
+        - generic [ref=f4e229]:
+          - heading "Enlaces" [level=4] [ref=f4e230]
+          - list [ref=f4e231]:
+            - listitem [ref=f4e232]:
+              - link "Categorías" [ref=f4e233] [cursor=pointer]:
+                - /url: /categoria
+            - listitem [ref=f4e234]:
+              - link "Reparaciones" [ref=f4e235] [cursor=pointer]:
+                - /url: /reparaciones
+            - listitem [ref=f4e236]:
+              - link "Carrito" [ref=f4e237] [cursor=pointer]:
+                - /url: /carrito
+            - listitem [ref=f4e238]:
+              - link "Contacto" [ref=f4e239] [cursor=pointer]:
+                - /url: /contacto
+            - listitem [ref=f4e240]:
+              - link "Preguntas frecuentes" [ref=f4e241] [cursor=pointer]:
+                - /url: /preguntas
+        - generic [ref=f4e242]:
+          - heading "Redes sociales" [level=4] [ref=f4e243]
+          - list [ref=f4e244]:
+            - listitem [ref=f4e245]:
+              - link "Instagram" [ref=f4e246] [cursor=pointer]:
+                - /url: https://www.instagram.com/mundo_celular_75/
+            - listitem [ref=f4e250]:
+              - link "Facebook" [ref=f4e251] [cursor=pointer]:
+                - /url: https://www.facebook.com/Mundo.Celular.01
+            - listitem [ref=f4e254]:
+              - link "TikTok" [ref=f4e255] [cursor=pointer]:
+                - /url: https://www.tiktok.com/@mundocelular75
+      - generic [ref=f4e260]: © 2026 Mundo Celular. Todos los derechos reservados.
