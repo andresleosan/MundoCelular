@@ -33,7 +33,7 @@
 - Consume: refs `armadoRef`, `desarmadomRef` y `desarmadoRef` existentes.
 - Produces: la misma timeline GSAP, con `armadoRef` y `desarmadoRef` nunca por debajo de `opacity: 0.3` en sus estados finales.
 
-- [ ] **Step 1: Cambiar únicamente los dos objetivos de opacidad**
+- [x] **Step 1: Cambiar únicamente los dos objetivos de opacidad**
 
 En `src/components/storefront/Hero.tsx`, cambiar:
 
@@ -61,7 +61,7 @@ por:
 
 No cambiar los `fromTo` de `desarmadomRef`, escalas, duraciones ni dependencias del efecto.
 
-- [ ] **Step 2: Ejecutar las verificaciones automatizadas**
+- [x] **Step 2: Ejecutar las verificaciones automatizadas**
 
 Run:
 
@@ -73,7 +73,7 @@ npm run build
 
 Expected: los tres comandos terminan correctamente; el lint del build puede conservar los 11 warnings preexistentes.
 
-- [ ] **Step 3: Verificar visualmente los extremos**
+- [x] **Step 3: Verificar visualmente los extremos**
 
 Con el servidor local disponible, abrir Home en `1440x900` y `390x844`. En la consola del navegador, comprobar el progreso de la sección y las opacidades:
 
@@ -86,7 +86,7 @@ images.map((image) => getComputedStyle(image).opacity);
 
 Después desplazar hasta el final de la sección Hero y repetir la lectura. El ensamblado y el desarmado deben conservar presencia visual, sin errores de consola ni overflow horizontal en ambos viewports.
 
-- [ ] **Step 4: Revisar el diff y crear el commit**
+- [x] **Step 4: Revisar el diff y crear el commit**
 
 Run:
 
