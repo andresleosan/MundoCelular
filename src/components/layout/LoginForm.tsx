@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { loginConGoogle, loginConEmail, cerrarSesion, traducirErrorAuth } from "@/lib/auth-client";
 import { useAuth } from "@/hooks/useAuth";
@@ -21,13 +21,45 @@ export function LoginForm() {
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const solicitudAdminUidRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (authCargando || !cargando || !usuario) return;
+    if (!usuario) {
+      solicitudAdminUidRef.current = null;
+      return;
+    }
+    if (authCargando || !cargando) return;
     setCargando(false);
     if (selectedRole === "admin" && !esAdmin) {
-      setError("Esta cuenta no tiene permisos de administrador.");
-      cerrarSesion();
+      if (solicitudAdminUidRef.current === usuario.uid) return;
+      solicitudAdminUidRef.current = usuario.uid;
+      void (async () => {
+        let mensaje = "No se pudo enviar la solicitud. Intenta de nuevo.";
+        try {
+          const token = await usuario.getIdToken();
+          const response = await fetch("/api/auth/admin-request", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.status === 201) {
+            mensaje = "Solicitud enviada. Un administrador revisara tu acceso.";
+          } else if (response.status === 409) {
+            const payload = await response.json().catch(() => null);
+            mensaje = typeof payload?.error === "string"
+              ? payload.error
+              : "Tu solicitud de administrador ya esta pendiente.";
+          }
+        } catch {
+          mensaje = "No se pudo enviar la solicitud. Intenta de nuevo.";
+        }
+        setError(mensaje);
+        try {
+          await cerrarSesion();
+        } catch {
+          setError("No se pudo enviar la solicitud. Intenta de nuevo.");
+        }
+      })();
       return;
     }
     if (selectedRole === "customer") {

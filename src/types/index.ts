@@ -93,4 +93,6 @@ export interface Usuario {
   active: boolean;
   createdAt: Date;
   lastLogin: Date;
+  adminRequestStatus?: "pending" | "approved" | "rejected";
+  adminRequestedAt?: Date;
 }

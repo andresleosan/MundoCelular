@@ -3,7 +3,8 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     function esAdmin() {
-      return request.auth != null && request.auth.token.admin == true;
+      return request.auth != null
+        && request.auth.token.get('admin', false) == true;
     }
 
     match /productos/{id} {
@@ -46,8 +47,16 @@ service cloud.firestore {
 
     match /users/{uid} {
       allow read: if request.auth != null && (request.auth.uid == uid || esAdmin());
-      allow write: if request.auth != null && esAdmin();
-      allow create: if request.auth != null && request.auth.uid == uid;
+      allow create: if esAdmin()
+        || (request.auth != null
+          && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly([
+            'uid', 'email', 'displayName', 'photoURL', 'role', 'active', 'createdAt', 'lastLogin'
+          ])
+          && request.resource.data.uid == uid
+          && request.resource.data.role == 'customer'
+          && request.resource.data.active == true);
+      allow update, delete: if esAdmin();
     }
   }
 }

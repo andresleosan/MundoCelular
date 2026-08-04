@@ -4,17 +4,19 @@ import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Plus, Search, ShieldOff } from "lucide-react";
+import { Plus, RefreshCw, Search, ShieldOff } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 type AdminState = { email: string; uid: string; displayName: string; photoURL: string; createdAt: string; lastLogin: string; active: boolean };
 type ClienteState = { email: string; uid: string; displayName: string; photoURL: string; createdAt: string; lastLogin: string; active: boolean };
+type SolicitudState = { uid: string; email: string; displayName: string; photoURL: string; adminRequestStatus: "pending"; adminRequestedAt?: string };
 type TabType = "admins" | "clientes";
 
 export function AdminUsuarios() {
   const { usuario } = useAuth();
   const [tab, setTab] = useState<TabType>("admins");
   const [admins, setAdmins] = useState<AdminState[]>([]);
+  const [solicitudes, setSolicitudes] = useState<SolicitudState[]>([]);
   const [clientes, setClientes] = useState<ClienteState[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
@@ -42,6 +44,7 @@ export function AdminUsuarios() {
       }
       const data = await res.json();
       setAdmins(data.data?.admins || []);
+      setSolicitudes(data.data?.solicitudes || []);
       setError("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al cargar administradores");
@@ -110,6 +113,30 @@ export function AdminUsuarios() {
     }
   }
 
+  async function resolverSolicitud(uid: string, accion: "aprobar" | "rechazar") {
+    setAccionando(true);
+    setMensaje(null);
+    try {
+      const h = await headers();
+      const res = await fetch("/api/admin/usuarios", {
+        method: accion === "aprobar" ? "POST" : "PATCH",
+        headers: h,
+        body: JSON.stringify(accion === "aprobar" ? { uid, action: "approve" } : { uid, action: "reject" }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error");
+      setMensaje({
+        tipo: "success",
+        texto: accion === "aprobar" ? "Administrador agregado correctamente" : "Solicitud rechazada",
+      });
+      await cargarAdmins();
+    } catch (err) {
+      setMensaje({ tipo: "error", texto: err instanceof Error ? err.message : "Error al resolver la solicitud" });
+    } finally {
+      setAccionando(false);
+    }
+  }
+
   const clientesFiltrados = clientes.filter((c) => {
     if (!busqueda) return true;
     const q = busqueda.toLowerCase();
@@ -118,7 +145,10 @@ export function AdminUsuarios() {
 
   function formatDate(ts: string | undefined) {
     if (!ts) return "—";
-    return new Date(ts).toLocaleDateString("es-CO", { year: "numeric", month: "short", day: "numeric" });
+    const date = new Date(ts);
+    return Number.isNaN(date.getTime())
+      ? "—"
+      : date.toLocaleDateString("es-CO", { year: "numeric", month: "short", day: "numeric" });
   }
 
   return (
@@ -148,6 +178,63 @@ export function AdminUsuarios() {
         }`}>
           {mensaje.texto}
         </div>
+      )}
+
+      {!cargando && tab === "admins" && (
+        <section className="space-y-3 rounded-lg border p-4">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-[14px] font-semibold">Solicitudes pendientes</h2>
+              <p className="text-[13px] text-muted-foreground">Revisa las cuentas que solicitaron acceso administrativo.</p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => void cargarAdmins()}
+              disabled={cargando || accionando}
+              aria-label="Actualizar solicitudes"
+            >
+              <RefreshCw className="size-3.5" />
+              Actualizar
+            </Button>
+          </div>
+          {solicitudes.length === 0 ? (
+            <p className="rounded-md border border-dashed p-4 text-[13px] text-muted-foreground">No hay solicitudes pendientes</p>
+          ) : (
+            <div className="overflow-x-auto rounded-lg border">
+              <table className="w-full min-w-[680px] text-[14px]">
+                <thead>
+                  <tr className="border-b bg-muted/50">
+                    <th className="px-4 py-3 text-left font-medium">Usuario</th>
+                    <th className="px-4 py-3 text-left font-medium">Solicitada</th>
+                    <th className="px-4 py-3 text-right font-medium">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {solicitudes.map((solicitud) => (
+                    <tr key={solicitud.uid} className="border-b last:border-0">
+                      <td className="px-4 py-3">
+                        <p className="font-medium">{solicitud.displayName || "—"}</p>
+                        <p className="text-[12px] text-muted-foreground">{solicitud.email}</p>
+                      </td>
+                      <td className="px-4 py-3 text-muted-foreground">{formatDate(solicitud.adminRequestedAt)}</td>
+                      <td className="px-4 py-3 text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button size="sm" onClick={() => resolverSolicitud(solicitud.uid, "aprobar")} disabled={accionando}>
+                            Aprobar
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={() => resolverSolicitud(solicitud.uid, "rechazar")} disabled={accionando}>
+                            Rechazar
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
       )}
 
       {tab === "admins" && (
