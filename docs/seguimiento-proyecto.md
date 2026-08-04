@@ -433,6 +433,18 @@ npm run build
 - El rate limiting tiene un comportamiento conocido para una y varias instancias.
 - No se introduce un cambio mayor sin pruebas y plan de rollback.
 
+#### Resultado parcial — 2026-08-04
+
+- Se actualizo `next` de `15.5.20` a `15.5.22` exacto, sin `--force` ni cambio mayor.
+- La suite posterior al cambio paso con 40 archivos y 293 pruebas.
+- `npx tsc --noEmit` paso sin salida.
+- `npm run lint` paso con 0 errores y 11 warnings conocidos.
+- `npm run build` paso con Next `15.5.22` y 30 rutas generadas.
+- El audit de produccion continua en 17 vulnerabilidades: 6 `high` y 11 `moderate`.
+- Las vulnerabilidades restantes son principalmente transitorias: `fast-uri`, `ip-address`, `postcss`, `sharp`, `undici`, `uuid` y dependencias de Firebase Admin.
+- Resolverlas completamente requeriria revisar cambios mayores de `firebase-admin` y/o Next 16; no se hizo automaticamente.
+- `OP-06` permanece `pendiente` y el despliegue continua bloqueado por seguridad.
+
 ---
 
 ### OP-07 — Verificacion integral y cierre operativo
@@ -621,6 +633,13 @@ Dar al administrador indicadores utiles sobre productos y pedidos sin almacenar 
 - Playwright en Firebase Console confirmo los proveedores `Correo electronico/contraseña` y `Google` con estado `Habilitada`.
 - La consola registro 5 errores auxiliares `404/403` de endpoints `cloudusersettings` y `firebasestorage`; no afectan la tabla de proveedores ni cambiaron su estado.
 - No se ejecutaron reglas, `set:admin` ni `seed:config`.
+
+### 2026-08-04 — OP-06 actualizacion segura de dependencias
+
+- `npm audit fix --dry-run` mostro cambios amplios y varias actualizaciones mayores; no se aplico automaticamente.
+- Se aplico solamente `next@15.5.22` con version exacta.
+- La verificacion completa posterior paso: tests, TypeScript, lint y build.
+- El audit de produccion sigue con 6 vulnerabilidades `high`; no se declara resuelto el gate de seguridad.
 
 ## Fuentes de verdad
 
