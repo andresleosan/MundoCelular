@@ -114,6 +114,15 @@ npm run seed:config
 
 La documentacion indica que no existe una cuenta admin de pruebas autorizada para ejecutar escrituras reales. Esta tarea debe permanecer `bloqueada` si el operador no entrega acceso autorizado.
 
+#### Preflight seguro — 2026-08-04
+
+- `.env.local` existe en el workspace.
+- `.env.local` esta ignorado por Git mediante `.gitignore:5` y no esta versionado.
+- `npx firebase use` selecciona `mundocelular-id`.
+- No se leyeron valores del archivo de entorno.
+- No se ejecutaron despliegues, escrituras Firestore, login ni `seed:config`.
+- La tarea permanece `pendiente` hasta validar las acciones autenticadas con autorizacion explicita.
+
 ---
 
 ### OP-02 — Confirmar y desplegar reglas e indices remotos
@@ -565,6 +574,13 @@ Dar al administrador indicadores utiles sobre productos y pedidos sin almacenar 
 - La suite ejecutada antes de esta sesion tenia `40` archivos y `293` pruebas exitosas.
 - Persisten como bloqueos principales el acceso admin autorizado, el producto de prueba, la evidencia E2E persistida y el cierre de indices/produccion.
 - Se creo este archivo para continuar el seguimiento por IDs estables.
+
+### 2026-08-04 — Preflight seguro de OP-01
+
+- Se verifico la existencia de `.env.local` sin leer su contenido.
+- Se verifico que Git la ignora y que no esta versionada.
+- Se verifico que Firebase apunta a `mundocelular-id`.
+- No se ejecutaron acciones externas ni mutaciones porque aun falta autorizacion para validar credenciales y acceso admin.
 
 ## Fuentes de verdad
 
