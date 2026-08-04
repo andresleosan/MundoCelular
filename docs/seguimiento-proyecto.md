@@ -601,6 +601,17 @@ Dar al administrador indicadores utiles sobre productos y pedidos sin almacenar 
 - La consulta remota de indices fue solo lectura y devolvio seis indices funcionales.
 - No se desplegaron reglas o indices ni se escribieron documentos en Firebase.
 
+### 2026-08-04 — Gate de despliegue solicitado por el operador
+
+- El operador autorizo explicitamente el despliegue de reglas y la ejecucion de `seed:config`.
+- La autorizacion quedo registrada, pero el despliegue no se ejecuto porque el checklist obligatorio conserva gates abiertos.
+- Seguridad: `npm audit --omit=dev --audit-level=high` reporto 17 vulnerabilidades: 6 `high` y 11 `moderate`.
+- Calidad: `npm test` paso con 40 archivos y 293 pruebas; `npx tsc --noEmit` paso; `npm run lint` paso con 0 errores y 11 warnings; `npm run build` paso y genero 30 rutas.
+- QA E2E: no existe `qa/reports/` con reporte HTML de una corrida autenticada y reproducible.
+- Datos: no existe evidencia de backup verificado ni procedimiento de rollback probado para la escritura de `configuracion/tienda` que realiza `seed:config`.
+- Resultado: no se ejecutaron `npm run deploy:rules`, `npm run deploy:indexes` ni `npm run seed:config`.
+- Siguiente accion obligatoria: cerrar seguridad, QA E2E y rollback/backup; despues repetir el gate con evidencia fresca.
+
 ## Fuentes de verdad
 
 - `tasks.md`: checklist historico y estado resumido de implementacion.
