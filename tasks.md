@@ -132,12 +132,12 @@ Reporte: `docs/superpowers/reports/2026-08-03-auditoria-admin-firestore-home-mar
 
 - [x] Configuración Production de Vercel y variable pública R2 completadas sin imprimir secretos.
 - [x] Post-redeploy público verificado: imagen R2, Home, búsqueda, categoría, marca y producto responden con inventario real.
-- [ ] Task 6 - Promover el fix `firebase-admin@13.10.0` y verificar `/api/revalidate` en Vercel.
+- [x] Fix `firebase-admin@13.10.0` promovido y `/api/revalidate` verificado en Vercel: token inválido devuelve `401`.
 - [x] Contrato de variables documentado sin imprimir valores; `.firebaserc` y Firebase CLI apuntan a `mundocelular-id`.
 - [x] Nombres y targets de las variables privadas de Vercel verificados sin leer valores: `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL` y `FIREBASE_PRIVATE_KEY` estan en `Production`.
 - [x] Índices remotos consultados en modo lectura; el índice `productos(activo ASC, creadoEn DESC)` no es requerido por el ordenamiento manual actual.
 - [x] Evidencia de smoke HTTP y matriz pública registrada sin escrituras; la QA manual de esta sesión comprobó imagen y rutas de catálogo.
 - [x] Suite local verificada: 222/222 tests, TypeScript y build sin errores; lint con 11 warnings y auditoria con 17 vulnerabilidades.
-- [ ] Bloqueos: falta promover el fix de dependencia, no se creó el producto de prueba, no hay CRUD admin autorizado y no existe reporte HTML E2E persistido.
+- [ ] Bloqueos: no se creó el producto de prueba, no hay CRUD admin autorizado y no existe reporte HTML E2E persistido.
 
 Reporte: `docs/superpowers/reports/2026-08-03-auditoria-local-produccion-firebase.md`

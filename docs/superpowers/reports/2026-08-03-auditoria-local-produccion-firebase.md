@@ -6,7 +6,7 @@
 
 ## Resumen De Estado
 
-La Task 6 permanece en `revision`. La configuracion Production de Vercel ya fue completada y la deployment posterior corrigio la lectura publica del catalogo y la optimizacion de imagenes R2. El endpoint `/api/revalidate` continua fallando en la deployment actual por el arbol ESM de `firebase-admin@14.2.0`; el fix local fija `firebase-admin@13.10.0`, pero aun no se ha promovido.
+La validación pública de la Task 6 quedó completada en Vercel. La configuración Production, el catálogo, las marcas, la optimización de imágenes R2 y `/api/revalidate` funcionan tras promover `firebase-admin@13.10.0`. La tarea global permanece en `revision` por falta de CRUD admin autorizado y producto de prueba.
 
 No se hicieron escrituras Firestore ni se creo un producto de prueba. Las credenciales privadas no se imprimieron en logs ni reportes.
 
@@ -90,9 +90,10 @@ Esos resultados son evidencia historica del reporte previo. Los logs actuales de
 - `GET /api/buscar?q=iPhone%2017%20Pro%20Max`: `200`, devuelve el producto.
 - `GET /api/buscar?marca=Apple`: `200`, devuelve el producto.
 - `/categoria/celulares`, `/marca/apple` y `/producto/iphone-17-pro-max-256gb`: `200`, contienen el producto.
-- `POST /api/revalidate` con token inválido: `500`; el log de Vercel conserva el error `ERR_REQUIRE_ESM` de `firebase-admin/auth`.
-- En local, el mismo smoke con el código corregido devuelve `401` para el token inválido.
-- El checkout local ya resuelve `firebase-admin@13.10.0 -> jwks-rsa@3.2.2 -> jose@4.15.9`; el código corregido aún no tiene commit, push ni deployment.
+- `POST /api/revalidate` con token inválido: `401`, `{ "error": "Token inválido" }`; el `500` ESM anterior dejó de reproducirse.
+- En local y producción, el mismo smoke con el código corregido devuelve `401` para el token inválido.
+- Deployment corregida: `dpl_3hvUX3kn5rBsdzLyJBE9xYzYDSWX`, estado `READY`, alias `https://mundocelular.vercel.app`.
+- El checkout y la deployment resuelven `firebase-admin@13.10.0 -> jwks-rsa@3.2.2 -> jose@4.15.9`.
 - `npx firebase firestore:indexes --project mundocelular-id` muestra los índices remotos usados por las consultas públicas; el índice local `productos(activo ASC, creadoEn DESC)` no es necesario para la implementación actual porque `listarProductosActivos` ordena después de leer.
 - La QA ejecutada por Playwright MCP se conserva como evidencia de esta sesión; todavía no existe un reporte HTML reproducible en `qa/reports/`.
 
@@ -169,7 +170,6 @@ Estos cambios estaban en el worktree antes de este fix y no se atribuyen a esta 
 
 ## Bloqueos
 
-- Falta promover el fix `firebase-admin@13.10.0` y verificar que `/api/revalidate` devuelva `401` para un token inválido en producción.
 - Los valores y la compatibilidad real de las variables privadas no se pueden comprobar sin exponer secretos; la lista de nombres no basta.
 - No hay cuenta admin de pruebas autorizada ni producto de prueba creado mediante CRUD.
 - No existe un reporte HTML E2E persistido en `qa/reports/`.
