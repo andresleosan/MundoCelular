@@ -50,8 +50,8 @@ export async function POST(req: NextRequest) {
     actualizadoEn: new Date(),
   });
 
-  revalidateTag("variantes");
-  revalidateTag("productos");
+  revalidateTag("variantes", "max");
+  revalidateTag("productos", "max");
 
   return NextResponse.json({ id: ref.id });
 }

@@ -152,8 +152,8 @@ describe("POST /api/revalidate", () => {
       revalidado: true,
       tags: ["productos", "categorias"],
     });
-    expect(revalidateTag).toHaveBeenCalledWith("productos");
-    expect(revalidateTag).toHaveBeenCalledWith("categorias");
+    expect(revalidateTag).toHaveBeenCalledWith("productos", "max");
+    expect(revalidateTag).toHaveBeenCalledWith("categorias", "max");
   });
 
   it("devuelve 500 cuando revalidateTag falla", async () => {

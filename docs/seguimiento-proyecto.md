@@ -445,6 +445,17 @@ npm run build
 - Resolverlas completamente requeriria revisar cambios mayores de `firebase-admin` y/o Next 16; no se hizo automaticamente.
 - `OP-06` permanece `pendiente` y el despliegue continua bloqueado por seguridad.
 
+#### Resultado de actualizacion mayor — 2026-08-04
+
+- `next` se actualizo a `16.3.0` y `firebase-admin` a `14.2.0`, ambos con version exacta.
+- Next 16 requirio pasar `revalidateTag(tag)` a `revalidateTag(tag, "max")` en las rutas de variantes y revalidacion.
+- `src/middleware.ts` se migro a `src/proxy.ts` con el mismo matcher y comportamiento.
+- Next 16 ajusto `tsconfig.json` a `jsx: react-jsx` y agrego `.next/dev/types/**/*.ts` al `include`; el cambio fue revisado y aceptado.
+- La verificacion posterior paso: 40 archivos, 293 pruebas, TypeScript, lint con 0 errores y build exitoso.
+- El audit de produccion quedo en 13 vulnerabilidades: 4 `high` y 9 `moderate`, sin `critical`.
+- El audit completo aun reporta 37 vulnerabilidades, incluyendo 5 `critical` de herramientas o dependencias de desarrollo; no se aplico `npm audit fix --force`.
+- `OP-06` permanece `pendiente` hasta resolver o aceptar formalmente los riesgos restantes.
+
 ---
 
 ### OP-07 — Verificacion integral y cierre operativo

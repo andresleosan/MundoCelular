@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    for (const tag of tags) revalidateTag(tag);
+    for (const tag of tags) revalidateTag(tag, "max");
   } catch {
     return NextResponse.json({ error: "No se pudo invalidar el cache." }, { status: 500 });
   }

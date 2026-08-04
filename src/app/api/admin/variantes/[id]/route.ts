@@ -23,8 +23,8 @@ export async function PUT(req: NextRequest, context: RouteContext) {
   const db = getAdminDb();
   await db.collection("variantes").doc(id).update({ ...body, actualizadoEn: new Date() });
 
-  revalidateTag("variantes");
-  revalidateTag("productos");
+  revalidateTag("variantes", "max");
+  revalidateTag("productos", "max");
 
   return NextResponse.json({ ok: true });
 }
@@ -39,8 +39,8 @@ export async function DELETE(req: NextRequest, context: RouteContext) {
   const db = getAdminDb();
   await db.collection("variantes").doc(id).delete();
 
-  revalidateTag("variantes");
-  revalidateTag("productos");
+  revalidateTag("variantes", "max");
+  revalidateTag("productos", "max");
 
   return NextResponse.json({ ok: true });
 }
