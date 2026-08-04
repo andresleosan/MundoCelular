@@ -46,7 +46,7 @@ export function Hero({ config }: HeroProps) {
       });
 
       timeline
-        .to(armadoRef.current, { opacity: 0, scale: 1.07, duration: 0.35 }, 0)
+        .to(armadoRef.current, { opacity: 0.3, scale: 1.07, duration: 0.35 }, 0)
         .fromTo(
           desarmadomRef.current,
           { opacity: 0, scale: 0.93 },
@@ -60,7 +60,7 @@ export function Hero({ config }: HeroProps) {
           { opacity: 1, scale: 1, duration: 0.35 },
           0.35,
         )
-        .to(desarmadoRef.current, { opacity: 0, duration: 0.3 }, 0.7);
+        .to(desarmadoRef.current, { opacity: 0.3, duration: 0.3 }, 0.7);
     }, ref);
 
     return () => ctx.revert();
