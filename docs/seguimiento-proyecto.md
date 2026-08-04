@@ -119,8 +119,10 @@ La documentacion indica que no existe una cuenta admin de pruebas autorizada par
 - `.env.local` existe en el workspace.
 - `.env.local` esta ignorado por Git mediante `.gitignore:5` y no esta versionado.
 - `npx firebase use` selecciona `mundocelular-id`.
+- `npx firebase login:list` confirma una sesion activa de Firebase CLI; no se guarda el correo en este documento.
+- Las variables publicas Firebase, privadas Firebase Admin y credenciales R2 estan presentes; solo se verifico presencia, nunca valores.
 - No se leyeron valores del archivo de entorno.
-- No se ejecutaron despliegues, escrituras Firestore, login ni `seed:config`.
+- No se ejecutaron despliegues, escrituras Firestore, login web ni `seed:config`.
 - La tarea permanece `pendiente` hasta validar las acciones autenticadas con autorizacion explicita.
 
 ---
@@ -188,6 +190,14 @@ npm run deploy:rules
 - No se elimina un indice existente sin confirmar que ninguna consulta lo usa.
 - La regla desplegada corresponde al commit verificado en `main`.
 - La busqueda no depende de una lista vacia silenciosa cuando Firestore devuelve un error de indice.
+
+#### Resultado de consulta remota — 2026-08-04
+
+- `npx firebase firestore:indexes --project mundocelular-id` devolvio seis indices remotos funcionales.
+- Los indices remotos cubren las consultas publicas actuales de categorias, productos por nombre, productos por categoria, destacados y variantes por precio.
+- El indice local `productos(activo ASC, creadoEn DESC)` no aparece remoto; las consultas publicas actuales ordenan por `nombre` o realizan el ordenamiento de fecha en servidor, por lo que no se declara necesario sin una consulta que lo use.
+- No se ejecuto `npm run deploy:indexes` porque la comprobacion remota no encontro una carencia funcional y el despliegue requiere el gate de produccion.
+- La tarea permanece `pendiente` hasta cerrar la decision sobre el indice extra y completar la parte de reglas.
 
 ---
 
@@ -581,6 +591,15 @@ Dar al administrador indicadores utiles sobre productos y pedidos sin almacenar 
 - Se verifico que Git la ignora y que no esta versionada.
 - Se verifico que Firebase apunta a `mundocelular-id`.
 - No se ejecutaron acciones externas ni mutaciones porque aun falta autorizacion para validar credenciales y acceso admin.
+
+### 2026-08-04 — Verificacion local de reglas y lectura remota
+
+- La ejecucion directa de `npm run test:rules` fallo porque no habia emulador escuchando en `127.0.0.1:8085`; los 11 tests quedaron omitidos.
+- La causa fue ambiental y quedo confirmada en `firebase.json`, `vitest.rules.config.ts` y `tests/rules/firestore.rules.test.ts`.
+- La ejecucion correcta fue `npx firebase emulators:exec --only firestore "npm run test:rules"`.
+- Resultado: 1 archivo de tests, 11/11 pruebas exitosas; el emulador se cerro al finalizar.
+- La consulta remota de indices fue solo lectura y devolvio seis indices funcionales.
+- No se desplegaron reglas o indices ni se escribieron documentos en Firebase.
 
 ## Fuentes de verdad
 
