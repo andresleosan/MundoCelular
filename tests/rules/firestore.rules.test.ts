@@ -2,7 +2,7 @@
 import { readFileSync } from "node:fs";
 import { beforeAll, afterAll, describe, it } from "vitest";
 import { initializeTestEnvironment, assertSucceeds, assertFails, type RulesTestEnvironment } from "@firebase/rules-unit-testing";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 
 let testEnv: RulesTestEnvironment;
 
@@ -11,6 +11,7 @@ beforeAll(async () => {
     projectId: "demo-mundocelular",
     firestore: { rules: readFileSync("firestore.rules", "utf8"), host: "127.0.0.1", port: 8085 },
   });
+  await testEnv.clearFirestore();
 });
 
 afterAll(async () => { await testEnv.cleanup(); });
@@ -84,5 +85,60 @@ describe("pedidos", () => {
     const admin = testEnv.authenticatedContext("a1", { admin: true }).firestore();
     await assertSucceeds(updateDoc(doc(admin, "pedidos/ped2"), { estado: "contactado" }));
     await assertFails(updateDoc(doc(admin, "pedidos/ped2"), { total: 1 }));
+  });
+});
+
+describe("users", () => {
+  it("permite crear solo el perfil cliente propio con campos permitidos", async () => {
+    const cliente = testEnv.authenticatedContext("u-create").firestore();
+
+    await assertSucceeds(setDoc(doc(cliente, "users/u-create"), {
+      uid: "u-create",
+      email: "cliente@test.com",
+      displayName: "Cliente",
+      photoURL: "",
+      role: "customer",
+      active: true,
+      createdAt: new Date(),
+      lastLogin: new Date(),
+    }));
+  });
+
+  it("impide crear un perfil admin o campos de solicitud desde el cliente", async () => {
+    const cliente = testEnv.authenticatedContext("u-escalation").firestore();
+    const base = {
+      uid: "u-escalation",
+      email: "cliente@test.com",
+      displayName: "Cliente",
+      photoURL: "",
+      active: true,
+      createdAt: new Date(),
+      lastLogin: new Date(),
+    };
+
+    await assertFails(setDoc(doc(cliente, "users/u-escalation"), { ...base, role: "admin" }));
+    await assertFails(setDoc(doc(cliente, "users/u-escalation"), {
+      ...base,
+      role: "customer",
+      adminRequestStatus: "pending",
+    }));
+  });
+
+  it("impide actualizar o borrar el perfil propio; admin si puede", async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), "users/u-existing"), {
+        uid: "u-existing",
+        role: "customer",
+        active: true,
+      });
+    });
+
+    const cliente = testEnv.authenticatedContext("u-existing").firestore();
+    await assertFails(updateDoc(doc(cliente, "users/u-existing"), { role: "admin" }));
+    await assertFails(deleteDoc(doc(cliente, "users/u-existing")));
+
+    const admin = testEnv.authenticatedContext("a-users", { admin: true }).firestore();
+    await assertSucceeds(updateDoc(doc(admin, "users/u-existing"), { role: "admin" }));
+    await assertSucceeds(deleteDoc(doc(admin, "users/u-existing")));
   });
 });

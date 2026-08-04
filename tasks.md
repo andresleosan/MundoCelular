@@ -141,3 +141,18 @@ Reporte: `docs/superpowers/reports/2026-08-03-auditoria-admin-firestore-home-mar
 - [ ] Bloqueos: no se creó el producto de prueba, no hay CRUD admin autorizado y no existe reporte HTML E2E persistido.
 
 Reporte: `docs/superpowers/reports/2026-08-03-auditoria-local-produccion-firebase.md`
+
+## Solicitudes de administrador
+
+**Estado: revision**
+
+- [x] Registrar solicitudes desde el acceso de Administrador sin permisos.
+- [x] Listar solicitudes pendientes en `/admin/usuarios`.
+- [x] Aprobar o rechazar solicitudes y conservar claims personalizados.
+- [x] Validar API, reglas Firestore, fechas serializadas y limite de solicitudes.
+- [x] Verificar: 292/292 tests, 11/11 reglas, TypeScript, lint y build.
+- [x] Actualizar solicitudes sin recargar el panel (refresco manual y cada 15 s).
+- [ ] Actualizar dependencias con vulnerabilidades reportadas por `npm audit`.
+
+Diseño: `docs/superpowers/specs/2026-08-04-solicitudes-administrador-design.md`
+Plan: `docs/superpowers/plans/2026-08-04-solicitudes-administrador.md`
