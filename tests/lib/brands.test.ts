@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Producto } from "@/types";
 import {
-  completarMarcasParaHome,
   filtrarProductosPorMarca,
   normalizarMarca,
   resumirMarcas,
@@ -47,25 +46,22 @@ describe("resumirMarcas", () => {
   });
 });
 
-describe("completarMarcasParaHome", () => {
-  it("mantiene las marcas visibles del catálogo y conserva los contadores activos", () => {
-    const marcas = completarMarcasParaHome([
-      { nombre: "Apple", slug: "apple", cantidad: 2 },
+describe("marcas derivadas del inventario", () => {
+  it("no crea marcas sin productos activos", () => {
+    expect(resumirMarcas([
+      producto({ id: "apple", marca: "Apple", activo: true }),
+      producto({ id: "samsung", marca: "Samsung", activo: false }),
+    ])).toEqual([
+      { nombre: "Apple", slug: "apple", cantidad: 1 },
     ]);
+  });
 
-    expect(marcas.slice(0, 6).map((marca) => marca.nombre)).toEqual([
-      "Apple",
-      "Samsung",
-      "Xiaomi",
-      "Motorola",
-      "Honor",
-      "Redmi",
+  it("conserva una marca activa aunque su producto tenga stock cero", () => {
+    expect(resumirMarcas([
+      producto({ id: "apple", marca: "Apple", activo: true, stock: 0 }),
+    ])).toEqual([
+      { nombre: "Apple", slug: "apple", cantidad: 1 },
     ]);
-    expect(marcas[0]).toEqual({ nombre: "Apple", slug: "apple", cantidad: 2 });
-    expect(marcas.slice(1, 6).every((marca) => marca.cantidad === 0)).toBe(true);
-    expect(completarMarcasParaHome([
-      { nombre: "Google", slug: "google", cantidad: 1 },
-    ])).toHaveLength(6);
   });
 });
 

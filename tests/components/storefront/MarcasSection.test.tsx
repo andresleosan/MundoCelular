@@ -21,4 +21,10 @@ describe("MarcasSection", () => {
     );
     expect(screen.queryByText("Samsung")).not.toBeInTheDocument();
   });
+
+  it("no renderiza una seccion cuando el inventario no tiene marcas", () => {
+    render(<MarcasSection marcas={[]} />);
+
+    expect(screen.queryByRole("region", { name: "Marcas" })).not.toBeInTheDocument();
+  });
 });

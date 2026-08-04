@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { listarProductosActivos, obtenerConfigTiendaServidor } from "@/lib/firestore/public";
-import { completarMarcasParaHome, resumirMarcas } from "@/lib/storefront/brands";
+import { resumirMarcas } from "@/lib/storefront/brands";
 import { separarProductosHome } from "@/lib/storefront/home";
 import { metadataInicio } from "@/lib/seo/metadata";
 import { jsonldInicio } from "@/lib/seo/jsonld";
@@ -34,11 +34,15 @@ async function safeFetchConfig(): Promise<ConfigTienda> {
   }
 }
 
-async function safeFetchProductos(): Promise<Producto[]> {
+type ResultadoProductosHome =
+  | { productos: Producto[]; error: false }
+  | { productos: []; error: true };
+
+async function safeFetchProductos(): Promise<ResultadoProductosHome> {
   try {
-    return await listarProductosActivos();
+    return { productos: await listarProductosActivos(), error: false };
   } catch {
-    return [];
+    return { productos: [], error: true };
   }
 }
 
@@ -48,12 +52,13 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [config, productos] = await Promise.all([
+  const [config, resultadoProductos] = await Promise.all([
     safeFetchConfig(),
     safeFetchProductos(),
   ]);
+  const { productos, error: errorProductos } = resultadoProductos;
   const { destacados, nuevos } = separarProductosHome(productos);
-  const marcas = completarMarcasParaHome(resumirMarcas(productos));
+  const marcas = resumirMarcas(productos);
 
   return (
     <>
@@ -61,11 +66,21 @@ export default async function Home() {
 
       <Hero config={config} />
 
-      <MarcasSection marcas={marcas} />
-
-      <OfertasSection productos={destacados} />
-
-      <NuevosProductosSection productos={nuevos} />
+      {errorProductos ? (
+        <div
+          role="status"
+          aria-live="polite"
+          className="mx-auto max-w-[1200px] px-4 py-12 text-center text-[15px] text-fog-white/70 sm:py-16"
+        >
+          El catalogo no esta disponible temporalmente.
+        </div>
+      ) : (
+        <>
+          <MarcasSection marcas={marcas} />
+          <OfertasSection productos={destacados} />
+          <NuevosProductosSection productos={nuevos} />
+        </>
+      )}
 
       <BeneficiosSection />
 

@@ -7,8 +7,6 @@ export interface MarcaResumen {
   cantidad: number;
 }
 
-const MARCAS_VISIBLES_HOME = ["Apple", "Samsung", "Xiaomi", "Motorola", "Honor", "Redmi"];
-
 export function normalizarMarca(marca: string): string {
   return marca.trim().replace(/\s+/g, " ").toLowerCase();
 }
@@ -37,14 +35,6 @@ export function resumirMarcas(productos: Producto[]): MarcaResumen[] {
   }
 
   return Array.from(resumen.values()).sort((a, b) => a.nombre.localeCompare(b.nombre));
-}
-
-export function completarMarcasParaHome(marcas: MarcaResumen[]): MarcaResumen[] {
-  const porSlug = new Map(marcas.map((marca) => [marca.slug, marca]));
-  return MARCAS_VISIBLES_HOME.map((nombre) => {
-    const slug = generarSlug(nombre);
-    return porSlug.get(slug) ?? { nombre, slug, cantidad: 0 };
-  });
 }
 
 export function filtrarProductosPorMarca(productos: Producto[], marcaSlug: string): Producto[] {

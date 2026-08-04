@@ -1,9 +1,16 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 const mockGetDocs = vi.fn<(...args: unknown[]) => Promise<{ docs: Array<{ data: () => Record<string, unknown> }> }>>();
 const mockAddDoc = vi.fn<(...args: unknown[]) => Promise<{ id: string }>>(async () => ({ id: "prod-nuevo" }));
 const mockUpdateDoc = vi.fn<(...args: unknown[]) => Promise<void>>(async () => {});
-const mockAvisarRevalidacion = vi.fn<(...args: unknown[]) => Promise<void>>(async () => {});
+const { mockAuth, mockFetch } = vi.hoisted(() => ({
+  mockAuth: {
+    currentUser: {
+      getIdToken: vi.fn(async () => "token-de-prueba"),
+    },
+  },
+  mockFetch: vi.fn(),
+}));
 
 vi.mock("firebase/firestore", () => ({
   addDoc: (...args: unknown[]) => mockAddDoc(...args),
@@ -19,10 +26,7 @@ vi.mock("firebase/firestore", () => ({
 
 vi.mock("@/lib/firebase", () => ({
   getDb: vi.fn(() => ({})),
-}));
-
-vi.mock("@/lib/revalidate", () => ({
-  avisarRevalidacion: (...args: unknown[]) => mockAvisarRevalidacion(...args),
+  auth: mockAuth,
 }));
 
 import { actualizarProducto, crearProducto } from "@/lib/firestore/productos";
@@ -46,6 +50,12 @@ describe("persistencia de productos", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockGetDocs.mockResolvedValue({ docs: [] });
+    mockFetch.mockResolvedValue({ ok: true, status: 200 });
+    vi.stubGlobal("fetch", mockFetch);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   describe("crearProducto", () => {
@@ -62,7 +72,10 @@ describe("persistencia de productos", () => {
           atributosDisponibles: input.atributosDisponibles,
         }),
       );
-      expect(mockAvisarRevalidacion).toHaveBeenCalledWith(["productos"]);
+      expect(mockFetch).toHaveBeenCalledWith(
+        "/api/revalidate",
+        expect.objectContaining({ body: JSON.stringify({ tags: ["productos"] }) }),
+      );
     });
 
     it("usa defaults para variantes ausentes", async () => {
@@ -77,6 +90,26 @@ describe("persistencia de productos", () => {
         expect.anything(),
         expect.objectContaining({ imagenes: [], tieneVariantes: false, atributosDisponibles: [] }),
       );
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        "/api/revalidate",
+        expect.objectContaining({ body: JSON.stringify({ tags: ["productos"] }) }),
+      );
+    });
+
+    it("termina despues de persistir si la revalidacion devuelve 500", async () => {
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      mockFetch.mockResolvedValueOnce({ ok: false, status: 500 });
+
+      try {
+        await expect(crearProducto(input)).resolves.toBe("prod-nuevo");
+
+        expect(mockAddDoc).toHaveBeenCalled();
+        expect(errorSpy).toHaveBeenCalledWith("[revalidate:request-error]", { status: 500 });
+        expect(errorSpy.mock.calls.flat().join(" ")).not.toContain("token-de-prueba");
+      } finally {
+        errorSpy.mockRestore();
+      }
     });
   });
 
@@ -93,7 +126,11 @@ describe("persistencia de productos", () => {
         expect.anything(),
         expect.objectContaining({ imagenes: [], tieneVariantes: false, atributosDisponibles: [] }),
       );
-      expect(mockAvisarRevalidacion).toHaveBeenCalledWith(["productos"]);
+      expect(mockFetch).toHaveBeenCalledWith(
+        "/api/revalidate",
+        expect.objectContaining({ body: JSON.stringify({ tags: ["productos"] }) }),
+      );
     });
+
   });
 });

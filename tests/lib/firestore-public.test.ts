@@ -82,6 +82,7 @@ import {
   listarDestacados,
   obtenerConfigTiendaServidor,
   listarTodosLosSlugsProducto,
+  listarTodosLosProductosActivos,
   obtenerVariantesPorProducto,
 } from "@/lib/firestore/public";
 
@@ -128,6 +129,26 @@ describe("lecturas servidor del catálogo", () => {
       mockGetFn.mockResolvedValue({ docs: [], empty: true });
       const cat = await getCategoriaPorSlug("inexistente");
       expect(cat).toBeNull();
+    });
+  });
+
+  describe("mappers públicos", () => {
+    it("no propaga campos internos de categorías ni configuración", async () => {
+      mockGetFn.mockResolvedValueOnce({
+        docs: [makeDocData("c1", { ...mockCategoriaData, secreto: "interno" })],
+        empty: false,
+      });
+      const categoria = await getCategoriaPorSlug("celulares");
+      expect(categoria).toEqual({ id: "c1", ...mockCategoriaData });
+      expect(categoria).not.toHaveProperty("secreto");
+
+      mockDocGetFn.mockResolvedValueOnce({
+        exists: true,
+        data: () => ({ ...mockConfigTienda, apiSecret: "interno" }),
+      });
+      const config = await obtenerConfigTiendaServidor();
+      expect(config).toEqual(mockConfigTienda);
+      expect(config).not.toHaveProperty("apiSecret");
     });
   });
 
@@ -280,6 +301,43 @@ describe("lecturas servidor del catálogo", () => {
       });
       const prods = await listarDestacados();
       expect(Array.isArray(prods)).toBe(true);
+    });
+
+    it("usa los campos públicos activo y destacado y ordena por nombre", async () => {
+      mockGetFn.mockResolvedValue({
+        docs: [makeDocData("p1", mockProductoData)],
+        empty: false,
+      });
+
+      await listarDestacados();
+
+      expect(mockWhere).toHaveBeenCalledWith("activo", "==", true);
+      expect(mockWhere).toHaveBeenCalledWith("destacado", "==", true);
+      expect(mockWhere.mock.calls.some(([field]) => field === "active" || field === "featured")).toBe(false);
+      expect(mockOrderBy).toHaveBeenCalledWith("nombre");
+    });
+  });
+
+  describe("listarTodosLosProductosActivos", () => {
+    it("instrumenta la consulta activa ordenada usada por búsqueda", async () => {
+      const info = vi.spyOn(console, "info").mockImplementation(() => {});
+
+      try {
+        await listarTodosLosProductosActivos();
+
+        expect(info).toHaveBeenCalledWith(
+          "[firestore:read]",
+          expect.objectContaining({
+            nombre: "todos-productos-activos",
+            coleccion: "productos",
+            filtros: ["activo == true", "orderBy nombre"],
+          }),
+        );
+        expect(mockWhere).toHaveBeenCalledWith("activo", "==", true);
+        expect(mockOrderBy).toHaveBeenCalledWith("nombre");
+      } finally {
+        info.mockRestore();
+      }
     });
   });
 

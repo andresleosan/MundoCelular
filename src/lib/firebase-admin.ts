@@ -1,15 +1,25 @@
 import { cert, getApps, initializeApp, type App } from "firebase-admin/app";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
+import {
+  FirebaseAdminConfigError,
+  getFirebaseAdminConfig,
+  getFirebaseAdminConfigStatus,
+} from "./firebase-admin-config";
 
 export function getAdminApp(): App {
   if (getApps().length === 0) {
-    initializeApp({
-      credential: cert({
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-      }),
-    });
+    let config;
+
+    try {
+      config = getFirebaseAdminConfig();
+    } catch (error) {
+      if (error instanceof FirebaseAdminConfigError) {
+        console.error("[firebase-admin:config]", getFirebaseAdminConfigStatus());
+      }
+      throw error;
+    }
+
+    initializeApp({ credential: cert(config) });
   }
   return getApps()[0];
 }

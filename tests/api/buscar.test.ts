@@ -127,4 +127,64 @@ describe("GET /api/buscar", () => {
     expect(resultados.map(({ producto: item }) => item.id)).toEqual(["apple-pro-1", "apple-pro-2"]);
     expect(resultados.every(({ producto: item }) => item.marca === "Apple")).toBe(true);
   });
+
+  it("devuelve 503 cuando la lectura pública de Firestore falla", async () => {
+    listarTodosLosProductosActivos.mockRejectedValueOnce(
+      Object.assign(new Error("FAILED_PRECONDITION"), { code: "failed-precondition" }),
+    );
+
+    const response = await GET(request("?q=iphone"));
+
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({
+      error: "El catalogo no esta disponible temporalmente.",
+    });
+  });
+
+  it("sanitiza el mensaje de Firestore antes de registrarlo", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    listarTodosLosProductosActivos.mockRejectedValueOnce(
+      Object.assign(new Error("documento privado: FIREBASE_PRIVATE_KEY=secreto"), {
+        code: "failed-precondition",
+      }),
+    );
+
+    try {
+      await GET(request("?q=iphone"));
+
+      expect(errorSpy).toHaveBeenCalledWith("[buscar:firestore-error]", {
+        code: "failed-precondition",
+        message: "Firestore query precondition failed.",
+      });
+      expect(errorSpy.mock.calls.flat().join(" ")).not.toContain("secreto");
+    } finally {
+      errorSpy.mockRestore();
+    }
+  });
+
+  it.each([
+    [7, "permission-denied", "Firestore permission denied."],
+    [9, "failed-precondition", "Firestore query precondition failed."],
+    ["firebase-admin/missing-config", "firebase-admin/missing-config", "Firebase Admin configuration missing."],
+  ] as const)("conserva la categoría operacional para el código %s", async (code, expectedCode, expectedMessage) => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    listarTodosLosProductosActivos.mockRejectedValueOnce(
+      Object.assign(new Error("Firestore read failed"), { code }),
+    );
+
+    try {
+      const response = await GET(request("?q=iphone"));
+
+      expect(response.status).toBe(503);
+      expect(await response.json()).toEqual({
+        error: "El catalogo no esta disponible temporalmente.",
+      });
+      expect(errorSpy).toHaveBeenCalledWith("[buscar:firestore-error]", {
+        code: expectedCode,
+        message: expectedMessage,
+      });
+    } finally {
+      errorSpy.mockRestore();
+    }
+  });
 });
