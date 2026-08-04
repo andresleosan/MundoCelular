@@ -465,6 +465,16 @@ npm run build
 - El audit de produccion permanece en 13 vulnerabilidades: 4 `high` y 9 `moderate`.
 - `OP-06` permanece `pendiente` por las vulnerabilidades transitorias restantes y la decision de rate limiting.
 
+#### Resultado de actualizaciones de herramientas — 2026-08-04
+
+- `firebase-tools` se actualizo de `15.24.0` a `15.25.1`.
+- `@lhci/cli` se actualizo de `0.14.0` a `0.15.1`.
+- El audit completo bajo a 22 vulnerabilidades: 5 `high`, 15 `moderate` y 2 `low`, sin `critical`.
+- El audit de produccion permanece en 13 vulnerabilidades: 4 `high` y 9 `moderate`.
+- Las vulnerabilidades restantes son transitorias y no se corrigieron con `--force`.
+- La suite, TypeScript, lint, build y `build:icons` volvieron a pasar.
+- `OP-06` permanece `pendiente` por las 4 vulnerabilidades `high` de produccion y la decision de rate limiting.
+
 ---
 
 ### OP-07 — Verificacion integral y cierre operativo
@@ -668,6 +678,12 @@ Dar al administrador indicadores utiles sobre productos y pedidos sin almacenar 
 - `npm run build:icons` genero el favicon correctamente y limpio los temporales.
 - `npm run build` paso con Next `16.3.0`.
 - El audit completo quedo sin vulnerabilidades `critical`; permanecen 5 `high`, todas transitorias.
+
+### 2026-08-04 — OP-06 actualizacion de herramientas de QA y Firebase CLI
+
+- Se actualizaron `firebase-tools@15.25.1` y `@lhci/cli@0.15.1` sin cambios de runtime de la aplicacion.
+- El audit completo quedo en 22 vulnerabilidades y sin `critical`.
+- La verificacion posterior paso con 293 tests, TypeScript, lint, build y generacion de iconos.
 
 ## Fuentes de verdad
 
