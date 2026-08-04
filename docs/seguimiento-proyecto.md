@@ -121,6 +121,8 @@ La documentacion indica que no existe una cuenta admin de pruebas autorizada par
 - `npx firebase use` selecciona `mundocelular-id`.
 - `npx firebase login:list` confirma una sesion activa de Firebase CLI; no se guarda el correo en este documento.
 - Las variables publicas Firebase, privadas Firebase Admin y credenciales R2 estan presentes; solo se verifico presencia, nunca valores.
+- `npx firebase firestore:databases:list --project mundocelular-id` confirma la base `(default)` en edicion Firestore Native.
+- `npx firebase apps:list --project mundocelular-id` confirma una aplicacion web registrada.
 - No se leyeron valores del archivo de entorno.
 - No se ejecutaron despliegues, escrituras Firestore, login web ni `seed:config`.
 - La tarea permanece `pendiente` hasta validar las acciones autenticadas con autorizacion explicita.
@@ -611,6 +613,13 @@ Dar al administrador indicadores utiles sobre productos y pedidos sin almacenar 
 - Datos: no existe evidencia de backup verificado ni procedimiento de rollback probado para la escritura de `configuracion/tienda` que realiza `seed:config`.
 - Resultado: no se ejecutaron `npm run deploy:rules`, `npm run deploy:indexes` ni `npm run seed:config`.
 - Siguiente accion obligatoria: cerrar seguridad, QA E2E y rollback/backup; despues repetir el gate con evidencia fresca.
+
+### 2026-08-04 — OP-01 validacion de proyecto Firebase
+
+- Firestore remoto confirmado en `projects/mundocelular-id/databases/(default)` con edicion `STANDARD` y tipo `FIRESTORE_NATIVE`.
+- Aplicacion web Firebase confirmada en el proyecto.
+- La CLI no confirma por si sola el proveedor Google de Authentication; queda como comprobacion manual en Firebase Console.
+- No se ejecutaron reglas, `set:admin` ni `seed:config`.
 
 ## Fuentes de verdad
 
