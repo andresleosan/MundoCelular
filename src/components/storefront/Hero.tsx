@@ -46,7 +46,7 @@ export function Hero({ config }: HeroProps) {
       });
 
       timeline
-        .to(armadoRef.current, { opacity: 0.3, scale: 1.07, duration: 0.35 }, 0)
+        .to(armadoRef.current, { opacity: 0, scale: 1.07, duration: 0.35 }, 0)
         .fromTo(
           desarmadomRef.current,
           { opacity: 0, scale: 0.93 },

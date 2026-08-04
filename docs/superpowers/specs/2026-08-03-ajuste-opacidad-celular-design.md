@@ -9,9 +9,9 @@ La animación de despiece del hero vive en `src/components/storefront/Hero.tsx` 
 
 ## Diseño
 
-Modificar únicamente los dos objetivos de opacidad de los estados extremos:
+Modificar los objetivos de opacidad de los estados extremos, conservando la salida del estado inicial:
 
-- El teléfono ensamblado (`armadoRef`) debe pasar de `1` a `0.3` en lugar de desaparecer completamente.
+- El teléfono ensamblado (`armadoRef`) debe pasar de `1` a `0` después de la transición para no quedar como una capa fija sobre las secciones siguientes.
 - El teléfono desarmado (`desarmadoRef`) debe pasar de `1` a `0.3` en el cierre.
 - La capa intermedia (`desarmadomRef`), escalas, duraciones, posiciones, assets y `prefers-reduced-motion` permanecen sin cambios.
 
@@ -21,7 +21,7 @@ La opacidad mínima queda expresada directamente en la timeline para que el comp
 
 Incluye:
 
-- Ajuste de dos valores `opacity` en `Hero.tsx`.
+- Ajuste del objetivo de `opacity` del estado final en `Hero.tsx` y regresión explícita del estado inicial a `0`.
 - Verificación de TypeScript, tests y build.
 - Revisión visual del hero en desktop y mobile mediante navegador.
 
@@ -33,7 +33,7 @@ No incluye:
 
 ## Criterios De Aceptación
 
-- El estado ensamblado conserva al menos `0.3` de opacidad al avanzar desde el inicio.
+- El estado ensamblado inicia visible y desaparece después de la transición, sin permanecer fijo sobre el resto de la página.
 - El estado desarmado conserva al menos `0.3` de opacidad al llegar al final.
 - La transición central mantiene su comportamiento actual.
 - Con `prefers-reduced-motion`, el comportamiento existente no cambia.
