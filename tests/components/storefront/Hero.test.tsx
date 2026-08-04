@@ -65,19 +65,60 @@ describe("Hero", () => {
     });
   });
 
-  it("oculta el celular inicial después de la transición y conserva el final al 30%", async () => {
+  it("mantiene el fondo del hero continuo con la siguiente sección", () => {
+    render(<Hero config={config} />);
+
+    const hero = document.querySelector('[aria-label="Bienvenida a Mundo Celular"]');
+
+    expect(hero).toHaveClass("bg-navy-base");
+    expect(hero?.querySelector(".bg-gradient-to-br")).toBeNull();
+  });
+
+  it("mantiene las transformaciones de fondo con opacidad reducida", () => {
+    render(<Hero config={config} />);
+
+    const backgroundLayer = document.querySelector('div[aria-hidden="true"].fixed');
+
+    expect(backgroundLayer).toHaveClass("opacity-30");
+  });
+
+  it("usa la misma duración para cada transformación del celular", () => {
+    render(<Hero config={config} />);
+
+    const durations = [
+      ...timelineTo.mock.calls.map(([, vars]) => vars?.duration),
+      ...timelineFromTo.mock.calls.map(([, , vars]) => vars?.duration),
+    ].filter((duration): duration is number => duration !== undefined);
+
+    expect(durations).toEqual(Array.from({ length: 8 }, () => 0.2));
+  });
+
+  it("completa el desarme y rearma el celular durante el último tramo", async () => {
     render(<Hero config={config} />);
 
     await waitFor(() => {
-      const armadoCall = timelineTo.mock.calls.find(
+      const armadoOutCall = timelineTo.mock.calls.find(
         ([target]) => target?.getAttribute?.("src") === "/Armado1.png",
       );
-      const desarmadoCall = timelineTo.mock.calls.find(
-        ([target]) => target?.getAttribute?.("src") === "/Desarmado1.png",
+      const desarmadoOutCall = timelineTo.mock.calls.find(
+        ([target, vars, position]) =>
+          target?.getAttribute?.("src") === "/Desarmado1.png" &&
+          vars?.opacity === 0 &&
+          vars?.scale === 1.07 &&
+          position === 0.5333333333333333,
+      );
+      const armadoInCall = timelineTo.mock.calls.find(
+        ([target, vars, position]) =>
+          target?.getAttribute?.("src") === "/Armado1.png" &&
+          vars?.opacity === 1 &&
+          vars?.scale === 1 &&
+          vars?.duration === 0.2 &&
+          position === 0.8,
       );
 
-      expect(armadoCall?.[1]).toMatchObject({ opacity: 0 });
-      expect(desarmadoCall?.[1]).toMatchObject({ opacity: 0.3 });
+      expect(armadoOutCall?.[1]).toMatchObject({ opacity: 0 });
+      expect(desarmadoOutCall).toBeDefined();
+      expect(armadoInCall).toBeDefined();
     });
   });
 });

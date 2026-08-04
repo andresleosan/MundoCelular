@@ -21,6 +21,12 @@ const trustBadges: { icon: IconName; text: string }[] = [
   { icon: "message-circle", text: "Soporte WhatsApp" },
 ];
 
+const transitionDuration = 0.2;
+const pauseDuration = (1 - transitionDuration * 4) / 3;
+const secondTransitionStart = transitionDuration + pauseDuration;
+const reassemblyStart = secondTransitionStart + transitionDuration + pauseDuration;
+const finalAssemblyStart = reassemblyStart + transitionDuration + pauseDuration;
+
 export function Hero({ config }: HeroProps) {
   const { ref, visible } = useScrollAnimation<HTMLDivElement>();
   const armadoRef = useRef<HTMLImageElement>(null);
@@ -46,21 +52,33 @@ export function Hero({ config }: HeroProps) {
       });
 
       timeline
-        .to(armadoRef.current, { opacity: 0, scale: 1.07, duration: 0.35 }, 0)
+        .to(armadoRef.current, { opacity: 0, scale: 1.07, duration: transitionDuration }, 0)
         .fromTo(
           desarmadomRef.current,
           { opacity: 0, scale: 0.93 },
-          { opacity: 0.6, scale: 1, duration: 0.35 },
+          { opacity: 0.6, scale: 1, duration: transitionDuration },
           0,
         )
-        .to(desarmadomRef.current, { opacity: 0, scale: 1.07, duration: 0.35 }, 0.35)
+        .to(
+          desarmadomRef.current,
+          { opacity: 0, scale: 1.07, duration: transitionDuration },
+          secondTransitionStart,
+        )
         .fromTo(
           desarmadoRef.current,
           { opacity: 0, scale: 0.93 },
-          { opacity: 1, scale: 1, duration: 0.35 },
-          0.35,
+          { opacity: 1, scale: 1, duration: transitionDuration },
+          secondTransitionStart,
         )
-        .to(desarmadoRef.current, { opacity: 0.3, duration: 0.3 }, 0.7);
+        .to(desarmadoRef.current, { opacity: 0, scale: 1.07, duration: transitionDuration }, reassemblyStart)
+        .fromTo(
+          desarmadomRef.current,
+          { opacity: 0, scale: 0.93 },
+          { opacity: 0.6, scale: 1, duration: transitionDuration },
+          reassemblyStart,
+        )
+        .to(desarmadomRef.current, { opacity: 0, scale: 1.07, duration: transitionDuration }, finalAssemblyStart)
+        .to(armadoRef.current, { opacity: 1, scale: 1, duration: transitionDuration }, finalAssemblyStart);
     }, ref);
 
     return () => ctx.revert();
@@ -75,7 +93,7 @@ export function Hero({ config }: HeroProps) {
       {!reducedMotion && (
         <div
           aria-hidden="true"
-          className="pointer-events-none fixed inset-0 z-0 flex items-center justify-center"
+          className="pointer-events-none fixed inset-0 z-0 flex items-center justify-center opacity-30"
         >
           <img
             ref={armadoRef}
@@ -108,7 +126,6 @@ export function Hero({ config }: HeroProps) {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-0"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-deep via-navy-base to-navy-surface opacity-90" />
         <div
           className="absolute -left-20 top-20 h-72 w-72 rounded-full opacity-30 blur-3xl"
           style={{ background: "radial-gradient(circle, #00D4FF 0%, transparent 70%)" }}
