@@ -67,13 +67,13 @@ Dejar una instalacion funcional de Firebase para que el panel admin pueda autent
 
 #### Pasos exactos
 
-- [ ] Confirmar que el proyecto Firebase de trabajo es `mundocelular-id`.
-- [ ] Confirmar que Google esta habilitado como proveedor en Firebase Authentication.
-- [ ] Confirmar que Firestore esta creado en el proyecto correcto.
-- [ ] Crear o completar `.env.local` usando `.env.local.example` como referencia.
-- [ ] Configurar las variables publicas `NEXT_PUBLIC_FIREBASE_*` necesarias para el navegador.
-- [ ] Configurar las variables privadas `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL` y `FIREBASE_PRIVATE_KEY` solo en el entorno del servidor.
-- [ ] Verificar que `.env.local` no aparezca en `git status` ni en `git ls-files`.
+- [x] Confirmar que el proyecto Firebase de trabajo es `mundocelular-id`.
+- [x] Confirmar que Google esta habilitado como proveedor en Firebase Authentication.
+- [x] Confirmar que Firestore esta creado en el proyecto correcto.
+- [x] Crear o completar `.env.local` usando `.env.local.example` como referencia.
+- [x] Configurar las variables publicas `NEXT_PUBLIC_FIREBASE_*` necesarias para el navegador.
+- [x] Configurar las variables privadas `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL` y `FIREBASE_PRIVATE_KEY` solo en el entorno del servidor.
+- [x] Verificar que `.env.local` no aparezca en `git status` ni en `git ls-files`.
 - [ ] Desplegar las reglas con el script existente:
 
 ```powershell
@@ -618,7 +618,8 @@ Dar al administrador indicadores utiles sobre productos y pedidos sin almacenar 
 
 - Firestore remoto confirmado en `projects/mundocelular-id/databases/(default)` con edicion `STANDARD` y tipo `FIRESTORE_NATIVE`.
 - Aplicacion web Firebase confirmada en el proyecto.
-- La CLI no confirma por si sola el proveedor Google de Authentication; queda como comprobacion manual en Firebase Console.
+- Playwright en Firebase Console confirmo los proveedores `Correo electronico/contraseña` y `Google` con estado `Habilitada`.
+- La consola registro 5 errores auxiliares `404/403` de endpoints `cloudusersettings` y `firebasestorage`; no afectan la tabla de proveedores ni cambiaron su estado.
 - No se ejecutaron reglas, `set:admin` ni `seed:config`.
 
 ## Fuentes de verdad
