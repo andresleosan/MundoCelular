@@ -453,8 +453,17 @@ npm run build
 - Next 16 ajusto `tsconfig.json` a `jsx: react-jsx` y agrego `.next/dev/types/**/*.ts` al `include`; el cambio fue revisado y aceptado.
 - La verificacion posterior paso: 40 archivos, 293 pruebas, TypeScript, lint con 0 errores y build exitoso.
 - El audit de produccion quedo en 13 vulnerabilidades: 4 `high` y 9 `moderate`, sin `critical`.
-- El audit completo aun reporta 37 vulnerabilidades, incluyendo 5 `critical` de herramientas o dependencias de desarrollo; no se aplico `npm audit fix --force`.
+- Antes del reemplazo de `to-ico`, el audit completo reportaba 37 vulnerabilidades, incluyendo 5 `critical` de herramientas o dependencias de desarrollo.
 - `OP-06` permanece `pendiente` hasta resolver o aceptar formalmente los riesgos restantes.
+
+#### Resultado de reemplazo de dependencia vulnerable — 2026-08-04
+
+- `to-ico@1.1.5` se reemplazo por `png-to-ico@3.0.2`; el script `build:icons` usa PNGs temporales y los elimina en un bloque `finally`.
+- `to-ico@1.0.1` no se conserva porque generaba un ICO invalido para el decodificador de Next 16.
+- `npm run build:icons` genero correctamente los iconos y el favicon.
+- El audit completo quedo en 26 vulnerabilidades: 5 `high`, 15 `moderate` y 6 `low`, sin `critical`.
+- El audit de produccion permanece en 13 vulnerabilidades: 4 `high` y 9 `moderate`.
+- `OP-06` permanece `pendiente` por las vulnerabilidades transitorias restantes y la decision de rate limiting.
 
 ---
 
@@ -650,7 +659,15 @@ Dar al administrador indicadores utiles sobre productos y pedidos sin almacenar 
 - `npm audit fix --dry-run` mostro cambios amplios y varias actualizaciones mayores; no se aplico automaticamente.
 - Se aplico solamente `next@15.5.22` con version exacta.
 - La verificacion completa posterior paso: tests, TypeScript, lint y build.
-- El audit de produccion sigue con 6 vulnerabilidades `high`; no se declara resuelto el gate de seguridad.
+- El audit de produccion sigue con 4 vulnerabilidades `high`; no se declara resuelto el gate de seguridad.
+
+### 2026-08-04 — OP-06 reemplazo de cadena vulnerable de iconos
+
+- Se elimino `to-ico@1.1.5` y su cadena `resize-img`/`jimp`/`request`.
+- Se agrego `png-to-ico@3.0.2` y se adapto `scripts/build-icons.mjs` para convertir PNGs temporales por ruta.
+- `npm run build:icons` genero el favicon correctamente y limpio los temporales.
+- `npm run build` paso con Next `16.3.0`.
+- El audit completo quedo sin vulnerabilidades `critical`; permanecen 5 `high`, todas transitorias.
 
 ## Fuentes de verdad
 

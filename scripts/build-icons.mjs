@@ -1,6 +1,6 @@
 import sharp from "sharp";
-import toIco from "to-ico";
-import { mkdir, writeFile } from "node:fs/promises";
+import pngToIco from "png-to-ico";
+import { mkdir, rm, writeFile } from "node:fs/promises";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -52,7 +52,19 @@ console.log("✓ icon-512-maskable.png (512x512 con padding primary)");
 const ico16 = await base.clone().resize(16, 16).png().toBuffer();
 const ico32 = await base.clone().resize(32, 32).png().toBuffer();
 const ico48 = await base.clone().resize(48, 48).png().toBuffer();
-const icoBuffer = await toIco([ico16, ico32, ico48]);
+const icoSources = [
+  [".favicon-16.png", ico16],
+  [".favicon-32.png", ico32],
+  [".favicon-48.png", ico48],
+].map(([name, buffer]) => [resolve(iconsDir, name), buffer]);
+
+await Promise.all(icoSources.map(([path, buffer]) => writeFile(path, buffer)));
+let icoBuffer;
+try {
+  icoBuffer = await pngToIco(icoSources.map(([path]) => path));
+} finally {
+  await Promise.all(icoSources.map(([path]) => rm(path, { force: true })));
+}
 await writeFile(resolve(appDir, "favicon.ico"), icoBuffer);
 console.log("✓ src/app/favicon.ico (multi-tamaño 16/32/48)");
 
