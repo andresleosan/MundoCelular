@@ -142,3 +142,18 @@ describe("users", () => {
     await assertSucceeds(deleteDoc(doc(admin, "users/u-existing")));
   });
 });
+
+describe("rateLimits", () => {
+  it("no expone el store a clientes, usuarios autenticados ni admins", async () => {
+    const contexts = [
+      testEnv.unauthenticatedContext().firestore(),
+      testEnv.authenticatedContext("u-rate-limit").firestore(),
+      testEnv.authenticatedContext("a-rate-limit", { admin: true }).firestore(),
+    ];
+
+    for (const db of contexts) {
+      await assertFails(getDoc(doc(db, "rateLimits/admin-request:test")));
+      await assertFails(setDoc(doc(db, "rateLimits/admin-request:test"), { count: 1 }));
+    }
+  });
+});

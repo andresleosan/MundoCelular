@@ -137,15 +137,15 @@ Usar `createHash` de `node:crypto`, `Timestamp` y `FieldValue` de `firebase-admi
 La implementacion debe seguir este algoritmo:
 
 ```ts
-const now = Date.now();
 const db = getAdminDb();
 const ref = db
   .collection("rateLimits")
   .doc(`admin-request:${createHash("sha256").update(uid).digest("hex")}`);
 
 return db.runTransaction(async (transaction) => {
+  const now = Date.now();
   const snapshot = await transaction.get(ref);
-  const current = snapshot.exists ? snapshot.data() as RateLimitDocument : undefined;
+  const current = snapshot.exists ? readRateLimitDocument(snapshot.data(), now) : null;
   const windowExpired = !current || now - current.windowStartedAt >= RATE_LIMIT_WINDOW_MS;
 
   if (windowExpired) {
@@ -174,7 +174,7 @@ return db.runTransaction(async (transaction) => {
 });
 ```
 
-Definir `RateLimitDocument` internamente con `count: number` y `windowStartedAt: number`; no aceptar datos externos para esos campos. No loguear el UID si `runTransaction` falla.
+Definir `RateLimitDocument` internamente con `count: number` y `windowStartedAt: number`. `readRateLimitDocument` debe lanzar `Invalid rate limit document` si faltan campos, si `count` no es un entero seguro entre 1 y `RATE_LIMIT_MAX`, si `windowStartedAt` no es finito o si apunta al futuro. No aceptar datos externos para esos campos ni loguear el UID si `runTransaction` falla.
 
 - [x] **Step 4: Ejecutar las pruebas del helper**
 

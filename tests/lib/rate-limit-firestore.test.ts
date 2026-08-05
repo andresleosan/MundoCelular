@@ -121,11 +121,14 @@ describe("consumeAdminRequestRateLimit", () => {
     await expect(consumeAdminRequestRateLimit("uid-secreto")).rejects.toThrow("firestore unavailable");
   });
 
-  it("rechaza un documento existente con un contador invalido", async () => {
-    state.snapshot = {
-      exists: true,
-      data: () => ({ count: Number.NaN, windowStartedAt: Date.parse("2026-08-05T12:00:00.000Z") }),
-    };
+  it.each([
+    ["NaN", Number.NaN, Date.parse("2026-08-05T12:00:00.000Z")],
+    ["decimal", 1.5, Date.parse("2026-08-05T12:00:00.000Z")],
+    ["zero", 0, Date.parse("2026-08-05T12:00:00.000Z")],
+    ["above maximum", 6, Date.parse("2026-08-05T12:00:00.000Z")],
+    ["future timestamp", 1, Date.parse("2026-08-05T12:01:00.000Z")],
+  ])("rechaza un documento existente con valor invalido: %s", async (_label, count, windowStartedAt) => {
+    state.snapshot = { exists: true, data: () => ({ count, windowStartedAt }) };
 
     await expect(consumeAdminRequestRateLimit("uid-secreto")).rejects.toThrow("Invalid rate limit document");
   });
