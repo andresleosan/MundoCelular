@@ -121,6 +121,45 @@ describe("consumeAdminRequestRateLimit", () => {
     await expect(consumeAdminRequestRateLimit("uid-secreto")).rejects.toThrow("firestore unavailable");
   });
 
+  it("rechaza un documento existente con un contador invalido", async () => {
+    state.snapshot = {
+      exists: true,
+      data: () => ({ count: Number.NaN, windowStartedAt: Date.parse("2026-08-05T12:00:00.000Z") }),
+    };
+
+    await expect(consumeAdminRequestRateLimit("uid-secreto")).rejects.toThrow("Invalid rate limit document");
+  });
+
+  it("recalcula el reloj cuando Firestore reintenta la transaccion", async () => {
+    vi.setSystemTime(new Date("2026-08-05T12:00:59.000Z"));
+    let attempt = 0;
+    mockRunTransaction.mockImplementation(async (callback: (transaction: typeof mockTransaction) => unknown) => {
+      attempt += 1;
+      if (attempt === 1) {
+        state.snapshot = {
+          exists: true,
+          data: () => ({ count: 4, windowStartedAt: Date.parse("2026-08-05T12:00:00.000Z") }),
+        };
+        const firstResult = await callback(mockTransaction);
+        vi.setSystemTime(new Date("2026-08-05T12:01:01.000Z"));
+        state.snapshot = {
+          exists: true,
+          data: () => ({ count: 5, windowStartedAt: Date.parse("2026-08-05T12:00:00.000Z") }),
+        };
+        void firstResult;
+        return callback(mockTransaction);
+      }
+      return callback(mockTransaction);
+    });
+
+    await expect(consumeAdminRequestRateLimit("uid-secreto")).resolves.toEqual({ allowed: true });
+    expect(mockTransaction.set).toHaveBeenLastCalledWith(
+      mockRef,
+      expect.objectContaining({ count: 1, windowStartedAt: Date.parse("2026-08-05T12:01:01.000Z") }),
+      { merge: true },
+    );
+  });
+
   it("serializa consumos concurrentes mediante transacciones", async () => {
     vi.setSystemTime(new Date("2026-08-05T12:00:30.000Z"));
     let stored = { count: 4, windowStartedAt: Date.parse("2026-08-05T12:00:00.000Z") };

@@ -14,23 +14,33 @@ interface RateLimitDocument {
   windowStartedAt: number;
 }
 
-function readRateLimitDocument(data: FirebaseFirestore.DocumentData | undefined): RateLimitDocument | null {
-  if (typeof data?.count !== "number" || typeof data.windowStartedAt !== "number") {
-    return null;
+function readRateLimitDocument(
+  data: FirebaseFirestore.DocumentData | undefined,
+  now: number,
+): RateLimitDocument {
+  if (
+    !data
+    || !Number.isSafeInteger(data.count)
+    || data.count < 1
+    || data.count > RATE_LIMIT_MAX
+    || !Number.isFinite(data.windowStartedAt)
+    || data.windowStartedAt > now
+  ) {
+    throw new Error("Invalid rate limit document");
   }
 
   return { count: data.count, windowStartedAt: data.windowStartedAt };
 }
 
 export async function consumeAdminRequestRateLimit(uid: string): Promise<RateLimitResult> {
-  const now = Date.now();
   const db = getAdminDb();
   const uidHash = createHash("sha256").update(uid).digest("hex");
   const ref = db.collection("rateLimits").doc(`admin-request:${uidHash}`);
 
   return db.runTransaction(async (transaction) => {
+    const now = Date.now();
     const snapshot = await transaction.get(ref);
-    const current = snapshot.exists ? readRateLimitDocument(snapshot.data()) : null;
+    const current = snapshot.exists ? readRateLimitDocument(snapshot.data(), now) : null;
     const windowExpired = !current || now - current.windowStartedAt >= RATE_LIMIT_WINDOW_MS;
 
     if (windowExpired) {

@@ -50,6 +50,10 @@ describe("POST /api/auth/admin-request", () => {
       displayName: "Usuario Token",
       photoURL: "https://example.com/avatar.jpg",
     });
+    expect(consumeAdminRequestRateLimit).toHaveBeenCalledWith("uid-del-token");
+    expect(consumeAdminRequestRateLimit.mock.invocationCallOrder[0]).toBeLessThan(
+      solicitarAdmin.mock.invocationCallOrder[0],
+    );
   });
 
   it("rechaza una cuenta que ya es administradora", async () => {
