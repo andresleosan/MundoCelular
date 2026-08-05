@@ -736,6 +736,16 @@ Permitir que un cliente autenticado consulte sus pedidos anteriores sin exponer 
 - La QA autenticada del historial no se ejecuto: `.env.local` no define variables `QA_*` y las cuentas QA historicas estan deshabilitadas. Se requiere habilitar una cuenta de cliente de prueba con pedidos (o autorizar un fixture temporal) antes de cerrar FUT-01 como aprobada.
 - FUT-01 permanece en `revision` por ese unico pendiente; la parte publica, el indice y el numero de WhatsApp estan verificados.
 
+#### Resultado de QA autenticada y cierre — 2026-08-05
+
+- El operador agrego credenciales `QA_*` a `.env.local` (formato corregido a variables con nombre) y autorizo habilitar las cuentas de prueba en Firebase Auth de produccion; `scripts/enable-qa-users.ts` habilito `admin@admin.com` y `cliente@cliente.com` (estaban `USER_DISABLED`).
+- QA de cliente en produccion: `12/12` PASS con fixture efimero de 11 pedidos creado por `scripts/qa-fixture-pedidos.ts` (sin tocar stock): acceso, destino guardado, login real, redireccion a `/cuenta/pedidos`, pagina visible, paginacion `10 -> 11`, boton "Cargar mas" desaparece al agotar, detalle con `wa.me/573147757223`, privacidad (no expone email) y consola sin errores.
+- La QA detecto un bug real de paginacion: el cursor se devolvia aunque la pagina trajera menos del limite, dejando el boton "Cargar mas" visible sin resultados. Se corrigio con TDD en `src/lib/firestore/pedidos.ts` (cursor solo cuando la pagina trae exactamente el limite) y se verifico en produccion (`e48bd38`).
+- QA de admin en produccion: `3/3` PASS (login y acceso al panel).
+- El fixture se limpio (`cleanup`) y el historial del cliente QA volvio a estado vacio.
+- Arneses reproducibles versionados: `qa/qa-historial.mjs`, `qa/qa-admin.mjs`, `scripts/qa-fixture-pedidos.ts`, `scripts/enable-qa-users.ts`.
+- FUT-01 queda `aprobada`; el cierre queda cubierto con evidencia local, reglas, QA publica y QA autenticada en produccion.
+
 ### FUT-02 — Notificaciones y promociones
 
 **Estado:** `pendiente`
@@ -935,6 +945,13 @@ Dar al administrador indicadores utiles sobre productos y pedidos sin almacenar 
 - Se publico la serie de FUT-01 (`386e335`) y la deployment `dpl_4Hk1p487T86BgP9CvyUGuJCPzhEJ` quedo `Ready`.
 - Verificacion publica: 6 rutas `200`, todos los CTAs `wa.me/573147757223`, numero anterior ausente del texto.
 - La QA autenticada quedo pendiente por ausencia de credenciales `QA_*` y cuentas QA deshabilitadas; no se crearon usuarios ni pedidos de prueba en produccion sin autorizacion.
+
+### 2026-08-05 — FUT-01 QA autenticada y cierre
+
+- El operador agrego `QA_*` a `.env.local` y autorizo habilitar las cuentas de prueba; `scripts/enable-qa-users.ts` las habilito en Auth de produccion.
+- QA de cliente `12/12` con fixture efimero de 11 pedidos; se detecto y corrigio con TDD el bug de cursor persistente tras agotar resultados (`e48bd38`), verificado en produccion.
+- QA de admin `3/3`. Fixture limpiado; el historial del cliente QA volvio a vacio.
+- FUT-01 paso a `aprobada` con evidencia local, reglas, publica y autenticada.
 
 ## Fuentes de verdad
 
