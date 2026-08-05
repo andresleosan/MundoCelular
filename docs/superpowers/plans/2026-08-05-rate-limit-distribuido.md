@@ -46,7 +46,7 @@ export type RateLimitResult =
 export async function consumeAdminRequestRateLimit(uid: string): Promise<RateLimitResult>;
 ```
 
-- [ ] **Step 1: Escribir pruebas fallidas para la clave y el limite**
+- [x] **Step 1: Escribir pruebas fallidas para la clave y el limite**
 
 Mockear `@/lib/firebase-admin` para devolver un `mockDb` con `collection().doc()` y `runTransaction()`. Mockear `firebase-admin/firestore` con `Timestamp.fromMillis` para inspeccionar los datos sin conectar a Firebase.
 
@@ -124,13 +124,13 @@ it("propaga el error del store para que la ruta aplique fail-closed", async () =
 
 El mock de `runTransaction` debe ejecutar el callback con un objeto de transaccion que implemente `get`, `set` y `update`. La prueba de ventana vigente debe validar que `updatedAt` y `expiresAt` se actualizan, pero nunca guardar email, token o body.
 
-- [ ] **Step 2: Ejecutar solo la prueba nueva para confirmar que falla**
+- [x] **Step 2: Ejecutar solo la prueba nueva para confirmar que falla**
 
 Run: `npx vitest run tests/lib/rate-limit-firestore.test.ts`
 
 Expected: FAIL porque `src/lib/rate-limit/firestore.ts` aun no existe.
 
-- [ ] **Step 3: Implementar el helper minimo**
+- [x] **Step 3: Implementar el helper minimo**
 
 Usar `createHash` de `node:crypto`, `Timestamp` y `FieldValue` de `firebase-admin/firestore`, y `getAdminDb` de `@/lib/firebase-admin`.
 
@@ -176,19 +176,19 @@ return db.runTransaction(async (transaction) => {
 
 Definir `RateLimitDocument` internamente con `count: number` y `windowStartedAt: number`; no aceptar datos externos para esos campos. No loguear el UID si `runTransaction` falla.
 
-- [ ] **Step 4: Ejecutar las pruebas del helper**
+- [x] **Step 4: Ejecutar las pruebas del helper**
 
 Run: `npx vitest run tests/lib/rate-limit-firestore.test.ts`
 
 Expected: PASS para ventana nueva, incremento, bloqueo, expiracion y propagacion de errores.
 
-- [ ] **Step 5: Ejecutar TypeScript y revisar el diff**
+- [x] **Step 5: Ejecutar TypeScript y revisar el diff**
 
 Run: `npx tsc --noEmit`
 
 Expected: PASS sin errores. Revisar que el helper no importe dependencias cliente ni cambie reglas de Firestore.
 
-- [ ] **Step 6: Commit del store**
+- [x] **Step 6: Commit del store**
 
 ```powershell
 git add tests/lib/rate-limit-firestore.test.ts src/lib/rate-limit/firestore.ts
@@ -207,7 +207,7 @@ git commit -m "feat(seguridad): agregar rate limit distribuido en Firestore"
 - Consumes: `consumeAdminRequestRateLimit` y `RateLimitResult` de `@/lib/rate-limit/firestore`.
 - Produces: el mismo contrato de autenticacion y solicitud pendiente, con respuestas `429` y `503` provenientes del store distribuido.
 
-- [ ] **Step 1: Mockear el helper y escribir pruebas de integracion fallidas**
+- [x] **Step 1: Mockear el helper y escribir pruebas de integracion fallidas**
 
 Agregar al bloque `vi.hoisted` un mock `consumeAdminRequestRateLimit: vi.fn()`, registrar `vi.mock("@/lib/rate-limit/firestore", ...)` e incluir `consumeAdminRequestRateLimit.mockResolvedValue({ allowed: true })` en `beforeEach`.
 
@@ -244,13 +244,13 @@ it("responde 503 sin detalles cuando el store distribuido falla", async () => {
 
 Actualizar la prueba existente de limite fijo para ejercitar el helper: resolver cinco veces `{ allowed: true }`, luego `{ allowed: false, retryAfter: 60 }`, y comprobar que solo la sexta respuesta es `429`.
 
-- [ ] **Step 2: Ejecutar solo la prueba de la ruta para confirmar que falla**
+- [x] **Step 2: Ejecutar solo la prueba de la ruta para confirmar que falla**
 
 Run: `npx vitest run tests/api/admin-request.test.ts`
 
 Expected: FAIL en las pruebas nuevas porque la ruta aun usa `requestWindows` en memoria y no consulta el helper.
 
-- [ ] **Step 3: Integrar el helper y eliminar el estado en memoria**
+- [x] **Step 3: Integrar el helper y eliminar el estado en memoria**
 
 En `route.ts`:
 
@@ -281,13 +281,13 @@ En `route.ts`:
 
 El log debe ser constante y no incluir la excepcion, UID, email, token ni body. La llamada a `solicitarAdmin` debe permanecer despues del bloque del rate limit.
 
-- [ ] **Step 4: Ejecutar pruebas de la ruta**
+- [x] **Step 4: Ejecutar pruebas de la ruta**
 
 Run: `npx vitest run tests/api/admin-request.test.ts`
 
 Expected: PASS en autenticacion, cuenta admin, solicitud duplicada, error `500` existente, `429` y `503`.
 
-- [ ] **Step 5: Ejecutar la suite completa y verificaciones estaticas**
+- [x] **Step 5: Ejecutar la suite completa y verificaciones estaticas**
 
 Run: `npm test`
 
@@ -301,7 +301,7 @@ Run: `npm run lint`
 
 Expected: 0 errores; conservar solo warnings ya existentes si aparecen.
 
-- [ ] **Step 6: Commit de la integracion**
+- [x] **Step 6: Commit de la integracion**
 
 ```powershell
 git add tests/api/admin-request.test.ts src/app/api/auth/admin-request/route.ts
@@ -320,17 +320,17 @@ git commit -m "fix(seguridad): conectar solicitudes admin al rate limit distribu
 - Consumes: commits de Tasks 1 y 2 y resultados de las pruebas.
 - Produces: evidencia reproducible de validacion y estado actualizado sin marcar despliegue como exitoso antes de verificarlo.
 
-- [ ] **Step 1: Ejecutar el build de produccion**
+- [x] **Step 1: Ejecutar el build de produccion**
 
 Run: `npm run build`
 
 Expected: build Next.js completado sin errores.
 
-- [ ] **Step 2: Verificar el endpoint protegido y el comportamiento de limite**
+- [x] **Step 2: Verificar el endpoint protegido y el comportamiento de limite**
 
 Ejecutar la prueba existente de QA que confirma `401` sin token y agregar la evidencia de `429`/`503` unitarios en `docs/seguimiento-proyecto.md`. No escribir tokens reales, UID completos ni emails en la documentacion.
 
-- [ ] **Step 3: Actualizar el seguimiento**
+- [x] **Step 3: Actualizar el seguimiento**
 
 Registrar:
 
@@ -340,13 +340,13 @@ Registrar:
 - `npm test`, TypeScript, lint y build ejecutados;
 - pendiente de despliegue solo si Vercel no ha reconstruido la version.
 
-- [ ] **Step 4: Revisar seguridad y diff final**
+- [x] **Step 4: Revisar seguridad y diff final**
 
 Run: `git diff HEAD~2 --check`
 
 Expected: sin errores de whitespace. Confirmar con busqueda que `requestWindows` y `consumirRateLimit` ya no existen, que no se agregaron secretos y que ninguna regla publica expone `rateLimits`.
 
-- [ ] **Step 5: Commit de la evidencia**
+- [x] **Step 5: Commit de la evidencia**
 
 ```powershell
 git add docs/seguimiento-proyecto.md tasks.md

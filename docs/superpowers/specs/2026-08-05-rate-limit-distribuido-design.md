@@ -82,10 +82,12 @@ Firestore ya es una dependencia de produccion. Cada solicitud permitida requiere
 
 ## Rollback
 
-1. Revertir el commit de implementacion para volver al `Map` en memoria.
-2. Mantener la coleccion `rateLimits` sin uso; no es necesario borrar datos inmediatamente.
-3. Si se requiere limpieza, borrar solo documentos de `rateLimits` con Admin SDK despues de confirmar que ninguna version activa los usa.
-4. Verificar nuevamente `401`, `429`, `npm test`, TypeScript y build.
+1. Revertir primero el endurecimiento `cc52880`.
+2. Revertir despues la integracion `6a44bcc` para desconectar la ruta del helper.
+3. Revertir finalmente el store `70c0249` para volver al `Map` en memoria.
+4. Mantener la coleccion `rateLimits` sin uso; no es necesario borrar datos inmediatamente.
+5. Si se requiere limpieza, borrar solo documentos de `rateLimits` con Admin SDK despues de confirmar que ninguna version activa los usa.
+6. Verificar nuevamente `401`, `429`, `npm test`, TypeScript y build.
 
 ## Fuera de Alcance
 
