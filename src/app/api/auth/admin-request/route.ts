@@ -2,24 +2,7 @@ import { getAuth } from "firebase-admin/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminApp } from "@/lib/firebase-admin";
 import { solicitarAdmin } from "@/lib/firestore/usuarios";
-
-const RATE_LIMIT_MAX = 5;
-const RATE_LIMIT_WINDOW_MS = 60_000;
-const requestWindows = new Map<string, { startedAt: number; count: number }>();
-
-function consumirRateLimit(uid: string): number | null {
-  const now = Date.now();
-  const current = requestWindows.get(uid);
-  if (!current || now - current.startedAt >= RATE_LIMIT_WINDOW_MS) {
-    requestWindows.set(uid, { startedAt: now, count: 1 });
-    return null;
-  }
-  if (current.count >= RATE_LIMIT_MAX) {
-    return Math.max(1, Math.ceil((current.startedAt + RATE_LIMIT_WINDOW_MS - now) / 1000));
-  }
-  current.count += 1;
-  return null;
-}
+import { consumeAdminRequestRateLimit } from "@/lib/rate-limit/firestore";
 
 export async function POST(request: NextRequest) {
   const authorization = request.headers.get("authorization");
@@ -44,11 +27,21 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const retryAfter = consumirRateLimit(token.uid);
-  if (retryAfter !== null) {
+  let rateLimit: Awaited<ReturnType<typeof consumeAdminRequestRateLimit>>;
+  try {
+    rateLimit = await consumeAdminRequestRateLimit(token.uid);
+  } catch {
+    console.error("[admin-request:rate-limit]");
+    return NextResponse.json(
+      { success: false, error: "Servicio temporalmente no disponible" },
+      { status: 503 },
+    );
+  }
+
+  if (!rateLimit.allowed) {
     return NextResponse.json(
       { success: false, error: "Demasiadas solicitudes. Intenta de nuevo mas tarde." },
-      { status: 429, headers: { "Retry-After": String(retryAfter) } },
+      { status: 429, headers: { "Retry-After": String(rateLimit.retryAfter) } },
     );
   }
 

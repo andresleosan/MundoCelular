@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 
-const { getAdminApp, verifyIdToken, solicitarAdmin } = vi.hoisted(() => ({
+const { getAdminApp, verifyIdToken, solicitarAdmin, consumeAdminRequestRateLimit } = vi.hoisted(() => ({
   getAdminApp: vi.fn(() => ({})),
   verifyIdToken: vi.fn(),
   solicitarAdmin: vi.fn(),
+  consumeAdminRequestRateLimit: vi.fn(),
 }));
 
 vi.mock("firebase-admin/auth", () => ({
@@ -12,12 +13,14 @@ vi.mock("firebase-admin/auth", () => ({
 }));
 vi.mock("@/lib/firebase-admin", () => ({ getAdminApp }));
 vi.mock("@/lib/firestore/usuarios", () => ({ solicitarAdmin }));
+vi.mock("@/lib/rate-limit/firestore", () => ({ consumeAdminRequestRateLimit }));
 
 import { POST } from "@/app/api/auth/admin-request/route";
 
 describe("POST /api/auth/admin-request", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    consumeAdminRequestRateLimit.mockResolvedValue({ allowed: true });
   });
 
   function request(authorization = "Bearer token-de-prueba", body = { uid: "uid-del-navegador" }) {
@@ -60,6 +63,7 @@ describe("POST /api/auth/admin-request", () => {
       error: "Esta cuenta ya tiene permisos de administrador.",
     });
     expect(solicitarAdmin).not.toHaveBeenCalled();
+    expect(consumeAdminRequestRateLimit).not.toHaveBeenCalled();
   });
 
   it("rechaza una solicitud que ya esta pendiente", async () => {
@@ -112,6 +116,13 @@ describe("POST /api/auth/admin-request", () => {
   it("aplica un limite fijo por UID y devuelve Retry-After", async () => {
     verifyIdToken.mockResolvedValue({ uid: "rate-limit-user", admin: false });
     solicitarAdmin.mockResolvedValue("created");
+    consumeAdminRequestRateLimit
+      .mockResolvedValueOnce({ allowed: true })
+      .mockResolvedValueOnce({ allowed: true })
+      .mockResolvedValueOnce({ allowed: true })
+      .mockResolvedValueOnce({ allowed: true })
+      .mockResolvedValueOnce({ allowed: true })
+      .mockResolvedValueOnce({ allowed: false, retryAfter: 60 });
 
     for (let index = 0; index < 5; index += 1) {
       expect((await POST(request())).status).toBe(201);
@@ -122,5 +133,37 @@ describe("POST /api/auth/admin-request", () => {
     expect(response.status).toBe(429);
     expect(response.headers.get("Retry-After")).toBe("60");
     expect(await response.json()).toEqual({ success: false, error: "Demasiadas solicitudes. Intenta de nuevo mas tarde." });
+    expect(consumeAdminRequestRateLimit).toHaveBeenCalledTimes(6);
+  });
+
+  it("devuelve 429 y no crea solicitud cuando el store bloquea", async () => {
+    verifyIdToken.mockResolvedValueOnce({ uid: "store-blocked-user", admin: false });
+    consumeAdminRequestRateLimit.mockResolvedValueOnce({ allowed: false, retryAfter: 17 });
+
+    const response = await POST(request());
+
+    expect(response.status).toBe(429);
+    expect(response.headers.get("Retry-After")).toBe("17");
+    expect(solicitarAdmin).not.toHaveBeenCalled();
+  });
+
+  it("responde 503 sin detalles cuando el store distribuido falla", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    verifyIdToken.mockResolvedValueOnce({ uid: "store-error-user", admin: false });
+    consumeAdminRequestRateLimit.mockRejectedValueOnce(new Error("secret firestore detail"));
+
+    try {
+      const response = await POST(request());
+
+      expect(response.status).toBe(503);
+      expect(await response.json()).toEqual({
+        success: false,
+        error: "Servicio temporalmente no disponible",
+      });
+      expect(solicitarAdmin).not.toHaveBeenCalled();
+      expect(errorSpy.mock.calls.flat().join(" ")).not.toContain("secret firestore detail");
+    } finally {
+      errorSpy.mockRestore();
+    }
   });
 });
