@@ -248,4 +248,16 @@ describe("LoginForm", () => {
     await waitFor(() => expect(routerPush).toHaveBeenCalledWith("/"));
     expect(fetch).not.toHaveBeenCalled();
   });
+
+  it("redirige al destino guardado despues del login de cliente", async () => {
+    localStorage.setItem("login-destino", "/cuenta/pedidos");
+    const view = render(<LoginForm />);
+
+    fireEvent.click(screen.getByRole("button", { name: /cliente/i }));
+    fireEvent.click(screen.getByRole("button", { name: /iniciar sesión con google/i }));
+    completarTransicionAuth(view);
+
+    await waitFor(() => expect(routerPush).toHaveBeenCalledWith("/cuenta/pedidos"));
+    expect(localStorage.getItem("login-destino")).toBeNull();
+  });
 });

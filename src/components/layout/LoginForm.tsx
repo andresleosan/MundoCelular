@@ -8,6 +8,12 @@ import { Icon } from "@/components/ui/Icon";
 
 type RoleSelection = "customer" | "admin" | null;
 
+function destinoCliente(): string {
+  const destino = localStorage.getItem("login-destino");
+  localStorage.removeItem("login-destino");
+  return destino === "/cuenta/pedidos" ? destino : "/";
+}
+
 const inputClasses =
   "w-full h-[52px] rounded-[14px] border-2 border-[#D8E2FF] bg-[#F8FAFF] px-4 text-[15px] text-[#081B4B] outline-none placeholder:text-[#7A89AF] transition-all duration-200 focus:border-[#00CFFF] focus:shadow-[0_0_0_4px_rgba(0,207,255,0.15)]";
 
@@ -63,7 +69,7 @@ export function LoginForm() {
       return;
     }
     if (selectedRole === "customer") {
-      router.push("/");
+      router.push(destinoCliente());
     } else if (selectedRole === "admin") {
       router.push("/admin");
     }
