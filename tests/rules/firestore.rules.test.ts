@@ -2,14 +2,15 @@
 import { readFileSync } from "node:fs";
 import { beforeAll, afterAll, describe, it } from "vitest";
 import { initializeTestEnvironment, assertSucceeds, assertFails, type RulesTestEnvironment } from "@firebase/rules-unit-testing";
-import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, setDoc, updateDoc, where } from "firebase/firestore";
 
 let testEnv: RulesTestEnvironment;
+const firestorePort = Number(process.env.FIRESTORE_EMULATOR_PORT ?? "8085");
 
 beforeAll(async () => {
   testEnv = await initializeTestEnvironment({
     projectId: "demo-mundocelular",
-    firestore: { rules: readFileSync("firestore.rules", "utf8"), host: "127.0.0.1", port: 8085 },
+    firestore: { rules: readFileSync("firestore.rules", "utf8"), host: "127.0.0.1", port: firestorePort },
   });
   await testEnv.clearFirestore();
 });
@@ -76,6 +77,41 @@ describe("pedidos", () => {
     const u2 = testEnv.authenticatedContext("u2").firestore();
     await assertSucceeds(getDoc(doc(u1, "pedidos/ped1")));
     await assertFails(getDoc(doc(u2, "pedidos/ped1")));
+  });
+
+  it("permite consultar solo los pedidos propios y conserva lectura admin", async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), "pedidos/ped-cliente-1"), {
+        clienteUid: "u1",
+        total: 100,
+        estado: "pendiente",
+        creadoEn: new Date("2026-08-05T10:00:00Z"),
+      });
+      await setDoc(doc(ctx.firestore(), "pedidos/ped-cliente-2"), {
+        clienteUid: "u2",
+        total: 200,
+        estado: "contactado",
+        creadoEn: new Date("2026-08-05T11:00:00Z"),
+      });
+    });
+
+    const u1 = testEnv.authenticatedContext("u1").firestore();
+    const admin = testEnv.authenticatedContext("a1", { admin: true }).firestore();
+
+    const pedidosPropios = query(
+      collection(u1, "pedidos"),
+      where("clienteUid", "==", "u1"),
+      orderBy("creadoEn", "desc"),
+    );
+    const pedidosAjenos = query(
+      collection(u1, "pedidos"),
+      where("clienteUid", "==", "u2"),
+      orderBy("creadoEn", "desc"),
+    );
+
+    await assertSucceeds(getDocs(pedidosPropios));
+    await assertFails(getDocs(pedidosAjenos));
+    await assertSucceeds(getDocs(query(collection(admin, "pedidos"), orderBy("creadoEn", "desc"))));
   });
 
   it("admin solo puede cambiar estado/actualizadoEn, no el total", async () => {

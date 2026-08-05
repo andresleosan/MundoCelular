@@ -1,6 +1,27 @@
-import { collection, doc, getDoc, getDocs, orderBy, query, updateDoc, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  startAfter,
+  updateDoc,
+  where,
+  type DocumentData,
+  type QueryConstraint,
+  type QueryDocumentSnapshot,
+} from "firebase/firestore";
 import { getDb } from "../firebase";
 import type { Pedido } from "@/types";
+
+export const PEDIDOS_POR_PAGINA = 10;
+
+export interface PaginaPedidosCliente {
+  pedidos: Pedido[];
+  cursor: QueryDocumentSnapshot<DocumentData> | null;
+}
 
 export async function listarPedidos(estado?: string): Promise<Pedido[]> {
   const db = getDb();
@@ -12,6 +33,27 @@ export async function listarPedidos(estado?: string): Promise<Pedido[]> {
   }
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<Pedido, "id">) }));
+}
+
+export async function listarPedidosCliente(
+  clienteUid: string,
+  cursor?: QueryDocumentSnapshot<DocumentData>,
+): Promise<PaginaPedidosCliente> {
+  const restricciones: QueryConstraint[] = [
+    where("clienteUid", "==", clienteUid),
+    orderBy("creadoEn", "desc"),
+    limit(PEDIDOS_POR_PAGINA),
+  ];
+  if (cursor) restricciones.push(startAfter(cursor));
+
+  const snap = await getDocs(query(collection(getDb(), "pedidos"), ...restricciones));
+  return {
+    pedidos: snap.docs.map((documento) => ({
+      id: documento.id,
+      ...(documento.data() as Omit<Pedido, "id">),
+    })),
+    cursor: snap.docs.at(-1) ?? null,
+  };
 }
 
 export async function obtenerPedido(id: string): Promise<Pedido | null> {
