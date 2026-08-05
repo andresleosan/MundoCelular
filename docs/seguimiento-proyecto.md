@@ -4,7 +4,7 @@
 **Responsable de seguimiento:** Cronos
 **Rama de referencia:** `main`
 **Repositorio:** `https://github.com/andresleosan/MundoCelular`
-**Estado global:** `revision operativa`
+**Estado global:** `completada`
 
 Este documento concentra el trabajo que falta para cerrar el proyecto y las funcionalidades futuras que aun no forman parte del cierre de produccion. Cada tarea tiene un ID estable para poder retomarla en otra sesion sin volver a interpretar el alcance.
 
@@ -44,10 +44,10 @@ Este documento concentra el trabajo que falta para cerrar el proyecto y las func
 | `OP-01` | Firebase, entorno y primer administrador | `completada` | `P0` | Acceso autorizado al proyecto Firebase |
 | `OP-02` | Reglas e indices remotos | `completada` | `P0` | `OP-01` |
 | `OP-03` | CRUD admin y producto de prueba | `completada` | `P0` | `OP-01` |
-| `OP-04` | Validacion publica local y Vercel | `verificacion` | `P0` | `OP-02`, `OP-03` |
+| `OP-04` | Validacion publica local y Vercel | `completada` | `P0` | `OP-02`, `OP-03` |
 | `OP-05` | Evidencia E2E reproducible | `completada` | `P1` | `OP-03`, `OP-04` |
 | `OP-06` | Dependencias, vulnerabilidades y rate limiting | `completada` | `P1` | Decision tecnica y pruebas |
-| `OP-07` | Verificacion final y cierre operativo | `verificacion` | `P1` | `OP-02` a `OP-06` |
+| `OP-07` | Verificacion final y cierre operativo | `completada` | `P1` | `OP-02` a `OP-06` |
 | `FUT-01` | Historial de compras del cliente | `pendiente` | `P2` | Cierre operativo |
 | `FUT-02` | Notificaciones y promociones | `pendiente` | `P2` | Decision de canales y proveedor |
 | `FUT-03` | Metricas comerciales | `pendiente` | `P2` | Definicion de eventos y privacidad |
@@ -296,7 +296,7 @@ Demostrar que un administrador autorizado puede crear y editar un producto real 
 
 ### OP-04 — Validar catalogo publico local y Vercel
 
-**Estado:** `verificacion`
+**Estado:** `completada`
 **Prioridad:** `P0`
 **Fuente:** plan `2026-08-03-auditoria-local-produccion-firebase.md`, Task 6
 **Depende de:** `OP-02` y `OP-03`.
@@ -383,6 +383,11 @@ document.documentElement.scrollWidth <= window.innerWidth
 - Deployment vigente: `dpl_FUiPPAtFbPFVGNLji7T3FVYgUQDp`, estado `Ready`.
 - Endpoints sin autenticacion verificados: `/api/imagenes/presign` `401`, `/api/auth/admin-request` `401`, `/api/revalidate` `401`.
 - Matriz final: `36/36` combinaciones exitosas sobre produccion y main, seis rutas y tres viewports; sin overflow ni errores de consola.
+
+#### Aceptacion final — 2026-08-05
+
+- La URL historica `dt5...` se acepta como riesgo operativo no bloqueante porque sus variables de entorno quedaron congeladas en un snapshot inmutable.
+- La version vigente y sus reemplazos funcionales fueron verificados; no se requiere reabrir OP-04 para corregir una deployment que Vercel no permite modificar.
 
 ---
 
@@ -602,7 +607,7 @@ npm run build
 
 ### OP-07 — Verificacion integral y cierre operativo
 
-**Estado:** `verificacion`
+**Estado:** `completada`
 **Prioridad:** `P1`
 **Depende de:** `OP-02`, `OP-03`, `OP-04`, `OP-05` y `OP-06`.
 
@@ -675,6 +680,11 @@ git grep -nE "FIREBASE_PRIVATE_KEY|Authorization|Bearer|console\.(log|info|error
 - QA de navegador sobre la deployment: `/`, `/buscar`, `/contacto`, `/preguntas` y `/reparaciones` respondieron `200`; no hubo errores de consola de aplicación antes de la prueba negativa.
 - La prueba negativa de `POST /api/auth/admin-request` sin autenticación respondió `401` y no expuso detalles internos.
 - OP-07 permanece `verificacion` únicamente por la URL histórica inmutable documentada en OP-04 y por la necesidad de conservar esa excepción como riesgo operativo conocido; la versión vigente sí está publicada y validada.
+
+#### Aceptacion final — 2026-08-05
+
+- El operador acepta la URL historica inmutable como riesgo documentado y no bloqueante.
+- OP-07 queda completada; las funcionalidades `FUT-*` permanecen fuera del cierre y no bloquean el estado global.
 
 ## Funcionalidades futuras
 
@@ -892,6 +902,12 @@ Dar al administrador indicadores utiles sobre productos y pedidos sin almacenar 
 - La deployment `dpl_5z6REAtgcJajgakmpDD8jyqqMT6c` quedó `Ready` en Vercel.
 - La prueba remota sin autenticación devolvió `401` en `POST /api/auth/admin-request`; la navegación pública básica devolvió `200` en cinco rutas y no produjo errores de consola de aplicación.
 - OP-06 queda completada. OP-07 continúa en verificación por la excepción histórica de una deployment inmutable, no por un fallo de la versión vigente.
+
+### 2026-08-05 — Cierre operativo
+
+- El operador acepto la URL historica inmutable como riesgo no bloqueante.
+- OP-04 y OP-07 pasaron a `completada`; el estado global paso a `completada`.
+- Se ejecuto `capability-gap-analysis`: no se detecto una capacidad faltante recurrente que justifique crear una skill nueva.
 
 ## Fuentes de verdad
 

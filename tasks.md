@@ -145,7 +145,7 @@ Reporte: `docs/superpowers/reports/2026-08-03-auditoria-local-produccion-firebas
 
 ## Solicitudes de administrador
 
-**Estado: revision**
+**Estado: aprobada**
 
 - [x] Registrar solicitudes desde el acceso de Administrador sin permisos.
 - [x] Listar solicitudes pendientes en `/admin/usuarios`.
@@ -163,7 +163,13 @@ Reporte: `docs/superpowers/reports/2026-08-03-auditoria-local-produccion-firebas
 - [x] Publicar `main` en `origin/main` (`51e3e45`).
 - [x] Verificar deployment Vercel `dpl_5z6REAtgcJajgakmpDD8jyqqMT6c` en estado `Ready`.
 - [x] Verificar `POST /api/auth/admin-request` sin token: `401` y error sanitizado.
-- [ ] Resolver la excepción histórica de la deployment inmutable `dt5...`; no bloquea la versión vigente, pero permanece como riesgo operativo documentado.
+- [x] Aceptar la excepción histórica de la deployment inmutable `dt5...` como riesgo operativo no bloqueante.
+
+### Estado de cierre operativo — 2026-08-05
+
+- [x] OP-04 y OP-07 completadas con evidencia local, E2E y remota.
+- [x] Estado global actualizado a `completada`.
+- [x] Funcionalidades `FUT-*` quedan fuera del cierre y disponibles para una siguiente iteración.
 
 Diseño: `docs/superpowers/specs/2026-08-04-solicitudes-administrador-design.md`
 Plan: `docs/superpowers/plans/2026-08-04-solicitudes-administrador.md`
