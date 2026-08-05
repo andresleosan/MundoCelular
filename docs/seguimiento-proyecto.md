@@ -692,7 +692,7 @@ Estas tareas no bloquean el cierre operativo. No deben comenzar mientras existan
 
 ### FUT-01 — Historial de compras del cliente
 
-**Estado:** `pendiente`
+**Estado:** `revision`
 **Prioridad:** `P2`
 **Depende de:** `OP-07` y una definicion del alcance de cuenta de cliente.
 
@@ -715,6 +715,16 @@ Permitir que un cliente autenticado consulte sus pedidos anteriores sin exponer 
 - Un cliente no puede leer, editar ni cancelar el pedido de otro usuario.
 - La vista funciona en mobile y desktop.
 - Existen pruebas de reglas Firestore, datos y UI.
+
+#### Resultado local — 2026-08-05
+
+- Se implemento `/cuenta/pedidos` con lista de 10 pedidos, cursor de carga incremental, todos los estados y detalle sin UID, email, telefono ni observaciones.
+- El detalle abre WhatsApp con una referencia corta del pedido y el cliente solo puede consultar documentos cuyo `clienteUid` coincide con su sesion.
+- Se declaro el indice local `pedidos(clienteUid ASC, creadoEn DESC)` y las reglas aisladas pasaron `13/13`: propietario permitido, tercero denegado y admin permitido.
+- La suite local paso `318/318`; TypeScript y build pasaron, lint conserva 0 errores y 11 warnings preexistentes.
+- QA de navegador sobre el build local confirmo `/cuenta/pedidos` y `/login` en desktop y mobile, sin overflow ni errores de consola de aplicacion. La autenticacion real no se ejecuto porque requiere la autorizacion especifica para usar la cuenta QA.
+- El numero canonico de codigo, seed y CTAs es `573147757223`. La configuracion remota todavia puede conservar el numero anterior hasta ejecutar la actualizacion dirigida autorizada.
+- FUT-01 permanece en `revision` hasta desplegar el indice, respaldar y actualizar `configuracion/tienda.whatsapp`, y repetir la QA autenticada sobre esa configuracion.
 
 ### FUT-02 — Notificaciones y promociones
 

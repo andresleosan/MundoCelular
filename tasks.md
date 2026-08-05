@@ -175,3 +175,17 @@ Diseño: `docs/superpowers/specs/2026-08-04-solicitudes-administrador-design.md`
 Plan: `docs/superpowers/plans/2026-08-04-solicitudes-administrador.md`
 Diseño distribuido: `docs/superpowers/specs/2026-08-05-rate-limit-distribuido-design.md`
 Plan distribuido: `docs/superpowers/plans/2026-08-05-rate-limit-distribuido.md`
+
+## FUT-01 - Historial de pedidos del cliente
+
+**Estado: revision**
+
+- [x] Ruta `/cuenta/pedidos` con acceso por sesion, lista paginada, detalle privado y enlace a WhatsApp.
+- [x] Reglas probadas: propietario y admin pueden consultar; otro cliente queda denegado.
+- [x] Indice local declarado: `pedidos(clienteUid ASC, creadoEn DESC)`.
+- [x] WhatsApp canonico actualizado en defaults, seed, CTAs y pruebas a `573147757223`.
+- [x] QA local: `318/318` pruebas, reglas `13/13` en emulador aislado, TypeScript, lint sin errores, build con 30 rutas y navegador desktop/mobile sin overflow.
+- [x] Flujo de login corregido: `/login` renderiza el formulario y el cliente vuelve a `/cuenta/pedidos` despues de autenticarse.
+- [ ] Desplegar el indice Firestore con autorizacion explicita del operador.
+- [ ] Ejecutar `npm run backup:config` y `npm run update:whatsapp` con autorizacion explicita del operador.
+- [ ] Repetir QA autenticada y de CTAs sobre la configuracion remota actualizada.
