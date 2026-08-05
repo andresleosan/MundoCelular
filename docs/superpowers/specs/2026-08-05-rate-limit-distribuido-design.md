@@ -89,6 +89,8 @@ Firestore ya es una dependencia de produccion. Cada solicitud permitida requiere
 5. Si se requiere limpieza, borrar solo documentos de `rateLimits` con Admin SDK despues de confirmar que ninguna version activa los usa.
 6. Verificar nuevamente `401`, `429`, `npm test`, TypeScript y build.
 
+El rollback de produccion no requiere revertir `1e01638`, `fdcb422`, `4d2e020`, `239bc02`, `028743b`, `455a490` ni `d26a8b6`: esos commits solo agregan pruebas, especificacion, plan y evidencia. Si se necesita restaurar tambien el estado del repositorio, revertir esos commits de pruebas/documentacion despues de desconectar la ruta y antes de eliminar el helper.
+
 ## Fuera de Alcance
 
 - Redis, Cloudflare Durable Objects u otro proveedor externo.

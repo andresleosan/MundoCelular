@@ -69,6 +69,8 @@ describe("consumeAdminRequestRateLimit", () => {
       },
       { merge: true },
     );
+    const writtenFields = Object.keys(mockTransaction.set.mock.calls[0]?.[1] as Record<string, unknown>).sort();
+    expect(writtenFields).toEqual(["count", "expiresAt", "updatedAt", "windowStartedAt"]);
   });
 
   it("incrementa una ventana vigente mientras count es menor que cinco", async () => {
