@@ -726,6 +726,16 @@ Permitir que un cliente autenticado consulte sus pedidos anteriores sin exponer 
 - El numero canonico de codigo, seed y CTAs es `573147757223`. La configuracion remota todavia puede conservar el numero anterior hasta ejecutar la actualizacion dirigida autorizada.
 - FUT-01 permanece en `revision` hasta desplegar el indice, respaldar y actualizar `configuracion/tienda.whatsapp`, y repetir la QA autenticada sobre esa configuracion.
 
+#### Resultado remoto autorizado — 2026-08-05
+
+- `npm run backup:config` creo `qa/backups/configuracion-tienda-latest.json` antes de cualquier escritura.
+- `npm run deploy:indexes` desplego el indice `pedidos(clienteUid ASC, creadoEn DESC)` en `mundocelular-id` sin errores.
+- `npm run update:whatsapp` actualizo `configuracion/tienda.whatsapp` a `573147757223`; un backup posterior releyo el documento y confirmo el valor.
+- `git push origin main` publico la serie completa (`386e335`); Vercel genero `dpl_4Hk1p487T86BgP9CvyUGuJCPzhEJ` en estado `Ready`.
+- Verificacion publica en produccion: `/`, `/cuenta/pedidos`, `/contacto`, `/reparaciones`, `/login` y `/carrito` responden `200`; todos los enlaces `wa.me` usan `573147757223` y el numero anterior ya no aparece en el texto.
+- La QA autenticada del historial no se ejecuto: `.env.local` no define variables `QA_*` y las cuentas QA historicas estan deshabilitadas. Se requiere habilitar una cuenta de cliente de prueba con pedidos (o autorizar un fixture temporal) antes de cerrar FUT-01 como aprobada.
+- FUT-01 permanece en `revision` por ese unico pendiente; la parte publica, el indice y el numero de WhatsApp estan verificados.
+
 ### FUT-02 — Notificaciones y promociones
 
 **Estado:** `pendiente`
@@ -918,6 +928,13 @@ Dar al administrador indicadores utiles sobre productos y pedidos sin almacenar 
 - El operador acepto la URL historica inmutable como riesgo no bloqueante.
 - OP-04 y OP-07 pasaron a `completada`; el estado global paso a `completada`.
 - Se ejecuto `capability-gap-analysis`: no se detecto una capacidad faltante recurrente que justifique crear una skill nueva.
+
+### 2026-08-05 — FUT-01 operaciones remotas autorizadas
+
+- Se ejecuto `npm run backup:config` antes de escrituras, `npm run deploy:indexes` y `npm run update:whatsapp`; el backup posterior confirmo el valor remoto `573147757223`.
+- Se publico la serie de FUT-01 (`386e335`) y la deployment `dpl_4Hk1p487T86BgP9CvyUGuJCPzhEJ` quedo `Ready`.
+- Verificacion publica: 6 rutas `200`, todos los CTAs `wa.me/573147757223`, numero anterior ausente del texto.
+- La QA autenticada quedo pendiente por ausencia de credenciales `QA_*` y cuentas QA deshabilitadas; no se crearon usuarios ni pedidos de prueba en produccion sin autorizacion.
 
 ## Fuentes de verdad
 

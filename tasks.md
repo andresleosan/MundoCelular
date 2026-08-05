@@ -186,6 +186,8 @@ Plan distribuido: `docs/superpowers/plans/2026-08-05-rate-limit-distribuido.md`
 - [x] WhatsApp canonico actualizado en defaults, seed, CTAs y pruebas a `573147757223`.
 - [x] QA local: `318/318` pruebas, reglas `13/13` en emulador aislado, TypeScript, lint sin errores, build con 30 rutas y navegador desktop/mobile sin overflow.
 - [x] Flujo de login corregido: `/login` renderiza el formulario y el cliente vuelve a `/cuenta/pedidos` despues de autenticarse.
-- [ ] Desplegar el indice Firestore con autorizacion explicita del operador.
-- [ ] Ejecutar `npm run backup:config` y `npm run update:whatsapp` con autorizacion explicita del operador.
-- [ ] Repetir QA autenticada y de CTAs sobre la configuracion remota actualizada.
+- [x] Desplegar el indice Firestore con autorizacion explicita del operador (`npm run deploy:indexes` exitoso en `mundocelular-id`).
+- [x] Ejecutar `npm run backup:config` (antes y despues) y `npm run update:whatsapp` con autorizacion explicita del operador; el backup posterior confirma `573147757223` remoto.
+- [x] Publicar `main` en `origin/main` (`386e335`) y verificar deployment Vercel `dpl_4Hk1p487T86BgP9CvyUGuJCPzhEJ` en estado `Ready`.
+- [x] Verificar CTAs publicos en produccion: 6 rutas responden `200` y todos los enlaces `wa.me` usan `573147757223`; el numero anterior ya no aparece en el texto.
+- [ ] QA autenticada con cuenta de cliente QA: no se ejecuto porque `.env.local` no define `QA_*` y las cuentas QA historicas estan deshabilitadas; requiere habilitar una cuenta de cliente de prueba con pedidos o autorizacion para crear un fixture.
