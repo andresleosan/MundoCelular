@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       displayName: token.name ?? "",
       photoURL: token.picture ?? "",
     });
-    console.log(`[api/auth/sync] Sync OK uid=${token.uid} email=${token.email}`);
+    console.log(`[api/auth/sync] Sync OK uid=${token.uid}`);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("[api/auth/sync] Error:", error instanceof Error ? error.message : error);

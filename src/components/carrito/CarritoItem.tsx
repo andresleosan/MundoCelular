@@ -62,7 +62,7 @@ export function CarritoItem({
           )}
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="font-jetbrains-mono text-[15px] font-bold text-fog-white sm:text-[16px]">
             {formatearCOP(precio)}
           </p>

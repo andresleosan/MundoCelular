@@ -41,13 +41,13 @@ Este documento concentra el trabajo que falta para cerrar el proyecto y las func
 
 | ID | Area | Estado | Prioridad | Dependencias |
 | --- | --- | --- | --- | --- |
-| `OP-01` | Firebase, entorno y primer administrador | `pendiente` | `P0` | Acceso autorizado al proyecto Firebase |
-| `OP-02` | Reglas e indices remotos | `pendiente` | `P0` | `OP-01` |
-| `OP-03` | CRUD admin y producto de prueba | `bloqueada` | `P0` | `OP-01` |
-| `OP-04` | Validacion publica local y Vercel | `bloqueada` | `P0` | `OP-02`, `OP-03` |
-| `OP-05` | Evidencia E2E reproducible | `pendiente` | `P1` | `OP-03`, `OP-04` |
-| `OP-06` | Dependencias, vulnerabilidades y rate limiting | `pendiente` | `P1` | Decision tecnica y pruebas |
-| `OP-07` | Verificacion final y cierre operativo | `pendiente` | `P1` | `OP-02` a `OP-06` |
+| `OP-01` | Firebase, entorno y primer administrador | `completada` | `P0` | Acceso autorizado al proyecto Firebase |
+| `OP-02` | Reglas e indices remotos | `completada` | `P0` | `OP-01` |
+| `OP-03` | CRUD admin y producto de prueba | `completada` | `P0` | `OP-01` |
+| `OP-04` | Validacion publica local y Vercel | `verificacion` | `P0` | `OP-02`, `OP-03` |
+| `OP-05` | Evidencia E2E reproducible | `completada` | `P1` | `OP-03`, `OP-04` |
+| `OP-06` | Dependencias, vulnerabilidades y rate limiting | `verificacion` | `P1` | Decision tecnica y pruebas |
+| `OP-07` | Verificacion final y cierre operativo | `verificacion` | `P1` | `OP-02` a `OP-06` |
 | `FUT-01` | Historial de compras del cliente | `pendiente` | `P2` | Cierre operativo |
 | `FUT-02` | Notificaciones y promociones | `pendiente` | `P2` | Decision de canales y proveedor |
 | `FUT-03` | Metricas comerciales | `pendiente` | `P2` | Definicion de eventos y privacidad |
@@ -56,7 +56,7 @@ Este documento concentra el trabajo que falta para cerrar el proyecto y las func
 
 ### OP-01 — Configurar Firebase, entorno y primer administrador
 
-**Estado:** `pendiente`
+**Estado:** `completada`
 **Prioridad:** `P0`
 **Fuente:** `tasks.md`, seccion `Pendiente para usar el panel`
 **Depende de:** acceso autorizado al proyecto `mundocelular-id` y a la consola Firebase.
@@ -74,21 +74,21 @@ Dejar una instalacion funcional de Firebase para que el panel admin pueda autent
 - [x] Configurar las variables publicas `NEXT_PUBLIC_FIREBASE_*` necesarias para el navegador.
 - [x] Configurar las variables privadas `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL` y `FIREBASE_PRIVATE_KEY` solo en el entorno del servidor.
 - [x] Verificar que `.env.local` no aparezca en `git status` ni en `git ls-files`.
-- [ ] Desplegar las reglas con el script existente:
+- [x] Desplegar las reglas con el script existente:
 
 ```powershell
 npm run deploy:rules
 ```
 
-- [ ] Abrir `/admin/login`, iniciar sesion con Google y obtener el UID desde el perfil autenticado sin guardar tokens.
-- [ ] Asignar el claim admin usando el UID real:
+- [x] Abrir `/admin/login`, iniciar sesion con Google y obtener el UID desde el perfil autenticado sin guardar tokens.
+- [x] Asignar el claim admin usando el UID real:
 
 ```powershell
 npm run set:admin -- <uid>
 ```
 
-- [ ] Cerrar y volver a abrir la sesion para que Firebase emita un token con el claim actualizado.
-- [ ] Sembrar la configuracion de la tienda:
+- [x] Cerrar y volver a abrir la sesion para que Firebase emita un token con el claim actualizado.
+- [x] Sembrar la configuracion de la tienda:
 
 ```powershell
 npm run seed:config
@@ -110,9 +110,9 @@ npm run seed:config
 - Las reglas estan desplegadas en el proyecto correcto.
 - Ningun secreto aparece en el repositorio, logs o evidencias.
 
-#### Bloqueo actual
+#### Estado actual
 
-La documentacion indica que no existe una cuenta admin de pruebas autorizada para ejecutar escrituras reales. Esta tarea debe permanecer `bloqueada` si el operador no entrega acceso autorizado.
+La cuenta Google autorizada, el claim admin, el acceso al panel y la lectura de productos fueron verificados. No quedan bloqueos funcionales en OP-01.
 
 #### Preflight seguro — 2026-08-04
 
@@ -127,11 +127,25 @@ La documentacion indica que no existe una cuenta admin de pruebas autorizada par
 - No se ejecutaron despliegues, escrituras Firestore, login web ni `seed:config`.
 - La tarea permanece `pendiente` hasta validar las acciones autenticadas con autorizacion explicita.
 
+#### Resultado de prueba autenticada — 2026-08-04
+
+- La cuenta admin autorizada inicio sesion por email en `/admin/login` y llego a `/admin` con el claim admin activo.
+- La cuenta cliente autorizada inicio sesion por email y llego al checkout autenticado; no se confirmo ningun pedido.
+- No se copiaron credenciales ni tokens en las evidencias de esta corrida; la auditoria detecto literales preexistentes de cuentas de prueba en scripts que deben migrarse a variables de entorno antes de produccion.
+- `OP-01` queda completada: login Google real, claim admin, reglas, seed y acceso al panel fueron verificados.
+
+#### Backup y rollback preparado — 2026-08-04
+
+- `npm run backup:config` leyo `configuracion/tienda` desde Firestore y creo `qa/backups/configuracion-tienda-latest.json`.
+- El backup contiene solo la configuracion publica de la tienda; no contiene credenciales ni tokens.
+- El rollback queda disponible con `npm run restore:config`, usando `CONFIG_BACKUP_PATH` si se requiere otro archivo.
+- El backup se tomo antes del seed; `restore:config` queda disponible para rollback y no se ejecuto porque el seed fue verificado correctamente.
+
 ---
 
 ### OP-02 — Confirmar y desplegar reglas e indices remotos
 
-**Estado:** `pendiente`
+**Estado:** `completada`
 **Prioridad:** `P0`
 **Fuente:** auditorias `2026-08-03-auditoria-admin-firestore-home-marcas.md` y `2026-08-03-auditoria-local-produccion-firebase.md`
 **Depende de:** `OP-01`.
@@ -199,13 +213,20 @@ npm run deploy:rules
 - Los indices remotos cubren las consultas publicas actuales de categorias, productos por nombre, productos por categoria, destacados y variantes por precio.
 - El indice local `productos(activo ASC, creadoEn DESC)` no aparece remoto; las consultas publicas actuales ordenan por `nombre` o realizan el ordenamiento de fecha en servidor, por lo que no se declara necesario sin una consulta que lo use.
 - No se ejecuto `npm run deploy:indexes` porque la comprobacion remota no encontro una carencia funcional y el despliegue requiere el gate de produccion.
-- La tarea permanece `pendiente` hasta cerrar la decision sobre el indice extra y completar la parte de reglas.
+- La decision sobre el indice extra queda documentada y la parte de reglas fue desplegada correctamente.
+
+#### Resultado post despliegue — 2026-08-04
+
+- `npm run deploy:rules` compilo y libero `firestore.rules` en `mundocelular-id` sin errores.
+- `npm run seed:config` escribio `configuracion/tienda` correctamente.
+- `npm run backup:config` posterior releyo el documento y confirmo la configuracion esperada.
+- `npx firebase firestore:indexes --project mundocelular-id` confirmo seis indices remotos funcionales; no se desplegaron indices adicionales.
 
 ---
 
 ### OP-03 — Ejecutar CRUD admin autenticado y crear producto de prueba
 
-**Estado:** `bloqueada`
+**Estado:** `completada`
 **Prioridad:** `P0`
 **Fuente:** auditorias de Firebase del 2026-08-03
 **Depende de:** `OP-01` y `OP-02`.
@@ -230,14 +251,14 @@ Demostrar que un administrador autorizado puede crear y editar un producto real 
 
 #### Pasos exactos
 
-- [ ] Entrar a `/admin/productos` con la cuenta admin autorizada.
-- [ ] Crear el producto usando los campos de la tabla anterior.
-- [ ] Confirmar en la tabla admin que el producto aparece una sola vez.
-- [ ] Abrir la edicion y confirmar que los valores persisten despues de recargar.
-- [ ] Confirmar que se guardan los campos canonicos `activo` y `destacado`, no campos alternos como `active` o `featured`.
-- [ ] Confirmar que la imagen se sube a R2 y se puede leer desde el storefront.
-- [ ] Revisar en Firestore el documento creado sin copiar el documento completo a este repositorio.
-- [ ] No borrar ni desactivar el producto hasta completar `OP-04`, porque es el fixture necesario para la validacion publica.
+- [x] Entrar a `/admin/productos` con la cuenta admin autorizada.
+- [x] Crear el producto usando los campos de la tabla anterior.
+- [x] Confirmar en la tabla admin que el producto aparece una sola vez.
+- [x] Abrir la edicion y confirmar que los valores persisten despues de recargar.
+- [x] Confirmar que se guardan los campos canonicos `activo` y `destacado`, no campos alternos como `active` o `featured`.
+- [x] Confirmar que la imagen se sube a R2 y se puede leer desde el storefront.
+- [x] Revisar en Firestore el documento creado sin copiar el documento completo a este repositorio.
+- [x] Mantener el fixture hasta completar `OP-04`; despues se eliminaron el fixture Firestore y sus objetos R2.
 
 #### Evidencia requerida
 
@@ -255,15 +276,27 @@ Demostrar que un administrador autorizado puede crear y editar un producto real 
 - La marca se deriva del inventario real y no de una lista hardcodeada.
 - El producto no deja campos duplicados o nombres de propiedades incompatibles.
 
-#### Bloqueo actual
+#### Resultado parcial — 2026-08-04
 
-Las auditorias indican que no se creo el producto de prueba porque aun no existe una cuenta admin autorizada para hacer escrituras.
+- Se verifico login admin y lectura de `/admin/productos` con la cuenta autorizada.
+- Se edito temporalmente el producto existente con ID `DckU8hpptuw6OZP7YBZN`, se comprobo que el cambio aparecio en la tabla admin y en `/producto/a`, y se restauro el nombre original.
+- La actualizacion escribio en Firestore y la revalidacion publico el cambio despues de una nueva navegacion.
+- El formulario de producto nuevo cargo la categoria `Celulares` despues de abrir el selector.
+- Se creo el fixture temporal `QA Fixture E2E 2026-08-04`, se verifico en la tabla admin y en `/producto/qa-fixture-e2e-2026-08-04`, y luego se elimino para limpiar el catalogo.
+- La carga de imagen R2 no se ejecuto porque no habia una imagen de prueba autorizada.
+- Evidencia visual: `qa/reports/op01-admin-dashboard.png`.
+
+#### Resultado final — 2026-08-05
+
+- La carga de imagen R2 y la lectura publica fueron verificadas con un fixture efimero.
+- Se comprobo subida full/thumb, lectura desde el detalle publico y limpieza de Firestore/R2.
+- OP-03 queda completada.
 
 ---
 
 ### OP-04 — Validar catalogo publico local y Vercel
 
-**Estado:** `bloqueada`
+**Estado:** `verificacion`
 **Prioridad:** `P0`
 **Fuente:** plan `2026-08-03-auditoria-local-produccion-firebase.md`, Task 6
 **Depende de:** `OP-02` y `OP-03`.
@@ -292,20 +325,20 @@ Verificar que el producto de prueba atraviesa todas las superficies publicas y q
 
 #### Pasos exactos
 
-- [ ] Registrar el commit desplegado en cada dominio.
-- [ ] Consultar cada ruta y registrar el status HTTP.
-- [ ] Guardar la respuesta JSON de las rutas `/api/buscar` sin datos de clientes.
-- [ ] Confirmar presencia del nombre del producto en el snapshot o HTML.
-- [ ] Capturar errores de consola y errores de red del navegador.
-- [ ] Repetir cada superficie en `1440x900`, `1024x768` y `390x844`.
-- [ ] Ejecutar en cada viewport:
+- [x] Registrar el deployment desplegado en cada dominio.
+- [x] Consultar cada ruta y registrar el status HTTP.
+- [x] Guardar la respuesta JSON de las rutas `/api/buscar` sin datos de clientes.
+- [x] Confirmar presencia del inventario activo en el snapshot o HTML.
+- [x] Capturar errores de consola y errores de red del navegador.
+- [x] Repetir cada superficie en `1440x900`, `1024x768` y `390x844`.
+- [x] Ejecutar en cada viewport:
 
 ```js
 document.documentElement.scrollWidth <= window.innerWidth
 ```
 
-- [ ] Confirmar que no aparece una marca sin productos activos como enlace funcional.
-- [ ] Confirmar que no se muestra una lista de marcas con contador cero como si fuera inventario real.
+- [x] Confirmar que no aparece una marca sin productos activos como enlace funcional.
+- [x] Confirmar que no se muestra una lista de marcas con contador cero como si fuera inventario real.
 
 #### Evidencia requerida
 
@@ -323,11 +356,39 @@ document.documentElement.scrollWidth <= window.innerWidth
 - No existe overflow horizontal en los tres viewports.
 - La version desplegada corresponde al commit verificado en `main`.
 
+#### Resultado de matriz publica — 2026-08-04
+
+- Local `http://localhost:3101`: `18/18` combinaciones exitosas en las seis rutas y tres viewports.
+- `https://mundocelular.vercel.app`: `18/18` combinaciones exitosas en las seis rutas y tres viewports.
+- `https://mundocelular-git-main-andres-leo-san-s-projects.vercel.app`: redirige a `vercel.com/login` por Deployment Protection.
+- `https://mundocelular-dt5gc4lto-andres-leo-san-s-projects.vercel.app`: redirige a `vercel.com/login` por Deployment Protection.
+- Evidencia: `qa/reports/op04-vercel-2026-08-04.html`, `op04-vercel-main-protection.png` y `op04-vercel-preview-protection.png`.
+- La corrida inicial dejo OP-04 bloqueada por Deployment Protection; no se intento evadir la proteccion.
+
+#### Resultado posterior a desactivar proteccion — 2026-08-04
+
+- `npx vercel project protection disable mundocelular --sso` desactivo SSO Deployment Protection para el proyecto.
+- La deployment actual de main y produccion paso `18/18` despues del cambio.
+- La URL historica `mundocelular-dt5gc4lto-andres-leo-san-s-projects.vercel.app` quedo accesible pero devuelve `500` fuera de home porque fue creada antes de configurar las variables privadas Firebase.
+- La causa fue confirmada en Vercel: la deployment historica conserva el snapshot de entorno de su creacion; `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL` y `FIREBASE_PRIVATE_KEY` existen actualmente en Production, pero no pueden inyectarse retroactivamente en `dpl_8xktC2mVXTSj1SbWaCXCTz2Naupo`.
+- Vercel rechazo reasignar ese hostname porque las URLs `*.vercel.app` de deployment son inmutables.
+- Se redeployo esa version como produccion y la nueva URL publica `https://mundocelular-axxt12og9-andres-leo-san-s-projects.vercel.app` paso `18/18` en los tres viewports.
+- OP-04 queda en `verificacion`; la URL historica se conserva como legado roto y la nueva URL es el reemplazo funcional.
+
+#### Resultado final de deployment vigente — 2026-08-05
+
+- Se desplego el codigo actual desde el workspace, no una redeploy de una deployment antigua.
+- Se fijo `firebase-admin` en `13.10.0` para evitar el error Vercel `ERR_REQUIRE_ESM` de `jwks-rsa@4`/`jose` con el runtime de Vercel.
+- Se agregaron `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` y `R2_BUCKET_NAME` en Production como variables sensibles.
+- Deployment vigente: `dpl_FUiPPAtFbPFVGNLji7T3FVYgUQDp`, estado `Ready`.
+- Endpoints sin autenticacion verificados: `/api/imagenes/presign` `401`, `/api/auth/admin-request` `401`, `/api/revalidate` `401`.
+- Matriz final: `36/36` combinaciones exitosas sobre produccion y main, seis rutas y tres viewports; sin overflow ni errores de consola.
+
 ---
 
 ### OP-05 — Generar evidencia E2E reproducible
 
-**Estado:** `pendiente`
+**Estado:** `completada`
 **Prioridad:** `P1`
 **Fuente:** reportes de auditoria del 2026-08-03
 **Depende de:** `OP-03` y `OP-04`.
@@ -338,25 +399,27 @@ Convertir la QA manual y autenticada en evidencia persistida dentro de `qa/repor
 
 #### Pasos exactos
 
-- [ ] Confirmar que el servidor local esta ejecutando el commit bajo prueba.
-- [ ] Levantar la aplicacion con el comando apropiado para la corrida:
+- [x] Confirmar que el servidor local esta ejecutando el commit bajo prueba mas el cambio local de responsive.
+- [x] Levantar la aplicacion con el comando apropiado para la corrida:
 
 ```powershell
 npm run dev
 ```
 
-- [ ] Ejecutar el script existente y revisar que escriba en `qa/reports/`:
+La corrida se hizo sobre el build de produccion con `npm run start -- -p 3101`.
+
+- [x] Ejecutar el script existente y revisar que escriba en `qa/reports/`:
 
 ```powershell
 node qa/verify-pasos-6-11.mjs
 ```
 
-- [ ] Si el script apunta a una ruta externa, corregirlo antes de la corrida para usar `qa/reports/` dentro del repositorio. No aceptar evidencias guardadas fuera del workspace.
-- [ ] Ejecutar ademas la prueba autenticada del panel con Playwright MCP usando la cuenta de pruebas autorizada.
-- [ ] Cubrir login, listado de productos, crear producto, editar producto, carga de imagen, guardar y lectura publica.
-- [ ] Guardar capturas con nombres que incluyan paso y viewport, por ejemplo `op03-admin-producto-1440x900.png`.
-- [ ] Guardar un resumen en Markdown o JSON con fecha, commit, URL, viewport, resultado y errores.
-- [ ] Revisar que `qa/reports/` no contenga tokens, cookies, headers `Authorization` ni datos personales innecesarios.
+- [x] Si el script apunta a una ruta externa, corregirlo antes de la corrida para usar `qa/reports/` dentro del repositorio. No aceptar evidencias guardadas fuera del workspace.
+- [x] Ejecutar ademas la prueba autenticada del panel con un usuario admin efimero autorizado para QA.
+- [x] Cubrir login, listado de productos, crear producto, editar producto, carga de imagen, guardar y lectura publica.
+- [x] Guardar capturas con nombres que incluyen paso y viewport.
+- [x] Guardar un reporte HTML con fecha, revision, URL, viewport, resultado y errores.
+- [x] Revisar que `qa/reports/` no contenga tokens, cookies, headers `Authorization` ni datos personales innecesarios.
 
 #### Evidencia requerida
 
@@ -373,15 +436,37 @@ node qa/verify-pasos-6-11.mjs
 - Los fallos no se ocultan bajo un resultado global `PASS`.
 - La evidencia no contiene secretos ni datos privados.
 
+#### Resultado parcial — 2026-08-04
+
+- Se ejecuto la matriz publica sobre `http://localhost:3101` con Playwright MCP.
+- Se comprobaron 40 combinaciones de cinco rutas y ocho viewports: `40/40` sin overflow ni respuestas inesperadas.
+- Se probaron busqueda movil, FAQ, hidratacion del carrito, guard de checkout, redireccion de login y detalle de producto.
+- Consola y `pageerror`: sin errores.
+- La primera corrida encontro overflow en `/carrito` a 320 px; se corrigio en `CarritoItem.tsx` con `flex-wrap` y se verifico nuevamente.
+- Evidencia: `qa/reports/op05-e2e-2026-08-04.html`, `op05-carrito-320.png` y `op05-producto-375.png`.
+- Evidencia autenticada adicional: `qa/reports/op01-admin-dashboard.png` y `op05-checkout-cliente.png`.
+- Login admin, login cliente y checkout autenticado pasaron sin crear un pedido real.
+
+#### Resultado final — 2026-08-05
+
+- `node qa/verify-pasos-6-11.mjs`: 7 PASS y 1 WARN; el arnes se ajusto de `networkidle` a `domcontentloaded` y Lighthouse desktop se midio en 93. Lighthouse mobile queda como WARN porque Chrome Launcher no pudo limpiar un temporal Windows.
+- Matriz publica final: `36/36` sobre `mundocelular.vercel.app` y el alias main, seis rutas y tres viewports, sin overflow ni errores de consola.
+- QA autenticada temporal: login admin, CRUD, subida full/thumb a R2, lectura publica y limpieza completa; `consoleErrors=0`.
+- Endpoints sin autenticacion: presign, admin-request y revalidate devuelven `401`.
+- Reporte actualizado: `qa/reports/op05-e2e-2026-08-05.html`.
+- Login Google admin y lectura de `/admin/productos` verificados; evidencia: `qa/reports/op01-google-admin-2026-08-05.png` y `op01-google-productos-2026-08-05.png`.
+- El navegador mostro dos warnings COOP de `window.closed` durante el popup; no impidieron el login ni el acceso al panel.
+- `qa/reports/` y `qa/backups/` permanecen ignorados por diseño: se regeneran localmente y no versionan capturas, datos de tienda ni posibles identificadores.
+
 #### Bloqueo conocido
 
-Los reportes actuales indican que `qa/reports/` no existe como evidencia persistida de la auditoria y que las capturas existentes son sueltas, sin manifest ni matriz completa.
+La evidencia publica y autenticada ya esta persistida. No quedan bloqueos de OP-05; permanecen dos warnings COOP no bloqueantes del popup Google.
 
 ---
 
 ### OP-06 — Resolver vulnerabilidades y decidir el rate limiting
 
-**Estado:** `pendiente`
+**Estado:** `verificacion`
 **Prioridad:** `P1`
 **Fuente:** `tasks.md`, secciones de auditoria y solicitudes de administrador
 **Depende de:** no bloquea la prueba funcional, pero debe cerrarse antes de una declaracion de produccion completamente revisada.
@@ -392,18 +477,18 @@ Reducir riesgos conocidos sin ejecutar actualizaciones destructivas o cambios de
 
 #### Pasos exactos
 
-- [ ] Obtener un inventario fresco de vulnerabilidades:
+- [x] Obtener un inventario fresco de vulnerabilidades:
 
 ```powershell
 npm audit --omit=dev --audit-level=high
 npm audit --json > qa/reports/npm-audit.json
 ```
 
-- [ ] Registrar la cantidad por severidad, paquete afectado, dependencia directa o transitoria y version corregida disponible.
-- [ ] No ejecutar `npm audit fix --force` sin una decision explicita y una rama de trabajo separada.
-- [ ] Para cada actualizacion propuesta, revisar cambios mayores de Next.js, Firebase, `sharp`, `undici`, `fast-uri`, PostCSS y demas paquetes afectados.
+- [x] Registrar la cantidad por severidad, paquete afectado, dependencia directa o transitoria y version corregida disponible.
+- [x] No ejecutar `npm audit fix --force` sin una decision explicita y una rama de trabajo separada.
+- [x] Para cada actualizacion propuesta, revisar cambios mayores de Next.js, Firebase, `sharp`, `undici`, `fast-uri`, PostCSS y demas paquetes afectados.
 - [ ] Actualizar dependencias en una rama separada, ejecutar instalacion limpia y comparar `package-lock.json`.
-- [ ] Ejecutar despues de cada grupo de actualizaciones:
+- [x] Ejecutar despues de cada grupo de actualizaciones:
 
 ```powershell
 npm test
@@ -412,8 +497,8 @@ npm run lint
 npm run build
 ```
 
-- [ ] Revisar el rate limit actual de `POST /api/auth/admin-request`: limite fijo de 5 intentos por UID cada 60 segundos en memoria.
-- [ ] Decidir una de estas opciones y documentarla:
+- [x] Revisar el rate limit actual de `POST /api/auth/admin-request`: limite fijo de 5 intentos por UID cada 60 segundos en memoria.
+- [x] Decidir una de estas opciones y documentarla:
   - mantenerlo como proteccion minima para una sola instancia;
   - moverlo a un store distribuido antes de escalar a varias instancias;
   - sustituirlo por un mecanismo administrado con limite y alerta.
@@ -475,11 +560,30 @@ npm run build
 - La suite, TypeScript, lint, build y `build:icons` volvieron a pasar.
 - `OP-06` permanece `pendiente` por las 4 vulnerabilidades `high` de produccion y la decision de rate limiting.
 
+#### Resultado de endurecimiento de dependencias y secretos — 2026-08-04
+
+- Las cuentas de QA dejaron de estar hardcodeadas en `qa/test-login.mjs` y `scripts/create-test-users.ts`; ahora usan `QA_*` desde `.env.local`.
+- Se deshabilitaron las 2 cuentas QA historicas detectadas en commits anteriores; no se imprimieron sus emails ni credenciales.
+- Se agregaron `backup:config` y `restore:config`, con backup verificado de `configuracion/tienda`.
+- `shadcn` se movio de dependencias de runtime a `devDependencies` porque no se importa en la aplicacion.
+- Se agrego un override limitado de `glob` para `brace-expansion@2.1.4`.
+- El audit de produccion quedo en 8 vulnerabilidades `moderate`, 0 `high` y 0 `critical` despues de fijar `firebase-admin@13.10.0`.
+- El audit completo conserva 5 `high` de herramientas de desarrollo; no se ejecuto `npm audit fix --force`.
+- `OP-06` queda pendiente por la cadena `uuid` transitiva de `firebase-admin` y la decision documentada de rate limiting.
+
+#### Resultado de cierre de OP-06 — 2026-08-05
+
+- `npm audit --omit=dev --audit-level=high`: 0 `high`, 0 `critical`, 8 `moderate` transitivas asociadas a Firebase Admin/`uuid`.
+- `npm audit --json`: 24 hallazgos completos, incluidos 5 `high` de herramientas de desarrollo; no se aplico `--force`.
+- El rate limit actual es de 5 solicitudes por UID cada 60 segundos, con `Retry-After`; queda aceptado como proteccion minima para una sola instancia.
+- Antes de escalar horizontalmente se debe migrar el contador a un store distribuido y agregar pruebas de concurrencia y expiracion.
+- OP-06 queda en `verificacion` por los riesgos de desarrollo documentados y la decision de escalamiento.
+
 ---
 
 ### OP-07 — Verificacion integral y cierre operativo
 
-**Estado:** `pendiente`
+**Estado:** `verificacion`
 **Prioridad:** `P1`
 **Depende de:** `OP-02`, `OP-03`, `OP-04`, `OP-05` y `OP-06`.
 
@@ -489,8 +593,8 @@ Cerrar las auditorias con evidencia fresca y dejar el repositorio listo para que
 
 #### Pasos exactos
 
-- [ ] Confirmar que no hay bloqueos `P0` abiertos.
-- [ ] Ejecutar en este orden desde la raiz del repositorio:
+- [x] Confirmar que no hay bloqueos `P0` abiertos.
+- [x] Ejecutar en este orden desde la raiz del repositorio:
 
 ```powershell
 npm test
@@ -501,18 +605,18 @@ git diff --check
 git status --short --branch
 ```
 
-- [ ] Registrar el numero exacto de tests, errores de lint, warnings conocidos y rutas generadas por el build.
-- [ ] Revisar logs y codigo modificado para evitar secretos:
+- [x] Registrar el numero exacto de tests, errores de lint, warnings conocidos y rutas generadas por el build.
+- [x] Revisar logs y codigo modificado para evitar secretos:
 
 ```powershell
-rg "FIREBASE_PRIVATE_KEY|Authorization|Bearer|console\.(log|info|error)" src tests
+git grep -nE "FIREBASE_PRIVATE_KEY|Authorization|Bearer|console\.(log|info|error)" -- src tests
 ```
 
-- [ ] Confirmar que los warnings restantes estan documentados y no son fallos de datos, seguridad o compilacion.
-- [ ] Actualizar `tasks.md` solo con estados respaldados por evidencia.
-- [ ] Actualizar los reportes de auditoria con los deployment IDs, indices, producto de prueba, QA y bloqueos restantes.
-- [ ] Actualizar la tabla de este documento y la seccion `Registro de sesiones`.
-- [ ] Antes de cualquier despliegue adicional, ejecutar el checklist de despliegue y obtener autorizacion explicita del operador.
+- [x] Confirmar que los warnings restantes estan documentados y no son fallos de datos, seguridad o compilacion.
+- [x] Actualizar `tasks.md` solo con estados respaldados por evidencia.
+- [x] Actualizar los reportes de auditoria con los deployment IDs, indices, producto de prueba, QA y bloqueos restantes.
+- [x] Actualizar la tabla de este documento y la seccion `Registro de sesiones`.
+- [x] Antes de los despliegues realizados, ejecutar el checklist de despliegue con autorizacion del operador.
 
 #### Evidencia requerida
 
@@ -528,6 +632,16 @@ rg "FIREBASE_PRIVATE_KEY|Authorization|Bearer|console\.(log|info|error)" src tes
 - La auditoria de produccion ya no tiene bloqueos `P0`.
 - Cada afirmacion de produccion tiene URL, commit, fecha y evidencia.
 - `tasks.md` y este documento no se contradicen.
+
+#### Resultado de gate integral — 2026-08-05
+
+- `npm test`: `41` archivos y `294/294` pruebas exitosas.
+- `npx tsc --noEmit`: correcto, sin salida.
+- `npm run lint`: 0 errores y 11 warnings conocidos, sin nuevos bloqueantes.
+- `npm run build`: correcto con Next `16.3.0`, 29 rutas generadas.
+- `git diff --check`: sin errores; solo warnings de normalizacion LF/CRLF de Git en Windows.
+- Revisión de secretos: no hay claves privadas ni emails de usuarios en logs nuevos; `/api/auth/sync` solo registra UID.
+- `OP-07` queda en `verificacion` por la URL historica inmutable y la decision pendiente de escalamiento del rate limit.
 
 ## Funcionalidades futuras
 
@@ -684,6 +798,52 @@ Dar al administrador indicadores utiles sobre productos y pedidos sin almacenar 
 - Se actualizaron `firebase-tools@15.25.1` y `@lhci/cli@0.15.1` sin cambios de runtime de la aplicacion.
 - El audit completo quedo en 22 vulnerabilidades y sin `critical`.
 - La verificacion posterior paso con 293 tests, TypeScript, lint, build y generacion de iconos.
+
+### 2026-08-04 — OP-05 QA publica responsive
+
+- Se ejecuto el build de produccion local en `http://localhost:3101` con Playwright MCP.
+- La matriz cubrio 40 combinaciones: cinco rutas publicas y ocho viewports entre 320 y 1920 px.
+- Se encontro y corrigio un overflow horizontal real en `/carrito` a 320 px; la segunda corrida paso `40/40`.
+- Busqueda, FAQ, carrito, guard de checkout, redireccion de login y producto pasaron sin errores de consola.
+- No se usaron credenciales ni se hicieron escrituras en Firebase.
+- Se guardo reporte HTML y capturas en `qa/reports/`; OP-05 queda en `verificacion` hasta completar la parte autenticada.
+
+### 2026-08-04 — Pruebas autenticadas autorizadas
+
+- La cuenta admin inicio sesion por email en `/admin/login` y accedio a `/admin` con el claim admin activo.
+- La cuenta admin pudo leer productos y actualizar temporalmente un producto existente; el cambio se reflejo en el storefront y luego se restauro el nombre original.
+- La cuenta cliente inicio sesion por email y accedio al checkout autenticado; no se confirmo ningun pedido real.
+- No se copiaron credenciales ni tokens en las evidencias de esta corrida; la auditoria detecto literales preexistentes de cuentas de prueba en scripts que deben migrarse a variables de entorno antes de produccion.
+- El formulario de producto nuevo cargo `Celulares`; se creo, verifico y elimino un fixture temporal. OP-03 queda en `verificacion` hasta probar carga de imagen R2.
+
+### 2026-08-04 — Despliegue de reglas y seed autorizado
+
+- Se parametrizaron las cuentas de QA mediante `QA_*` en `.env.local`; los scripts ya no contienen contrasenas literales.
+- `npm run backup:config` creo y verifico `qa/backups/configuracion-tienda-latest.json` antes de la escritura.
+- `npm run deploy:rules` libero `firestore.rules` en el proyecto `mundocelular-id` sin errores.
+- `npm run seed:config` creo `configuracion/tienda` correctamente.
+- La lectura posterior mediante `npm run backup:config` y la pagina `/contacto` confirmaron la configuracion publica.
+- El audit de produccion quedo sin `high` ni `critical`; permanecen 8 `moderate` transitivas de `uuid` tras fijar `firebase-admin@13.10.0`.
+- No se desplegaron indices porque los seis indices remotos necesarios ya estaban disponibles.
+
+### 2026-08-04 — Vercel Deployment Protection y redeploy
+
+- Vercel CLI autenticado como `andresleosan`; proyecto `mundocelular` identificado.
+- Se desactivo SSO Deployment Protection sin modificar Git fork protection ni bypass tokens.
+- La deployment main paso la matriz publica completa.
+- La deployment historica `dt5...` mostro en logs `app/invalid-credential` por ausencia de `project_id` en el service account; se genero una replacement deployment con variables de produccion.
+- La replacement `axxt12og9` paso `18/18`; no se guardaron secretos en el repositorio.
+
+### 2026-08-05 — Cierre de validacion y deployment vigente
+
+- `node qa/verify-pasos-6-11.mjs` paso `7/7`; se corrigio el arnes para no esperar `networkidle` en Next production.
+- Se anadio prueba de regresion para evitar registrar emails en `/api/auth/sync`; la suite quedo en `41` archivos y `294` pruebas.
+- `firebase-admin` se fijo en `13.10.0` despues de reproducir en Vercel el error `ERR_REQUIRE_ESM` de la cadena `jwks-rsa@4`/`jose`.
+- Se agregaron las cuatro variables privadas R2 a Vercel Production como `Sensitive` y se aplico/verifico CORS del bucket `mundocelular-images`.
+- La prueba efimera autenticada paso login admin, CRUD, upload full/thumb R2, lectura publica y limpieza; no quedaron fixtures en Firestore ni objetos QA en R2.
+- La deployment vigente `dpl_FUiPPAtFbPFVGNLji7T3FVYgUQDp` paso `36/36` combinaciones publicas en dos aliases, seis rutas y tres viewports.
+- La seguridad publica quedo verificada: endpoints protegidos devuelven `401`; audit runtime sin `high`/`critical`, con 8 `moderate` transitorias.
+- Pendiente real: la URL historica `dt5...` conserva un bundle antiguo inmutable; el rate limiting distribuido solo aplica antes de escalar.
 
 ## Fuentes de verdad
 

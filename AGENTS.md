@@ -5,7 +5,7 @@ E-commerce de tecnología (celulares, accesorios, consolas) en Medellín, Colomb
 ## Stack
 
 - Next.js 15 (App Router, Turbopack), React 19, TypeScript 5, Tailwind v4
-- Firebase 12 (client) + firebase-admin 14 (server): Auth Google, Firestore
+- Firebase 12 (client) + firebase-admin 13.10.0 (server): Auth Google, Firestore
 - Cloudflare R2 para imágenes (S3 API)
 - Vitest 4 para tests, jsdom, `@testing-library/react`
 - Windows PowerShell 5.1 (sin WSL/bash nativo)

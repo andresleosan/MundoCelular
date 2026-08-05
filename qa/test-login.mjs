@@ -1,6 +1,20 @@
 import { chromium } from 'playwright';
+import { config } from 'dotenv';
+
+config({ path: '.env.local' });
 
 const TIMEOUT = 60000;
+
+function requiredEnv(name) {
+  const value = process.env[name]?.trim();
+  if (!value) throw new Error(`Missing environment variable ${name}`);
+  return value;
+}
+
+const QA_ADMIN_EMAIL = requiredEnv('QA_ADMIN_EMAIL');
+const QA_ADMIN_PASSWORD = requiredEnv('QA_ADMIN_PASSWORD');
+const QA_CLIENT_EMAIL = requiredEnv('QA_CLIENT_EMAIL');
+const QA_CLIENT_PASSWORD = requiredEnv('QA_CLIENT_PASSWORD');
 
 async function runTests() {
   const browser = await chromium.launch({ headless: true });
@@ -78,8 +92,8 @@ async function runTests() {
     
     // Step 5: Enter admin credentials
     console.log('Step 5: Entering admin credentials');
-    await emailInput.fill('admin@admin.com');
-    await passwordInput.fill('admin123');
+    await emailInput.fill(QA_ADMIN_EMAIL);
+    await passwordInput.fill(QA_ADMIN_PASSWORD);
     console.log('✓ Credentials entered');
     
     // Step 6: Click "Admin" button in email/password section
@@ -191,8 +205,8 @@ async function runTests() {
     console.log('Step 4: Entering client credentials');
     const modal2 = page.locator('[role="dialog"][aria-label="Iniciar sesión"]');
     if (await modal2.isVisible({ timeout: 5000 }).catch(() => false)) {
-      await page.fill('input[type="email"]', 'cliente@cliente.com');
-      await page.fill('input[type="password"]', 'cliente123');
+      await page.fill('input[type="email"]', QA_CLIENT_EMAIL);
+      await page.fill('input[type="password"]', QA_CLIENT_PASSWORD);
       console.log('✓ Client credentials entered');
       
       // Step 5: Click "Cliente" button in email/password section

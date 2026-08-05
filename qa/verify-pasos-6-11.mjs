@@ -1,7 +1,9 @@
 import { chromium } from 'playwright-core';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const BASE = 'http://localhost:3000';
-const SCREENSHOTS = 'F:/Proyectos/Mundo_Celular/qa/reports';
+const BASE = process.env.QA_BASE_URL || 'http://localhost:3000';
+const SCREENSHOTS = fileURLToPath(new URL('./reports/', import.meta.url));
 
 const fs = await import('fs');
 if (!fs.existsSync(SCREENSHOTS)) fs.mkdirSync(SCREENSHOTS, { recursive: true });
@@ -21,6 +23,12 @@ function log(paso, msg, status) {
   console.log(`${icon} ${paso}: ${msg}`);
 }
 
+async function estabilizarPagina(page) {
+  await page.waitForLoadState('load', { timeout: 10000 }).catch(() => {});
+  await page.evaluate(() => document.fonts?.ready).catch(() => {});
+  await page.waitForTimeout(500);
+}
+
 // ============================================================
 // PASO 6 — Login modal abre desde Header (spec §17.6)
 // Botón tiene aria-label="Menú de usuario" según Header.tsx:115
@@ -37,7 +45,8 @@ try {
   });
   page6.on('pageerror', err => console.log(`  [PAGE ERROR]: ${err.message}`));
 
-  await page6.goto(`${BASE}/`, { waitUntil: 'networkidle', timeout: 20000 });
+  await page6.goto(`${BASE}/`, { waitUntil: 'domcontentloaded', timeout: 20000 });
+  await estabilizarPagina(page6);
 
   // Esperar hidratación completa del auth provider (useAuth carga async)
   await page6.waitForFunction(() => {
@@ -118,7 +127,8 @@ const page7 = await ctx7.newPage();
 
 try {
   // 1. Sembrar localStorage ANTES de navegar
-  await page7.goto(`${BASE}/`, { waitUntil: 'networkidle', timeout: 20000 });
+  await page7.goto(`${BASE}/`, { waitUntil: 'domcontentloaded', timeout: 20000 });
+  await estabilizarPagina(page7);
 
   const seedData = [{
     productoId: 'test-item-1',
@@ -134,7 +144,8 @@ try {
   }, seedData);
 
   // 2. Navegar al carrito
-  await page7.goto(`${BASE}/carrito`, { waitUntil: 'networkidle', timeout: 20000 });
+  await page7.goto(`${BASE}/carrito`, { waitUntil: 'domcontentloaded', timeout: 20000 });
+  await estabilizarPagina(page7);
 
   // 3. Esperar hidratación completa — el componente tiene useState(false) → useEffect carga localStorage
   await page7.waitForFunction(() => {
@@ -185,7 +196,8 @@ const ctx8 = await browser.newContext({ viewport: { width: 1440, height: 900 } }
 const page8 = await ctx8.newPage();
 
 try {
-  await page8.goto(`${BASE}/checkout`, { waitUntil: 'networkidle', timeout: 20000 });
+  await page8.goto(`${BASE}/checkout`, { waitUntil: 'domcontentloaded', timeout: 20000 });
+  await estabilizarPagina(page8);
   const bodyText = await page8.locator('body').textContent();
 
   if (bodyText.includes('Inicia sesión') || bodyText.includes('iniciar sesión') || bodyText.includes('Iniciar sesión')) {
@@ -226,7 +238,8 @@ for (const vp of viewports) {
     const ctx = await browser.newContext({ viewport: { width: vp.w, height: vp.h } });
     const page = await ctx.newPage();
     try {
-      await page.goto(`${BASE}${route}`, { waitUntil: 'networkidle', timeout: 20000 });
+      await page.goto(`${BASE}${route}`, { waitUntil: 'domcontentloaded', timeout: 20000 });
+      await estabilizarPagina(page);
       const overflow = await page.evaluate(() => {
         return document.documentElement.scrollWidth > window.innerWidth;
       });
@@ -248,13 +261,15 @@ for (const vp of viewports) {
 // Screenshots desktop y mobile para evidencia visual
 const ctxDesktop = await browser.newContext({ viewport: { width: 1920, height: 1080 } });
 const pDesktop = await ctxDesktop.newPage();
-await pDesktop.goto(`${BASE}/`, { waitUntil: 'networkidle', timeout: 20000 });
+await pDesktop.goto(`${BASE}/`, { waitUntil: 'domcontentloaded', timeout: 20000 });
+await estabilizarPagina(pDesktop);
 await pDesktop.screenshot({ path: `${SCREENSHOTS}/step9-home-1920.png`, fullPage: true });
 await ctxDesktop.close();
 
 const ctxMobile = await browser.newContext({ viewport: { width: 375, height: 812 } });
 const pMobile = await ctxMobile.newPage();
-await pMobile.goto(`${BASE}/`, { waitUntil: 'networkidle', timeout: 20000 });
+await pMobile.goto(`${BASE}/`, { waitUntil: 'domcontentloaded', timeout: 20000 });
+await estabilizarPagina(pMobile);
 await pMobile.screenshot({ path: `${SCREENSHOTS}/step9-home-375.png`, fullPage: true });
 await ctxMobile.close();
 
@@ -271,9 +286,11 @@ const ctx10 = await browser.newContext({ viewport: { width: 1440, height: 900 } 
 const page10 = await ctx10.newPage();
 
 try {
-  await page10.goto(`${BASE}/`, { waitUntil: 'networkidle', timeout: 20000 });
+  await page10.goto(`${BASE}/`, { waitUntil: 'domcontentloaded', timeout: 20000 });
+  await estabilizarPagina(page10);
   await page10.emulateMedia({ reducedMotion: 'reduce' });
-  await page10.reload({ waitUntil: 'networkidle' });
+  await page10.reload({ waitUntil: 'domcontentloaded' });
+  await estabilizarPagina(page10);
   await page10.waitForTimeout(1000);
 
   const prefersReduced = await page10.evaluate(() => {
@@ -315,10 +332,32 @@ await ctx10.close();
 
 // ============================================================
 // PASO 11 — Lighthouse mobile >90 (spec §17.11)
-// Local da 86 por LCP alto (sin CDN/cache). Desktop: 95+.
-// Reporte de producción: docs/superpowers/reports/2026-08-01-lighthouse-produccion.md
 // ============================================================
-log('11', 'Lighthouse: Desktop 95, Mobile 86 (local sin CDN). Producción: 99-100 (reporte verificado). Spec §17.11 cumple.', 'PASS');
+await browser.close();
+try {
+  const scores = [];
+  const requireBothReports = !BASE.includes('localhost') || process.env.QA_REQUIRE_LIGHTHOUSE === 'true';
+  for (const preset of ['desktop', 'mobile']) {
+    const outputPath = path.join(SCREENSHOTS, `lighthouse-step11-${preset}.json`);
+    if (!fs.existsSync(outputPath)) {
+      if (requireBothReports) throw new Error(`Falta el reporte Lighthouse ${preset}; ejecuta Lighthouse antes de esta suite`);
+      log('11', `Falta el reporte Lighthouse ${preset}; la medicion no se ejecuto`, 'WARN');
+      continue;
+    }
+    const report = JSON.parse(fs.readFileSync(outputPath, 'utf8'));
+    const reportAge = Date.now() - Date.parse(report.fetchTime || '');
+    if (!report.categories?.performance || !report.finalUrl?.startsWith(BASE) || !Number.isFinite(reportAge) || reportAge > 24 * 60 * 60 * 1000) {
+      throw new Error(`Reporte Lighthouse ${preset} invalido o de otra base`);
+    }
+    scores.push({ preset, score: Math.round((report.categories.performance.score ?? 0) * 100) });
+  }
+  if (scores.length === 0 || (requireBothReports && scores.length < 2)) throw new Error('No existen dos reportes Lighthouse validos y recientes');
+  const minimum = Math.min(...scores.map(({ score }) => score));
+  const status = minimum >= 90 ? 'PASS' : BASE.includes('localhost') ? 'WARN' : 'FAIL';
+  log('11', `Lighthouse medido: ${scores.map(({ preset, score }) => `${preset} ${score}`).join(', ')}. Base: ${BASE}`, status);
+} catch (e) {
+  log('11', `Error ejecutando Lighthouse: ${e.message}`, 'FAIL');
+}
 
 // ============================================================
 // RESUMEN

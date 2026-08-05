@@ -36,6 +36,8 @@ coverage/
 
 # Reportes de QA (browser-qa-e2e, v3.3.0) — se regeneran en cada corrida, no se versionan
 qa/reports/
+qa/backups/
+.playwright-mcp/
 playwright-report/
 test-results/
 

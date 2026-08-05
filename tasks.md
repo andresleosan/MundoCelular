@@ -14,11 +14,11 @@ Plan Fase 1: docs/superpowers/plans/2026-07-19-fase1-base-admin.md
 - [x] Config tienda + scripts seed/set-admin
 
 ## Pendiente para usar el panel
-- [ ] Crear proyecto Firebase + Auth Google + Firestore
-- [ ] Copiar credenciales a .env.local
-- [ ] `npx firebase deploy --only firestore:rules`
-- [ ] Login en /admin/login, copiar UID, `npm run set:admin -- <uid>`
-- [ ] `npm run seed:config`
+- [x] Crear proyecto Firebase + Auth Google + Firestore
+- [x] Copiar credenciales a .env.local
+- [x] `npx firebase deploy --only firestore:rules`
+- [x] Login en /admin/login, copiar UID, `npm run set:admin -- <uid>`
+- [x] `npm run seed:config`
 
 ## Fase 2 — Catálogo público SSG + SEO + carrito
 - [x] Lecturas servidor con unstable_cache
@@ -121,8 +121,9 @@ Plan: `docs/superpowers/plans/2026-07-31-rediseno-premium-v2.md` (pendiente)
 - [x] Expectativas obsoletas de `ProductoForm` actualizadas a roles accesibles reales, sin cambiar lógica de negocio.
 - [x] QA pública en `localhost:3000` verificada en `1440x900`, `1024x768` y `390x844`: 30/30 rutas responden `200`, sin overflow ni errores de consola.
 - [x] Fondo animado del teléfono y seis tarjetas de marcas restaurados y verificados durante el scroll.
-- [ ] Flujo CRUD Admin-Firestore autenticado pendiente de credenciales de prueba autorizadas.
-- [ ] Despliegue del índice compuesto y decisión sobre vulnerabilidades/rate limiting quedan como tareas operativas separadas.
+- [x] Flujo CRUD Admin-Firestore autenticado verificado con fixture temporal y limpieza posterior.
+- [x] Indices remotos verificados; no se requiere despliegue adicional para las consultas actuales.
+- [ ] Decision de rate limiting distribuido antes de escalar a varias instancias.
 
 Reporte: `docs/superpowers/reports/2026-08-03-auditoria-admin-firestore-home-marcas.md`
 
@@ -138,7 +139,7 @@ Reporte: `docs/superpowers/reports/2026-08-03-auditoria-admin-firestore-home-mar
 - [x] Índices remotos consultados en modo lectura; el índice `productos(activo ASC, creadoEn DESC)` no es requerido por el ordenamiento manual actual.
 - [x] Evidencia de smoke HTTP y matriz pública registrada sin escrituras; la QA manual de esta sesión comprobó imagen y rutas de catálogo.
 - [x] Suite local verificada: 222/222 tests, TypeScript y build sin errores; lint con 11 warnings y auditoria con 17 vulnerabilidades.
-- [ ] Bloqueos: no se creó el producto de prueba, no hay CRUD admin autorizado y no existe reporte HTML E2E persistido.
+- [x] Producto de prueba, CRUD admin autorizado, Google OAuth real y reporte HTML E2E persistido verificados; queda documentada la URL historica inmutable.
 
 Reporte: `docs/superpowers/reports/2026-08-03-auditoria-local-produccion-firebase.md`
 
@@ -152,7 +153,7 @@ Reporte: `docs/superpowers/reports/2026-08-03-auditoria-local-produccion-firebas
 - [x] Validar API, reglas Firestore, fechas serializadas y limite de solicitudes.
 - [x] Verificar: 292/292 tests, 11/11 reglas, TypeScript, lint y build.
 - [x] Actualizar solicitudes sin recargar el panel (refresco manual y cada 15 s).
-- [ ] Actualizar dependencias con vulnerabilidades reportadas por `npm audit`.
+- [x] Revisar y actualizar dependencias con vulnerabilidades reportadas por `npm audit`; los 5 `high` restantes pertenecen a herramientas de desarrollo y quedan documentados sin usar `--force`.
 
 Diseño: `docs/superpowers/specs/2026-08-04-solicitudes-administrador-design.md`
 Plan: `docs/superpowers/plans/2026-08-04-solicitudes-administrador.md`
