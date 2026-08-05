@@ -47,12 +47,13 @@ export async function listarPedidosCliente(
   if (cursor) restricciones.push(startAfter(cursor));
 
   const snap = await getDocs(query(collection(getDb(), "pedidos"), ...restricciones));
+  const documentos = snap.docs;
   return {
-    pedidos: snap.docs.map((documento) => ({
+    pedidos: documentos.map((documento) => ({
       id: documento.id,
       ...(documento.data() as Omit<Pedido, "id">),
     })),
-    cursor: snap.docs.at(-1) ?? null,
+    cursor: documentos.length === PEDIDOS_POR_PAGINA ? (documentos.at(-1) ?? null) : null,
   };
 }
 

@@ -46,16 +46,25 @@ describe("listarPedidosCliente", () => {
   });
 
   it("consulta la primera pagina solo para el UID del cliente", async () => {
-    const ultimo = snap("pedido-1");
-    firestore.getDocs.mockResolvedValue({ docs: [snap("pedido-2"), ultimo] });
+    const docs = Array.from({ length: 10 }, (_, i) => snap(`pedido-${i + 1}`));
+    firestore.getDocs.mockResolvedValue({ docs });
 
     const result = await listarPedidosCliente("cliente-1");
 
     expect(firestore.where).toHaveBeenCalledWith("clienteUid", "==", "cliente-1");
     expect(firestore.orderBy).toHaveBeenCalledWith("creadoEn", "desc");
     expect(firestore.limit).toHaveBeenCalledWith(10);
-    expect(result.pedidos.map((pedido) => pedido.id)).toEqual(["pedido-2", "pedido-1"]);
-    expect(result.cursor).toBe(ultimo);
+    expect(result.pedidos.map((pedido) => pedido.id)).toEqual(Array.from({ length: 10 }, (_, i) => `pedido-${i + 1}`));
+    expect(result.cursor).toBe(docs[9]);
+  });
+
+  it("devuelve cursor null cuando la pagina trae menos del limite", async () => {
+    firestore.getDocs.mockResolvedValue({ docs: [snap("pedido-unico")] });
+
+    const result = await listarPedidosCliente("cliente-1");
+
+    expect(result.pedidos.map((pedido) => pedido.id)).toEqual(["pedido-unico"]);
+    expect(result.cursor).toBeNull();
   });
 
   it("usa el cursor recibido para pedir la siguiente pagina", async () => {
