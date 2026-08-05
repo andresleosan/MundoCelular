@@ -497,12 +497,12 @@ npm run lint
 npm run build
 ```
 
-- [x] Revisar el rate limit actual de `POST /api/auth/admin-request`: limite fijo de 5 intentos por UID cada 60 segundos en memoria.
+- [x] Revisar el rate limit de `POST /api/auth/admin-request`: limite fijo de 5 intentos por UID cada 60 segundos.
 - [x] Decidir una de estas opciones y documentarla:
   - mantenerlo como proteccion minima para una sola instancia;
   - moverlo a un store distribuido antes de escalar a varias instancias;
   - sustituirlo por un mecanismo administrado con limite y alerta.
-- [ ] Si se cambia el mecanismo, agregar pruebas de limite, expiracion, concurrencia y comportamiento despues de reinicio.
+- [x] Si se cambia el mecanismo, agregar pruebas de limite, expiracion, concurrencia simulada y comportamiento fail-closed.
 
 #### Evidencia requerida
 
@@ -576,8 +576,18 @@ npm run build
 - `npm audit --omit=dev --audit-level=high`: 0 `high`, 0 `critical`, 8 `moderate` transitivas asociadas a Firebase Admin/`uuid`.
 - `npm audit --json`: 24 hallazgos completos, incluidos 5 `high` de herramientas de desarrollo; no se aplico `--force`.
 - El rate limit actual es de 5 solicitudes por UID cada 60 segundos, con `Retry-After`; queda aceptado como proteccion minima para una sola instancia.
-- Antes de escalar horizontalmente se debe migrar el contador a un store distribuido y agregar pruebas de concurrencia y expiracion.
+- La migracion a un store distribuido quedo implementada con pruebas de concurrencia simulada y expiracion.
 - OP-06 queda en `verificacion` por los riesgos de desarrollo documentados y la decision de escalamiento.
+
+#### Resultado de implementacion distribuida — 2026-08-05
+
+- Se implemento `consumeAdminRequestRateLimit` en `src/lib/rate-limit/firestore.ts` con documento `rateLimits/admin-request:<sha256(uid)>` y transaccion de Firestore Admin SDK.
+- La ruta verifica autenticacion y claim admin antes de consumir cuota; una falla del store responde `503` sin detalles internos.
+- Las pruebas cubren ventana nueva, incremento, sexta solicitud, expiracion, `Retry-After`, error del store y la integracion del endpoint.
+- `npm test`: `42` archivos y `302/302` pruebas exitosas.
+- `npx tsc --noEmit`: correcto; `npm run lint`: 0 errores y 11 warnings conocidos; `npm run build`: correcto con Next `16.3.0` y 29 rutas.
+- Commits: `70c0249` (store y pruebas) y `6a44bcc` (integracion de la ruta).
+- No se hizo escritura remota ni despliegue Vercel en esta fase; falta publicar y verificar la version antes de cerrar OP-06/OP-07.
 
 ---
 
@@ -642,6 +652,11 @@ git grep -nE "FIREBASE_PRIVATE_KEY|Authorization|Bearer|console\.(log|info|error
 - `git diff --check`: sin errores; solo warnings de normalizacion LF/CRLF de Git en Windows.
 - Revisión de secretos: no hay claves privadas ni emails de usuarios en logs nuevos; `/api/auth/sync` solo registra UID.
 - `OP-07` queda en `verificacion` por la URL historica inmutable y la decision pendiente de escalamiento del rate limit.
+
+#### Actualizacion posterior al rate limit distribuido — 2026-08-05
+
+- La evidencia local se actualizo a `302/302` pruebas en `42` archivos y el build sigue generando 29 rutas sin errores.
+- El gate de produccion permanece en `verificacion` hasta publicar el commit `6a44bcc` y comprobar nuevamente el endpoint protegido en la deployment resultante.
 
 ## Funcionalidades futuras
 
@@ -844,6 +859,13 @@ Dar al administrador indicadores utiles sobre productos y pedidos sin almacenar 
 - La deployment vigente `dpl_FUiPPAtFbPFVGNLji7T3FVYgUQDp` paso `36/36` combinaciones publicas en dos aliases, seis rutas y tres viewports.
 - La seguridad publica quedo verificada: endpoints protegidos devuelven `401`; audit runtime sin `high`/`critical`, con 8 `moderate` transitorias.
 - Pendiente real: la URL historica `dt5...` conserva un bundle antiguo inmutable; el rate limiting distribuido solo aplica antes de escalar.
+
+### 2026-08-05 — Rate limit distribuido
+
+- Se escribieron la especificacion y el plan de implementacion en `docs/superpowers/specs/2026-08-05-rate-limit-distribuido-design.md` y `docs/superpowers/plans/2026-08-05-rate-limit-distribuido.md`.
+- TDD verifico el helper transaccional y el endpoint con 5 solicitudes permitidas, sexta bloqueada, expiracion, `Retry-After` y `503` fail-closed.
+- La suite paso con `302/302`, TypeScript y build pasaron; lint conserva 11 warnings conocidos.
+- El push de los commits de especificacion fallo dos veces por conectividad con GitHub; el codigo posterior queda localmente en `main` y requiere publicar antes de QA remoto.
 
 ## Fuentes de verdad
 

@@ -123,7 +123,7 @@ Plan: `docs/superpowers/plans/2026-07-31-rediseno-premium-v2.md` (pendiente)
 - [x] Fondo animado del teléfono y seis tarjetas de marcas restaurados y verificados durante el scroll.
 - [x] Flujo CRUD Admin-Firestore autenticado verificado con fixture temporal y limpieza posterior.
 - [x] Indices remotos verificados; no se requiere despliegue adicional para las consultas actuales.
-- [ ] Decision de rate limiting distribuido antes de escalar a varias instancias.
+- [x] Decision e implementacion de rate limiting distribuido antes de escalar a varias instancias.
 
 Reporte: `docs/superpowers/reports/2026-08-03-auditoria-admin-firestore-home-marcas.md`
 
@@ -154,6 +154,9 @@ Reporte: `docs/superpowers/reports/2026-08-03-auditoria-local-produccion-firebas
 - [x] Verificar: 292/292 tests, 11/11 reglas, TypeScript, lint y build.
 - [x] Actualizar solicitudes sin recargar el panel (refresco manual y cada 15 s).
 - [x] Revisar y actualizar dependencias con vulnerabilidades reportadas por `npm audit`; los 5 `high` restantes pertenecen a herramientas de desarrollo y quedan documentados sin usar `--force`.
+- [x] Migrar el limite de `POST /api/auth/admin-request` a Firestore transaccional: 5 solicitudes por UID cada 60 segundos, expiracion, `Retry-After` y fail-closed `503`.
 
 Diseño: `docs/superpowers/specs/2026-08-04-solicitudes-administrador-design.md`
 Plan: `docs/superpowers/plans/2026-08-04-solicitudes-administrador.md`
+Diseño distribuido: `docs/superpowers/specs/2026-08-05-rate-limit-distribuido-design.md`
+Plan distribuido: `docs/superpowers/plans/2026-08-05-rate-limit-distribuido.md`
