@@ -584,7 +584,8 @@ npm run build
 - Se implemento `consumeAdminRequestRateLimit` en `src/lib/rate-limit/firestore.ts` con documento `rateLimits/admin-request:<sha256(uid)>` y transaccion de Firestore Admin SDK.
 - La ruta verifica autenticacion y claim admin antes de consumir cuota; una falla del store responde `503` sin detalles internos.
 - Las pruebas cubren ventana nueva, incremento, sexta solicitud, expiracion, `Retry-After`, error del store y la integracion del endpoint.
-- `npm test`: `42` archivos y `304/304` pruebas exitosas.
+- `npm test`: `42` archivos y `308/308` pruebas exitosas.
+- `npx firebase emulators:exec --only firestore "npm run test:rules"`: `12/12` reglas exitosas.
 - `npx tsc --noEmit`: correcto; `npm run lint`: 0 errores y 11 warnings conocidos; `npm run build`: correcto con Next `16.3.0` y 29 rutas.
 - Commits: `70c0249` (store y pruebas) y `6a44bcc` (integracion de la ruta).
 - No se hizo escritura remota ni despliegue Vercel en esta fase; falta publicar y verificar la version antes de cerrar OP-06/OP-07.
@@ -655,7 +656,7 @@ git grep -nE "FIREBASE_PRIVATE_KEY|Authorization|Bearer|console\.(log|info|error
 
 #### Actualizacion posterior al rate limit distribuido — 2026-08-05
 
-- La evidencia local se actualizo a `304/304` pruebas en `42` archivos y el build sigue generando 29 rutas sin errores.
+- La evidencia local se actualizo a `308/308` pruebas en `42` archivos y el build sigue generando 29 rutas sin errores.
 - La revision de codigo corrigio validacion fail-closed de documentos corruptos y reloj por intento de transaccion.
 - El gate de produccion permanece en `verificacion` hasta publicar el commit `6a44bcc` y comprobar nuevamente el endpoint protegido en la deployment resultante.
 
@@ -865,7 +866,7 @@ Dar al administrador indicadores utiles sobre productos y pedidos sin almacenar 
 
 - Se escribieron la especificacion y el plan de implementacion en `docs/superpowers/specs/2026-08-05-rate-limit-distribuido-design.md` y `docs/superpowers/plans/2026-08-05-rate-limit-distribuido.md`.
 - TDD verifico el helper transaccional y el endpoint con 5 solicitudes permitidas, sexta bloqueada, expiracion, `Retry-After` y `503` fail-closed.
-- La suite paso con `304/304`, TypeScript y build pasaron; lint conserva 11 warnings conocidos.
+- La suite paso con `308/308`, TypeScript y build pasaron; lint conserva 11 warnings conocidos; las reglas pasaron `12/12` con emulador.
 - El push de los commits de especificacion fallo dos veces por conectividad con GitHub; el codigo posterior queda localmente en `main` y requiere publicar antes de QA remoto.
 - El endurecimiento posterior quedo en `cc52880`; el push de toda la serie sigue pendiente por la misma falla de conectividad.
 
