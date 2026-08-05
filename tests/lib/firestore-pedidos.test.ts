@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 
 const firestore = vi.hoisted(() => ({
   collection: vi.fn(),
@@ -18,7 +19,7 @@ vi.mock("firebase/firestore", () => firestore);
 
 import { listarPedidosCliente } from "@/lib/firestore/pedidos";
 
-function snap(id: string) {
+function snap(id: string): QueryDocumentSnapshot<DocumentData> {
   return {
     id,
     data: () => ({
@@ -31,7 +32,7 @@ function snap(id: string) {
       estado: "pendiente",
       creadoEn: new Date(),
     }),
-  };
+  } as unknown as QueryDocumentSnapshot<DocumentData>;
 }
 
 describe("listarPedidosCliente", () => {

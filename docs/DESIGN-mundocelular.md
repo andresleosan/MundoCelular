@@ -149,6 +149,11 @@ Fila de círculos de 32px con borde 1px Faint Border; la variante seleccionada g
 
 Píldora 9999px, fondo blanco, borde 1px Faint Border. Texto 12px Sora SemiBold en Ink Navy, centrado. Padding 6px vertical, 16px horizontal. Sombra `--shadow-sm`.
 
+### Historial de pedidos del cliente
+**Role:** Seguimiento personal de compras desde la cuenta.
+
+Lista vertical de tarjetas navy con radio de tarjeta, separada de las tablas administrativas. Cada pedido combina codigo y total en JetBrains Mono, fecha y productos en texto secundario, y una capsula de estado sobria. El detalle se abre bajo la lista para mantener el contexto; el unico fondo saturado es el CTA de WhatsApp en Mundo Blue. En mobile conserva una sola columna, areas tactiles completas y foco visible.
+
 ## Do's and Don'ts
 
 ### Do

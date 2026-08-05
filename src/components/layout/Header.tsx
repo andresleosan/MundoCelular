@@ -126,6 +126,14 @@ export function Header() {
                       <div className="border-b border-fog-white/10 px-4 py-2 text-[12px] text-fog-white/60">
                         {usuario.displayName || usuario.email}
                       </div>
+                      <Link
+                        href="/cuenta/pedidos"
+                        role="menuitem"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="block w-full px-4 py-2 text-left text-[14px] text-fog-white hover:bg-glow-cyan/10"
+                      >
+                        Mis pedidos
+                      </Link>
                       {esAdmin && (
                         <button
                           type="button"
