@@ -156,6 +156,15 @@ Reporte: `docs/superpowers/reports/2026-08-03-auditoria-local-produccion-firebas
 - [x] Revisar y actualizar dependencias con vulnerabilidades reportadas por `npm audit`; los 5 `high` restantes pertenecen a herramientas de desarrollo y quedan documentados sin usar `--force`.
 - [x] Migrar el limite de `POST /api/auth/admin-request` a Firestore transaccional: 5 solicitudes por UID cada 60 segundos, expiracion, `Retry-After` y fail-closed `503`.
 
+### Cierre de publicación — 2026-08-05
+
+- [x] Gate local posterior a la implementación: `308/308` pruebas, reglas `12/12`, TypeScript correcto, lint con 0 errores y build correcto con 29 rutas.
+- [x] Auditoría runtime: 0 vulnerabilidades `high` y 0 `critical`; las 8 `moderate` transitorias de `uuid` quedan documentadas sin `npm audit fix --force`.
+- [x] Publicar `main` en `origin/main` (`51e3e45`).
+- [x] Verificar deployment Vercel `dpl_5z6REAtgcJajgakmpDD8jyqqMT6c` en estado `Ready`.
+- [x] Verificar `POST /api/auth/admin-request` sin token: `401` y error sanitizado.
+- [ ] Resolver la excepción histórica de la deployment inmutable `dt5...`; no bloquea la versión vigente, pero permanece como riesgo operativo documentado.
+
 Diseño: `docs/superpowers/specs/2026-08-04-solicitudes-administrador-design.md`
 Plan: `docs/superpowers/plans/2026-08-04-solicitudes-administrador.md`
 Diseño distribuido: `docs/superpowers/specs/2026-08-05-rate-limit-distribuido-design.md`

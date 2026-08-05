@@ -46,7 +46,7 @@ Este documento concentra el trabajo que falta para cerrar el proyecto y las func
 | `OP-03` | CRUD admin y producto de prueba | `completada` | `P0` | `OP-01` |
 | `OP-04` | Validacion publica local y Vercel | `verificacion` | `P0` | `OP-02`, `OP-03` |
 | `OP-05` | Evidencia E2E reproducible | `completada` | `P1` | `OP-03`, `OP-04` |
-| `OP-06` | Dependencias, vulnerabilidades y rate limiting | `verificacion` | `P1` | Decision tecnica y pruebas |
+| `OP-06` | Dependencias, vulnerabilidades y rate limiting | `completada` | `P1` | Decision tecnica y pruebas |
 | `OP-07` | Verificacion final y cierre operativo | `verificacion` | `P1` | `OP-02` a `OP-06` |
 | `FUT-01` | Historial de compras del cliente | `pendiente` | `P2` | Cierre operativo |
 | `FUT-02` | Notificaciones y promociones | `pendiente` | `P2` | Decision de canales y proveedor |
@@ -466,7 +466,7 @@ La evidencia publica y autenticada ya esta persistida. No quedan bloqueos de OP-
 
 ### OP-06 — Resolver vulnerabilidades y decidir el rate limiting
 
-**Estado:** `verificacion`
+**Estado:** `completada`
 **Prioridad:** `P1`
 **Fuente:** `tasks.md`, secciones de auditoria y solicitudes de administrador
 **Depende de:** no bloquea la prueba funcional, pero debe cerrarse antes de una declaracion de produccion completamente revisada.
@@ -590,6 +590,14 @@ npm run build
 - Commits: `70c0249` (store y pruebas) y `6a44bcc` (integracion de la ruta).
 - No se hizo escritura remota ni despliegue Vercel en esta fase; falta publicar y verificar la version antes de cerrar OP-06/OP-07.
 
+#### Resultado posterior a publicación — 2026-08-05
+
+- `git push origin main` publicó `51e3e45` y dejó `main` alineada con `origin/main`.
+- Vercel generó la deployment `dpl_5z6REAtgcJajgakmpDD8jyqqMT6c`, URL `mundocelular-5srbzkpop-andres-leo-san-s-projects.vercel.app`, estado `Ready`.
+- `POST /api/auth/admin-request` sin token respondió `401` con error sanitizado; la ruta `api/auth/admin-request` está presente en la deployment.
+- La decisión de usar rate limiting distribuido queda verificada local y remotamente; los riesgos `moderate` transitorios de `uuid` y los `high` de herramientas de desarrollo siguen documentados sin aplicar `--force`.
+- OP-06 queda `completada`; no se requieren escrituras remotas adicionales para este cierre.
+
 ---
 
 ### OP-07 — Verificacion integral y cierre operativo
@@ -659,6 +667,14 @@ git grep -nE "FIREBASE_PRIVATE_KEY|Authorization|Bearer|console\.(log|info|error
 - La evidencia local se actualizo a `308/308` pruebas en `42` archivos y el build sigue generando 29 rutas sin errores.
 - La revision de codigo corrigio validacion fail-closed de documentos corruptos y reloj por intento de transaccion.
 - El gate de produccion permanece en `verificacion` hasta publicar el commit `6a44bcc` y comprobar nuevamente el endpoint protegido en la deployment resultante.
+
+#### Resultado del gate posterior a publicación — 2026-08-05
+
+- El commit publicado es `51e3e45`; `main` y `origin/main` coinciden y el árbol de trabajo quedó limpio.
+- La deployment vigente `dpl_5z6REAtgcJajgakmpDD8jyqqMT6c` está `Ready` y Home responde `200`.
+- QA de navegador sobre la deployment: `/`, `/buscar`, `/contacto`, `/preguntas` y `/reparaciones` respondieron `200`; no hubo errores de consola de aplicación antes de la prueba negativa.
+- La prueba negativa de `POST /api/auth/admin-request` sin autenticación respondió `401` y no expuso detalles internos.
+- OP-07 permanece `verificacion` únicamente por la URL histórica inmutable documentada en OP-04 y por la necesidad de conservar esa excepción como riesgo operativo conocido; la versión vigente sí está publicada y validada.
 
 ## Funcionalidades futuras
 
@@ -869,6 +885,13 @@ Dar al administrador indicadores utiles sobre productos y pedidos sin almacenar 
 - La suite paso con `308/308`, TypeScript y build pasaron; lint conserva 11 warnings conocidos; las reglas pasaron `12/12` con emulador.
 - El push de los commits de especificacion fallo dos veces por conectividad con GitHub; el codigo posterior queda localmente en `main` y requiere publicar antes de QA remoto.
 - El endurecimiento posterior quedo en `cc52880`; el push de toda la serie sigue pendiente por la misma falla de conectividad.
+
+### 2026-08-05 — Publicacion y verificacion remota del rate limit
+
+- La serie local de 12 commits se publicó con `git push origin main`; `main` quedó alineada con `origin/main` en `51e3e45`.
+- La deployment `dpl_5z6REAtgcJajgakmpDD8jyqqMT6c` quedó `Ready` en Vercel.
+- La prueba remota sin autenticación devolvió `401` en `POST /api/auth/admin-request`; la navegación pública básica devolvió `200` en cinco rutas y no produjo errores de consola de aplicación.
+- OP-06 queda completada. OP-07 continúa en verificación por la excepción histórica de una deployment inmutable, no por un fallo de la versión vigente.
 
 ## Fuentes de verdad
 
