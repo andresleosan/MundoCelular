@@ -2,12 +2,13 @@ import { config } from "dotenv";
 config({ path: ".env.local" });
 
 import { getAdminDb } from "../src/lib/firebase-admin";
+import { WHATSAPP_TIENDA } from "../src/lib/config-tienda";
 
 async function main() {
   const db = getAdminDb();
   await db.collection("configuracion").doc("tienda").set({
     nombre: "Mundo Celular",
-    whatsapp: "573113554021",
+    whatsapp: WHATSAPP_TIENDA,
     direccion: "Cra 36 # 38 - 33, Barrio El Salvador",
     ciudad: "Medellín",
     departamento: "Antioquia",

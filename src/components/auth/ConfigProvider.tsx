@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { getDb } from "@/lib/firebase";
+import { CONFIG_TIENDA_DEFAULT } from "@/lib/config-tienda";
 import type { ConfigTienda } from "@/types";
 
 interface ConfigContextValue {
@@ -12,17 +13,6 @@ interface ConfigContextValue {
 
 const ConfigContext = createContext<ConfigContextValue>({ config: null, cargando: true });
 
-const FALLBACK: ConfigTienda = {
-  nombre: "Mundo Celular",
-  whatsapp: "573113554021",
-  direccion: "",
-  ciudad: "Medellín",
-  departamento: "Antioquia",
-  pais: "CO",
-  horario: "",
-  redes: { instagram: "", facebook: "", tiktok: "" },
-};
-
 export function ConfigProvider({ children }: { children: ReactNode }) {
   const [config, setConfig] = useState<ConfigTienda | null>(null);
   const [cargando, setCargando] = useState(true);
@@ -31,11 +21,11 @@ export function ConfigProvider({ children }: { children: ReactNode }) {
     async function cargar() {
       try {
         const db = getDb();
-        if (!db) { setConfig(FALLBACK); setCargando(false); return; }
+        if (!db) { setConfig(CONFIG_TIENDA_DEFAULT); setCargando(false); return; }
         const snap = await getDoc(doc(db, "configuracion", "tienda"));
-        setConfig(snap.exists() ? (snap.data() as ConfigTienda) : FALLBACK);
+        setConfig(snap.exists() ? (snap.data() as ConfigTienda) : CONFIG_TIENDA_DEFAULT);
       } catch {
-        setConfig(FALLBACK);
+        setConfig(CONFIG_TIENDA_DEFAULT);
       } finally {
         setCargando(false);
       }
@@ -52,5 +42,5 @@ export function ConfigProvider({ children }: { children: ReactNode }) {
 
 export function useConfig(): ConfigTienda {
   const { config } = useContext(ConfigContext);
-  return config ?? FALLBACK;
+  return config ?? CONFIG_TIENDA_DEFAULT;
 }

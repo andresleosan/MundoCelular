@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuth } from "firebase-admin/auth";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminApp, getAdminDb } from "@/lib/firebase-admin";
+import { WHATSAPP_TIENDA } from "@/lib/config-tienda";
 
 interface PedidoItemBody {
   productoId: string;
@@ -149,7 +150,7 @@ export async function POST(req: NextRequest) {
 
     const configSnap = await db.doc("configuracion/tienda").get();
     const config = configSnap.data();
-    const whatsapp = config?.whatsapp || "573113554021";
+    const whatsapp = config?.whatsapp || WHATSAPP_TIENDA;
 
     const pedidoSnap = await db.doc(`pedidos/${pedidoId}`).get();
     const pedido = pedidoSnap.data()!;

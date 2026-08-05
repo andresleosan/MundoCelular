@@ -3,7 +3,7 @@ import { metadataInicio, metadataCategoria, metadataProducto, metadataMarca, met
 import type { Categoria, Producto, ConfigTienda } from "@/types";
 
 const config: ConfigTienda = {
-  nombre: "Mundo Celular", whatsapp: "573113554021",
+  nombre: "Mundo Celular", whatsapp: "573147757223",
   direccion: "Cra 36 # 38 - 33, Barrio El Salvador", ciudad: "Medellín",
   departamento: "Antioquia", pais: "Colombia", horario: "",
   redes: { instagram: "i", facebook: "f", tiktok: "t" },

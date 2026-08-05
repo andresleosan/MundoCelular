@@ -48,7 +48,7 @@ function producto(overrides: Partial<Producto> = {}): Producto {
 
 const config: ConfigTienda = {
   nombre: "Mundo Celular",
-  whatsapp: "573113554021",
+  whatsapp: "573147757223",
   direccion: "",
   ciudad: "Medellín",
   departamento: "Antioquia",

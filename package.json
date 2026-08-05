@@ -12,6 +12,7 @@
     "seed:config": "tsx scripts/seed-config.ts",
     "backup:config": "tsx scripts/backup-config.ts",
     "restore:config": "tsx scripts/restore-config.ts",
+    "update:whatsapp": "tsx scripts/update-whatsapp.ts",
     "set:admin": "tsx scripts/set-admin.ts",
     "r2:cors": "tsx scripts/config-r2-cors.ts",
     "build:icons": "node scripts/build-icons.mjs",

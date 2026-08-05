@@ -1,12 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@/components/ui/Icon";
+import { CONFIG_TIENDA_DEFAULT, formatearWhatsAppTienda } from "@/lib/config-tienda";
 import { obtenerConfigTiendaServidor } from "@/lib/firestore/public";
 import type { ConfigTienda } from "@/types";
 
 const FALLBACK: ConfigTienda = {
-  nombre: "Mundo Celular",
-  whatsapp: "573113554021",
+  ...CONFIG_TIENDA_DEFAULT,
   direccion: "Cra 36 # 38 - 33, Barrio El Salvador",
   ciudad: "Medellín",
   departamento: "Antioquia",
@@ -25,7 +25,7 @@ async function getConfig(): Promise<ConfigTienda> {
 
 export async function Footer() {
   const config = await getConfig();
-  const whatsappFormatted = config.whatsapp.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})$/, "+$1 $2 $3 $4");
+  const whatsappFormatted = formatearWhatsAppTienda(config.whatsapp);
   return (
     <footer className="border-t border-fog-white/10 bg-navy-base">
       <div className="mx-auto max-w-[1280px] px-4 py-12 sm:py-16">

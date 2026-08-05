@@ -109,7 +109,7 @@ describe("ProductDetail", () => {
     const waBtn = screen.getByText("Comprar por WhatsApp");
     expect(waBtn).toBeDefined();
     const link = waBtn.closest("a");
-    expect(link?.getAttribute("href")).toContain("https://wa.me/573113554021");
+    expect(link?.getAttribute("href")).toContain("https://wa.me/573147757223");
     expect(link?.getAttribute("target")).toBe("_blank");
   });
 

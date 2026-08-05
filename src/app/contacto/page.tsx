@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { obtenerConfigTiendaServidor } from "@/lib/firestore/public";
+import { WHATSAPP_TIENDA } from "@/lib/config-tienda";
 import { metadataContacto } from "@/lib/seo/metadata";
 import { jsonldContacto } from "@/lib/seo/jsonld";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -21,7 +22,7 @@ export default async function ContactoPage() {
     config = null;
   }
 
-  const whatsapp = config?.whatsapp ?? "573113554021";
+  const whatsapp = config?.whatsapp ?? WHATSAPP_TIENDA;
   const direccion = config?.direccion ?? "Cra 36 # 38 - 33, Barrio El Salvador";
   const ciudad = config?.ciudad ?? "Medellín";
   const horario = config?.horario ?? "Lun-Sáb 9:00 AM - 7:00 PM";

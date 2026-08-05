@@ -75,7 +75,7 @@ export interface Pedido {
 
 export interface ConfigTienda {
   nombre: string;
-  whatsapp: string;   // "573113554021"
+  whatsapp: string;   // "573147757223"
   direccion: string;
   ciudad: string;
   departamento: string;

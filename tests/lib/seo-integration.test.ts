@@ -11,7 +11,7 @@ const mockProductoData = {
   specs: {}, imagenes: [], activo: true, destacado: false,
 };
 const mockConfigTienda = {
-  nombre: "Mundo Celular", whatsapp: "573113554021",
+  nombre: "Mundo Celular", whatsapp: "573147757223",
   direccion: "Cra 36 # 38 - 33", ciudad: "Medellín",
   departamento: "Antioquia", pais: "Colombia", horario: "L-V 9-6",
   redes: { instagram: "", facebook: "", tiktok: "" },

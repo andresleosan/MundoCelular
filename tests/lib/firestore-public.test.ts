@@ -24,7 +24,7 @@ const mockProductoData = {
 
 const mockConfigTienda = {
   nombre: "Mundo Celular",
-  whatsapp: "573113554021",
+  whatsapp: "573147757223",
   direccion: "Calle 123",
   ciudad: "Bogotá",
   departamento: "Cundinamarca",

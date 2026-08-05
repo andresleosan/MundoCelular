@@ -35,8 +35,8 @@ describe("armarmensajePedido", () => {
 
 describe("urlWhatsApp", () => {
   it("codifica el mensaje con encodeURIComponent", () => {
-    const u = urlWhatsApp("573113554021", "Hola, quiero: iPhone 13");
-    expect(u).toContain("https://wa.me/573113554021?text=");
+    const u = urlWhatsApp("573147757223", "Hola, quiero: iPhone 13");
+    expect(u).toContain("https://wa.me/573147757223?text=");
     expect(decodeURIComponent(u.split("text=")[1])).toContain("Hola");
   });
 });

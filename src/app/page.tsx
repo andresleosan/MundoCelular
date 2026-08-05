@@ -5,6 +5,7 @@ import { resumirMarcas } from "@/lib/storefront/brands";
 import { separarProductosHome } from "@/lib/storefront/home";
 import { metadataInicio } from "@/lib/seo/metadata";
 import { jsonldInicio } from "@/lib/seo/jsonld";
+import { CONFIG_TIENDA_DEFAULT } from "@/lib/config-tienda";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Hero } from "@/components/storefront/Hero";
 import { MarcasSection } from "@/components/storefront/MarcasSection";
@@ -15,16 +16,7 @@ import type { Producto, ConfigTienda } from "@/types";
 
 export const revalidate = 3600;
 
-const FALLBACK_CONFIG: ConfigTienda = {
-  nombre: "Mundo Celular",
-  whatsapp: "573113554021",
-  direccion: "",
-  ciudad: "Medellín",
-  departamento: "Antioquia",
-  pais: "CO",
-  horario: "",
-  redes: { instagram: "", facebook: "", tiktok: "" },
-};
+const FALLBACK_CONFIG: ConfigTienda = CONFIG_TIENDA_DEFAULT;
 
 async function safeFetchConfig(): Promise<ConfigTienda> {
   try {
