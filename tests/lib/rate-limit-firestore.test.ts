@@ -120,4 +120,35 @@ describe("consumeAdminRequestRateLimit", () => {
 
     await expect(consumeAdminRequestRateLimit("uid-secreto")).rejects.toThrow("firestore unavailable");
   });
+
+  it("serializa consumos concurrentes mediante transacciones", async () => {
+    vi.setSystemTime(new Date("2026-08-05T12:00:30.000Z"));
+    let stored = { count: 4, windowStartedAt: Date.parse("2026-08-05T12:00:00.000Z") };
+    let queue: Promise<unknown> = Promise.resolve();
+
+    mockRunTransaction.mockImplementation((callback: (transaction: typeof mockTransaction) => unknown) => {
+      const run = queue.then(async () => {
+        const transaction = {
+          get: vi.fn(async () => ({ exists: true, data: () => stored })),
+          set: vi.fn(),
+          update: vi.fn((_ref: unknown, data: { count: number }) => {
+            stored = { ...stored, count: data.count };
+          }),
+        } as typeof mockTransaction;
+
+        return callback(transaction);
+      });
+      queue = run.then(() => undefined, () => undefined);
+      return run;
+    });
+
+    const results = await Promise.all([
+      consumeAdminRequestRateLimit("uid-secreto"),
+      consumeAdminRequestRateLimit("uid-secreto"),
+    ]);
+
+    expect(results).toEqual([{ allowed: true }, { allowed: false, retryAfter: 30 }]);
+    expect(stored.count).toBe(5);
+    expect(mockRunTransaction).toHaveBeenCalledTimes(2);
+  });
 });
