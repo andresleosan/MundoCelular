@@ -192,3 +192,34 @@ Plan distribuido: `docs/superpowers/plans/2026-08-05-rate-limit-distribuido.md`
 - [x] Verificar CTAs publicos en produccion: 6 rutas responden `200` y todos los enlaces `wa.me` usan `573147757223`; el numero anterior ya no aparece en el texto.
 - [x] QA autenticada en produccion: cliente `12/12` con fixture efimero de 11 pedidos (paginacion 10->11, detalle, WhatsApp, privacidad, sin errores); admin `3/3`. Fixture limpiado y cuenta QA vuelve a estado vacio.
 - [x] Fix de paginacion: el cursor desaparece al agotar resultados (prueba TDD + verificacion en produccion).
+
+## Vision X — Home Tech Repair Lab
+
+**Estado:** revision
+**Spec:** `docs/superpowers/specs/2026-08-05-tech-repair-lab-design.md`
+**Plan:** `docs/superpowers/plans/2026-08-05-tech-repair-lab.md`
+
+- [x] Modelo de fases y wrapper narrativo.
+- [x] Integracion GSAP, indicador y callouts.
+- [x] Centro Tecnologico, Diagnostico y Repair Journey.
+- [x] Composicion de la home y selectores de fase.
+- [x] `npm test`: 55 archivos y 341 pruebas exitosas.
+- [x] `npx tsc --noEmit`: correcto, sin salida.
+- [x] `npm run lint`: 0 errores y 8 warnings conocidos.
+- [x] `npm run build`: correcto con Next 16.3.0 y 30 rutas.
+- [x] QA navegador: pasos 6-10 PASS, 40 combinaciones responsive sin overflow y sin errores de consola; paso 11 WARN por Lighthouse mobile 74.
+- [x] Narrativa verificada: fases `assembly` a `reassembly`, callouts activos, rearme final con `Armado1.png` en opacidad 1 y reduced motion sin capas GSAP.
+- [x] `ConfigProvider` y `AuthProvider` difieren Firestore/listener de sesión al idle, con cancelación y fallback probados.
+- [x] GSAP/ScrollTrigger se carga dinámicamente fuera del bundle inicial; tests de Hero verifican las transformaciones y publicación de fases.
+- [x] Hero usa `next/image` con `sizes` responsive y difiere las capas ocultas hasta preparar la timeline; transferencia bajó aproximadamente 30%.
+- [x] Hero publica el estado ensamblado en SSR, marca el recurso LCP con `fetchPriority="high"`, sirve `Armado1.webp` directamente y usa derivados WebP optimizados para las tres capas visuales.
+- [x] Auth bajo demanda: la Home pública no carga el iframe de Firebase; Header, login, checkout, cuenta y AdminGuard activan sesión explícitamente; `authActiva` evita redirects prematuros.
+- [x] Split de bundle: Auth y Firestore son imports dinámicos; `TooltipProvider` queda limitado al layout admin; tres corridas sin warnings dan mediana Lighthouse 87, 502 KB y TBT 32 ms.
+- [x] Retiro de `Geist` no utilizado; `font-sans` mantiene Inter y la Home solicita tres fuentes en lugar de cinco.
+- [x] LCP mobile usa `Armado1-mobile.webp` mediante `<picture>`; dos corridas válidas alcanzaron 88 y el recurso mobile quedó en 16.5 KB.
+- [x] Inter ya no declara el peso 300 no utilizado; se conservan los pesos visibles 400/500/600/700.
+- [x] `ScrollReveal` mueve el reveal de marcas, ofertas y nuevos productos a una isla cliente única; las secciones vuelven a Server Components.
+- [x] `ConfigProvider` conserva el fallback en `/` y evita abrir Firestore en la Home; la carga remota queda para rutas que consumen configuración dinámica.
+- [x] GSAP del Hero espera el primer scroll; la animación mantiene el mismo timeline y no bloquea la carga inicial.
+- [x] Auditoria de seguridad: sin endpoints, secretos ni dependencias nuevas; `npm audit --omit=dev` reporta 8 moderate transitivas de `uuid`, sin aplicar `--force`.
+- [ ] Lighthouse mobile >=90: sigue pendiente; tres corridas con Auth bajo demanda dan mediana 83, LCP 4.34 s y main thread 8.80 s bajo CPU 4x. Lighthouse continúa con warning de carga incompleta y Chrome presenta `EPERM` al cerrar perfiles temporales.

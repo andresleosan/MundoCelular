@@ -142,6 +142,10 @@
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(6px); }
 }
+@keyframes tech-scan {
+  0%, 100% { transform: translateY(0); opacity: 0.3; }
+  50% { transform: translateY(260px); opacity: 1; }
+}
 
 .animate-fade-up   { animation: fade-up 0.6s var(--ease-out-quart) both; }
 .animate-fade-in   { animation: fade-in 0.5s var(--ease-out-quart) both; }
@@ -154,6 +158,23 @@
 .animate-logo-breathe { animation: logo-breathe 2.5s ease-in-out infinite; }
 .animate-ping-ring { animation: ping-ring 2.5s ease-out infinite; }
 .animate-bounce-down { animation: bounce-down 1.8s var(--ease-out-quart) infinite; }
+.animate-tech-scan { animation: tech-scan 3s var(--ease-out-quart) infinite; }
+
+[data-scroll-reveal="true"].scroll-reveal-container[data-visible="false"] {
+  opacity: 0;
+}
+
+[data-scroll-reveal="true"].scroll-reveal-container[data-visible="true"] {
+  animation: fade-in 0.5s var(--ease-out-quart) both;
+}
+
+[data-scroll-reveal="true"] .scroll-reveal-item {
+  opacity: 0;
+}
+
+[data-scroll-reveal="true"][data-visible="true"] .scroll-reveal-item {
+  animation: fade-up 0.6s var(--ease-out-quart) both;
+}
 
 /* Skeleton shimmer (shadcn/ui compatible) */
 .animate-shimmer {
@@ -171,7 +192,7 @@
   .animate-fade-up, .animate-fade-in, .animate-scale-in, .animate-slide-up,
   .animate-float-chip, .animate-glow-pulse,
   .animate-logo-breathe, .animate-ping-ring, .animate-bounce-down,
-  .animate-shimmer, .animate-modal-enter, .animate-modal-overlay {
+  .animate-shimmer, .animate-modal-enter, .animate-modal-overlay, .animate-tech-scan {
     animation: none;
     opacity: 1;
     transform: none;
@@ -225,6 +246,17 @@
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* Tech Repair Lab phase callouts stay decorative; the visible phase label is
+   rendered separately so the narrative remains understandable without motion. */
+[data-tech-lab-narrative][data-tech-phase="display"] [data-tech-callout="display"],
+[data-tech-lab-narrative][data-tech-phase="battery"] [data-tech-callout="battery"],
+[data-tech-lab-narrative][data-tech-phase="camera"] [data-tech-callout="camera"],
+[data-tech-lab-narrative][data-tech-phase="processor"] [data-tech-callout="processor"],
+[data-tech-lab-narrative][data-tech-phase="board"] [data-tech-callout="board"] {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
 }
 
 @theme inline {

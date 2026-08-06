@@ -1,6 +1,4 @@
-"use client";
-
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { ScrollReveal } from "@/components/storefront/ScrollReveal";
 import { ProductCard } from "@/components/storefront/ProductCard";
 import type { Producto } from "@/types";
 
@@ -9,14 +7,11 @@ interface OfertasSectionProps {
 }
 
 export function OfertasSection({ productos }: OfertasSectionProps) {
-  const { ref, visible } = useScrollAnimation<HTMLDivElement>();
-
   if (productos.length === 0) return null;
 
   return (
     <section
       id="destacados"
-      ref={ref}
       className="mx-auto max-w-[1280px] px-4 py-12 sm:py-16"
       aria-label="Productos destacados"
     >
@@ -29,13 +24,11 @@ export function OfertasSection({ productos }: OfertasSectionProps) {
         </p>
       </div>
 
-      <div
-        className={`grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 ${visible ? "animate-fade-in" : "opacity-0"}`}
-      >
+      <ScrollReveal className="scroll-reveal-container grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {productos.map((producto, i) => (
           <div
             key={producto.id}
-            className={visible ? "animate-fade-up" : "opacity-0"}
+            className="scroll-reveal-item"
             style={{ animationDelay: `${i * 80}ms` }}
           >
             <ProductCard
@@ -45,7 +38,7 @@ export function OfertasSection({ productos }: OfertasSectionProps) {
             />
           </div>
         ))}
-      </div>
+      </ScrollReveal>
     </section>
   );
 }

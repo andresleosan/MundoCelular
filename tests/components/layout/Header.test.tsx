@@ -2,11 +2,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-const { useAuth, cerrarSesion, push, replace } = vi.hoisted(() => ({
+const { useAuth, cerrarSesion, push, replace, activarAuth } = vi.hoisted(() => ({
   useAuth: vi.fn(),
   cerrarSesion: vi.fn(),
   push: vi.fn(),
   replace: vi.fn(),
+  activarAuth: vi.fn(),
 }));
 
 vi.mock("@/hooks/useAuth", () => ({ useAuth }));
@@ -24,6 +25,7 @@ describe("Header", () => {
     useAuth.mockReturnValue({
       usuario: { displayName: "Cliente", email: "cliente@example.com" },
       esAdmin: false,
+      activarAuth,
     });
   });
 
@@ -37,9 +39,19 @@ describe("Header", () => {
   });
 
   it("no muestra Mis pedidos sin sesion", () => {
-    useAuth.mockReturnValue({ usuario: null, esAdmin: false });
+    useAuth.mockReturnValue({ usuario: null, esAdmin: false, activarAuth });
     render(<Header />);
 
     expect(screen.queryByRole("menuitem", { name: "Mis pedidos" })).toBeNull();
+  });
+
+  it("activa Auth al abrir el acceso desde la cabecera", async () => {
+    useAuth.mockReturnValue({ usuario: null, esAdmin: false, activarAuth });
+    const user = userEvent.setup();
+    render(<Header />);
+
+    await user.click(screen.getByRole("button", { name: "Iniciar sesión" }));
+
+    expect(activarAuth).toHaveBeenCalledOnce();
   });
 });

@@ -32,7 +32,7 @@ function resumenProductos(pedido: Pedido): string {
 }
 
 export function HistorialPedidos() {
-  const { usuario, cargando: cargandoSesion } = useAuth();
+  const { usuario, cargando: cargandoSesion, activarAuth } = useAuth();
   const config = useConfig();
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [cursor, setCursor] = useState<PaginaPedidosCliente["cursor"]>(null);
@@ -41,6 +41,10 @@ export function HistorialPedidos() {
   const [cargandoMas, setCargandoMas] = useState(false);
   const [error, setError] = useState(false);
   const [reintento, setReintento] = useState(0);
+
+  useEffect(() => {
+    activarAuth();
+  }, [activarAuth]);
 
   useEffect(() => {
     if (!usuario) {

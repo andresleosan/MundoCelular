@@ -16,7 +16,7 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
-  const { usuario, esAdmin } = useAuth();
+  const { usuario, esAdmin, activarAuth } = useAuth();
   const router = useRouter();
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -158,7 +158,7 @@ export function Header() {
               ) : (
                 <button
                   type="button"
-                  onClick={() => setAuthOpen(true)}
+                  onClick={() => { activarAuth(); setAuthOpen(true); }}
                   className="flex h-9 w-9 items-center justify-center rounded-full text-fog-white/80 transition-colors hover:bg-glow-cyan/20 hover:text-glow-cyan"
                   aria-label="Iniciar sesión"
                 >

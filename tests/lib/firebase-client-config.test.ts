@@ -1,16 +1,31 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+const { getAuth, authLoaded, firestoreLoaded } = vi.hoisted(() => ({
+  getAuth: vi.fn(() => ({})),
+  authLoaded: vi.fn(),
+  firestoreLoaded: vi.fn(),
+}));
 
 vi.mock("firebase/app", () => ({
   getApps: vi.fn(() => []),
   initializeApp: vi.fn(() => ({})),
 }));
-vi.mock("firebase/auth", () => ({
-  getAuth: vi.fn(() => null),
-  GoogleAuthProvider: vi.fn(),
-}));
-vi.mock("firebase/firestore", () => ({ getFirestore: vi.fn(() => ({})) }));
+vi.mock("firebase/auth", () => {
+  authLoaded();
+  return { getAuth, GoogleAuthProvider: vi.fn() };
+});
+vi.mock("firebase/firestore", () => {
+  firestoreLoaded();
+  return { getFirestore: vi.fn(() => ({})) };
+});
 
 describe("configuracion Firebase del cliente", () => {
+  beforeEach(() => {
+    getAuth.mockClear();
+    authLoaded.mockClear();
+    firestoreLoaded.mockClear();
+  });
+
   it("mapea las variables publicas Firebase al config del cliente", async () => {
     vi.stubEnv("NEXT_PUBLIC_FIREBASE_API_KEY", "public-key");
     vi.stubEnv("NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN", "mundocelular-id.firebaseapp.com");
@@ -22,6 +37,9 @@ describe("configuracion Firebase del cliente", () => {
 
     const { firebaseConfig } = await import("@/lib/firebase");
 
+    expect(authLoaded).not.toHaveBeenCalled();
+    expect(firestoreLoaded).not.toHaveBeenCalled();
+
     expect(firebaseConfig).toMatchObject({
       apiKey: "public-key",
       authDomain: "mundocelular-id.firebaseapp.com",
@@ -31,5 +49,13 @@ describe("configuracion Firebase del cliente", () => {
       appId: "app-id",
       measurementId: "G-TEST",
     });
+  });
+
+  it("inicializa Auth solo cuando un consumidor lo necesita", async () => {
+    const { getAuthClient } = await import("@/lib/firebase");
+
+    expect(getAuth).not.toHaveBeenCalled();
+    await expect(getAuthClient()).resolves.toEqual({});
+    expect(getAuth).toHaveBeenCalledOnce();
   });
 });

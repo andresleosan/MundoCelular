@@ -1,18 +1,29 @@
-import { signInWithPopup, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { auth, googleProvider } from "./firebase";
+import { getAuthClient, getGoogleProvider } from "./firebase";
+
+async function requireAuth() {
+  const auth = await getAuthClient();
+  if (!auth) throw new Error("Firebase Auth no está configurado");
+  return auth;
+}
 
 export async function loginConGoogle(): Promise<void> {
-  const credential = await signInWithPopup(auth, googleProvider);
+  const [{ signInWithPopup }, googleProvider] = await Promise.all([
+    import("firebase/auth"),
+    getGoogleProvider(),
+  ]);
+  const credential = await signInWithPopup(await requireAuth(), googleProvider);
   await credential.user.getIdToken(true);
 }
 
 export async function loginConEmail(email: string, password: string): Promise<void> {
-  const credential = await signInWithEmailAndPassword(auth, email, password);
+  const { signInWithEmailAndPassword } = await import("firebase/auth");
+  const credential = await signInWithEmailAndPassword(await requireAuth(), email, password);
   await credential.user.getIdToken(true);
 }
 
 export async function cerrarSesion(): Promise<void> {
-  await signOut(auth);
+  const { signOut } = await import("firebase/auth");
+  await signOut(await requireAuth());
 }
 
 export function traducirErrorAuth(e: unknown): string {

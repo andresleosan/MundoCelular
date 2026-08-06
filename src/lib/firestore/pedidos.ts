@@ -24,7 +24,7 @@ export interface PaginaPedidosCliente {
 }
 
 export async function listarPedidos(estado?: string): Promise<Pedido[]> {
-  const db = getDb();
+  const db = await getDb();
   let q;
   if (estado) {
     q = query(collection(db, "pedidos"), where("estado", "==", estado), orderBy("creadoEn", "desc"));
@@ -46,7 +46,8 @@ export async function listarPedidosCliente(
   ];
   if (cursor) restricciones.push(startAfter(cursor));
 
-  const snap = await getDocs(query(collection(getDb(), "pedidos"), ...restricciones));
+  const db = await getDb();
+  const snap = await getDocs(query(collection(db, "pedidos"), ...restricciones));
   const documentos = snap.docs;
   return {
     pedidos: documentos.map((documento) => ({
@@ -58,12 +59,12 @@ export async function listarPedidosCliente(
 }
 
 export async function obtenerPedido(id: string): Promise<Pedido | null> {
-  const db = getDb();
+  const db = await getDb();
   const snap = await getDoc(doc(db, "pedidos", id));
   return snap.exists() ? ({ id: snap.id, ...(snap.data() as Omit<Pedido, "id">) }) : null;
 }
 
 export async function actualizarEstadoPedido(id: string, estado: Pedido["estado"]): Promise<void> {
-  const db = getDb();
+  const db = await getDb();
   await updateDoc(doc(db, "pedidos", id), { estado, actualizadoEn: new Date() });
 }

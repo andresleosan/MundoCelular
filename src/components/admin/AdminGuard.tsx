@@ -6,18 +6,22 @@ import { useAuth } from "@/hooks/useAuth";
 import { cerrarSesion } from "@/lib/auth-client";
 
 export function AdminGuard({ children }: { children: ReactNode }) {
-  const { usuario, esAdmin, cargando } = useAuth();
+  const { usuario, esAdmin, cargando, authActiva, activarAuth } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
   const esLogin = pathname === "/admin/login";
 
   useEffect(() => {
-    if (!cargando && !usuario && !esLogin) router.replace("/admin/login");
-  }, [cargando, usuario, esLogin, router]);
+    if (!esLogin) activarAuth();
+  }, [activarAuth, esLogin]);
+
+  useEffect(() => {
+    if (authActiva && !cargando && !usuario && !esLogin) router.replace("/admin/login");
+  }, [authActiva, cargando, usuario, esLogin, router]);
 
   if (esLogin) return <>{children}</>;
-  if (cargando || !usuario) {
+  if (!authActiva || cargando || !usuario) {
     return <main className="flex min-h-screen items-center justify-center text-[14px] text-steel-blue-gray">Cargando…</main>;
   }
   if (!cargando && usuario && !esAdmin) {

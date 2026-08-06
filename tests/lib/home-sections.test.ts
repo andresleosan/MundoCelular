@@ -12,6 +12,10 @@ const homeMocks = vi.hoisted(() => ({
   OfertasSection: vi.fn(() => null),
   NuevosProductosSection: vi.fn(() => null),
   BeneficiosSection: vi.fn(() => null),
+  TechLabNarrative: vi.fn(({ children }: { children?: ReactNode }) => children ?? null),
+  TechCenterSection: vi.fn(() => null),
+  DiagnosticPanel: vi.fn(() => null),
+  RepairJourney: vi.fn(() => null),
   JsonLd: vi.fn(() => null),
 }));
 
@@ -24,6 +28,10 @@ vi.mock("@/components/storefront/MarcasSection", () => ({ MarcasSection: homeMoc
 vi.mock("@/components/storefront/OfertasSection", () => ({ OfertasSection: homeMocks.OfertasSection }));
 vi.mock("@/components/storefront/NuevosProductosSection", () => ({ NuevosProductosSection: homeMocks.NuevosProductosSection }));
 vi.mock("@/components/storefront/BeneficiosSection", () => ({ BeneficiosSection: homeMocks.BeneficiosSection }));
+vi.mock("@/components/storefront/tech-lab/TechLabNarrative", () => ({ TechLabNarrative: homeMocks.TechLabNarrative }));
+vi.mock("@/components/storefront/tech-lab/TechCenterSection", () => ({ TechCenterSection: homeMocks.TechCenterSection }));
+vi.mock("@/components/storefront/tech-lab/DiagnosticPanel", () => ({ DiagnosticPanel: homeMocks.DiagnosticPanel }));
+vi.mock("@/components/storefront/tech-lab/RepairJourney", () => ({ RepairJourney: homeMocks.RepairJourney }));
 vi.mock("@/components/seo/JsonLd", () => ({ JsonLd: homeMocks.JsonLd }));
 
 import Home from "@/app/page";
@@ -122,6 +130,20 @@ describe("separarProductosHome", () => {
 });
 
 describe("Home e inventario", () => {
+  it("conecta las secciones Tech Repair Lab dentro de una narrativa única", async () => {
+    homeMocks.listarProductosActivos.mockResolvedValue([]);
+    homeMocks.obtenerConfigTiendaServidor.mockResolvedValue(config);
+
+    const page = await Home();
+    const narrative = findByType(page, homeMocks.TechLabNarrative);
+
+    expect(narrative).toBeDefined();
+    expect(findByType(narrative, homeMocks.Hero)).toBeDefined();
+    expect(findByType(narrative, homeMocks.TechCenterSection)).toBeDefined();
+    expect(findByType(narrative, homeMocks.DiagnosticPanel)).toBeDefined();
+    expect(findByType(narrative, homeMocks.RepairJourney)).toBeDefined();
+  });
+
   it("pasa a marcas solo el resumen del inventario activo", async () => {
     const productos = [
       producto({ id: "apple", marca: "Apple", activo: true, stock: 0 }),

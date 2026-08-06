@@ -2,14 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { PhoneStack } from "@/components/storefront/PhoneStack";
+import { TechLabCallouts } from "@/components/storefront/tech-lab/TechLabCallouts";
+import { TechLabPhaseIndicator } from "@/components/storefront/tech-lab/TechLabPhaseIndicator";
+import { publishTechLabProgress } from "@/components/storefront/tech-lab/phases";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import type { ConfigTienda } from "@/types";
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface HeroProps {
   config: ConfigTienda;
@@ -32,56 +32,97 @@ export function Hero({ config }: HeroProps) {
   const armadoRef = useRef<HTMLImageElement>(null);
   const desarmadomRef = useRef<HTMLImageElement>(null);
   const desarmadoRef = useRef<HTMLImageElement>(null);
-  const [reducedMotion, setReducedMotion] = useState(true);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [capasListas, setCapasListas] = useState(false);
 
   useEffect(() => {
     setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    setMounted(true);
   }, []);
 
   useEffect(() => {
     if (reducedMotion) return;
 
-    const ctx = gsap.context(() => {
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: ref.current,
-          start: "top top",
-          end: () => "+=" + ((ref.current?.offsetHeight ?? 1200) + 1800),
-          scrub: 1.2,
-        },
+    let activo = true;
+    let revert: (() => void) | undefined;
+
+    const iniciarAnimacion = async () => {
+      const [{ default: gsap }, { ScrollTrigger }] = await Promise.all([
+        import("gsap"),
+        import("gsap/ScrollTrigger"),
+      ]);
+      if (!activo) return;
+      setCapasListas(true);
+      await new Promise<void>((resolve) => {
+        if (window.requestAnimationFrame) window.requestAnimationFrame(() => resolve());
+        else window.setTimeout(resolve, 0);
       });
+      if (!activo) return;
+      gsap.registerPlugin(ScrollTrigger);
 
-      timeline
-        .to(armadoRef.current, { opacity: 0, scale: 1.07, duration: transitionDuration }, 0)
-        .fromTo(
-          desarmadomRef.current,
-          { opacity: 0, scale: 0.93 },
-          { opacity: 0.6, scale: 1, duration: transitionDuration },
-          0,
-        )
-        .to(
-          desarmadomRef.current,
-          { opacity: 0, scale: 1.07, duration: transitionDuration },
-          secondTransitionStart,
-        )
-        .fromTo(
-          desarmadoRef.current,
-          { opacity: 0, scale: 0.93 },
-          { opacity: 1, scale: 1, duration: transitionDuration },
-          secondTransitionStart,
-        )
-        .to(desarmadoRef.current, { opacity: 0, scale: 1.07, duration: transitionDuration }, reassemblyStart)
-        .fromTo(
-          desarmadomRef.current,
-          { opacity: 0, scale: 0.93 },
-          { opacity: 0.6, scale: 1, duration: transitionDuration },
-          reassemblyStart,
-        )
-        .to(desarmadomRef.current, { opacity: 0, scale: 1.07, duration: transitionDuration }, finalAssemblyStart)
-        .to(armadoRef.current, { opacity: 1, scale: 1, duration: transitionDuration }, finalAssemblyStart);
-    }, ref);
+      const ctx = gsap.context(() => {
+        const narrativeRoot = ref.current?.closest<HTMLElement>("[data-tech-lab-narrative]") ?? ref.current;
+        if (!narrativeRoot) return;
 
-    return () => ctx.revert();
+        publishTechLabProgress(narrativeRoot, 0);
+
+        const timeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: narrativeRoot,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 1.2,
+          },
+        });
+
+        timeline.eventCallback("onUpdate", () => {
+          publishTechLabProgress(narrativeRoot, timeline.progress());
+        });
+
+        timeline
+          .to(armadoRef.current, { opacity: 0, scale: 1.07, duration: transitionDuration }, 0)
+          .fromTo(
+            desarmadomRef.current,
+            { opacity: 0, scale: 0.93 },
+            { opacity: 0.6, scale: 1, duration: transitionDuration },
+            0,
+          )
+          .to(
+            desarmadomRef.current,
+            { opacity: 0, scale: 1.07, duration: transitionDuration },
+            secondTransitionStart,
+          )
+          .fromTo(
+            desarmadoRef.current,
+            { opacity: 0, scale: 0.93 },
+            { opacity: 1, scale: 1, duration: transitionDuration },
+            secondTransitionStart,
+          )
+          .to(desarmadoRef.current, { opacity: 0, scale: 1.07, duration: transitionDuration }, reassemblyStart)
+          .fromTo(
+            desarmadomRef.current,
+            { opacity: 0, scale: 0.93 },
+            { opacity: 0.6, scale: 1, duration: transitionDuration },
+            reassemblyStart,
+          )
+          .to(desarmadomRef.current, { opacity: 0, scale: 1.07, duration: transitionDuration }, finalAssemblyStart)
+          .to(armadoRef.current, { opacity: 1, scale: 1, duration: transitionDuration }, finalAssemblyStart);
+      }, ref);
+
+      revert = () => ctx.revert();
+    };
+
+    const iniciarAlHacerScroll = () => {
+      void iniciarAnimacion();
+    };
+    window.addEventListener("scroll", iniciarAlHacerScroll, { once: true, passive: true });
+
+    return () => {
+      activo = false;
+      window.removeEventListener("scroll", iniciarAlHacerScroll);
+      revert?.();
+    };
   }, [reducedMotion, ref]);
 
   return (
@@ -90,35 +131,52 @@ export function Hero({ config }: HeroProps) {
       className="relative flex min-h-[88vh] items-center overflow-hidden bg-navy-base py-20 sm:min-h-[92vh]"
       aria-label="Bienvenida a Mundo Celular"
     >
-      {!reducedMotion && (
+      {(!mounted || !reducedMotion) && (
         <div
           aria-hidden="true"
           className="pointer-events-none fixed inset-0 z-0 flex items-center justify-center opacity-30"
         >
-          <img
-            ref={armadoRef}
-            src="/Armado1.png"
-            alt=""
-            className="max-h-[75vh] w-auto object-contain"
-            style={{ willChange: "transform, opacity", mixBlendMode: "screen" }}
-            loading="eager"
-          />
-          <img
-            ref={desarmadomRef}
-            src="/Desarmadom1.png"
-            alt=""
-            className="absolute max-h-[75vh] w-auto object-contain"
-            style={{ opacity: 0, willChange: "transform, opacity", mixBlendMode: "screen" }}
-            loading="lazy"
-          />
-          <img
-            ref={desarmadoRef}
-            src="/Desarmado1.png"
-            alt=""
-            className="absolute max-h-[75vh] w-auto object-contain"
-            style={{ opacity: 0, willChange: "transform, opacity", mixBlendMode: "screen" }}
-            loading="lazy"
-          />
+          <picture>
+            <source media="(max-width: 1023px)" srcSet="/Armado1-mobile.webp" />
+            <Image
+              ref={armadoRef}
+              src="/Armado1.webp"
+              alt=""
+              width={1024}
+              height={1536}
+              sizes="(max-width: 1023px) 75vw, 40vw"
+              className="max-h-[75vh] w-auto object-contain"
+              style={{ willChange: "transform, opacity", mixBlendMode: "screen" }}
+              fetchPriority="high"
+              unoptimized
+            />
+          </picture>
+          {capasListas && (
+            <>
+              <Image
+                ref={desarmadomRef}
+                src="/Desarmadom1.webp"
+                alt=""
+                width={1024}
+                height={1536}
+                sizes="(max-width: 1023px) 75vw, 40vw"
+                className="absolute max-h-[75vh] w-auto object-contain"
+                style={{ opacity: 0, willChange: "transform, opacity", mixBlendMode: "screen" }}
+                loading="lazy"
+              />
+              <Image
+                ref={desarmadoRef}
+                src="/Desarmado1.webp"
+                alt=""
+                width={1024}
+                height={1536}
+                sizes="(max-width: 1023px) 75vw, 40vw"
+                className="absolute max-h-[75vh] w-auto object-contain"
+                style={{ opacity: 0, willChange: "transform, opacity", mixBlendMode: "screen" }}
+                loading="lazy"
+              />
+            </>
+          )}
         </div>
       )}
 
@@ -150,6 +208,8 @@ export function Hero({ config }: HeroProps) {
             <span className="flex h-1.5 w-1.5 rounded-full bg-glow-cyan shadow-[0_0_8px_#00D4FF]" />
             Tienda de confianza en {config.ciudad}
           </p>
+
+          <TechLabPhaseIndicator />
 
           <h1 className="font-sora text-[34px] font-bold leading-[1.05] tracking-[-0.04em] text-fog-white sm:text-[48px] lg:text-[60px]">
             La mejor tecnología,
@@ -186,7 +246,8 @@ export function Hero({ config }: HeroProps) {
         </div>
 
         {/* Visual column */}
-        <div className={`flex justify-center ${visible ? "animate-scale-in" : "opacity-0"}`}>
+        <div className={`relative flex justify-center ${visible ? "animate-scale-in" : "opacity-0"}`}>
+          <TechLabCallouts />
           <PhoneStack />
         </div>
       </div>

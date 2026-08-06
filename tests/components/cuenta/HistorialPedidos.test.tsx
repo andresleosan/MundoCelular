@@ -34,11 +34,11 @@ describe("HistorialPedidos", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     useConfig.mockReturnValue({ whatsapp: "573147757223" });
-    useAuth.mockReturnValue({ usuario: { uid: "cliente-1" }, cargando: false, esAdmin: false });
+    useAuth.mockReturnValue({ usuario: { uid: "cliente-1" }, cargando: false, esAdmin: false, activarAuth: vi.fn() });
   });
 
   it("muestra acceso cuando no hay sesion", () => {
-    useAuth.mockReturnValue({ usuario: null, cargando: false, esAdmin: false });
+    useAuth.mockReturnValue({ usuario: null, cargando: false, esAdmin: false, activarAuth: vi.fn() });
 
     render(<HistorialPedidos />);
 

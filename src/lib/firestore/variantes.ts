@@ -9,7 +9,7 @@ import type { VarianteProducto } from "@/types";
 const COL = "variantes";
 
 export async function listarVariantesPorProducto(productId: string): Promise<VarianteProducto[]> {
-  const db = getDb();
+  const db = await getDb();
   const snap = await getDocs(
     query(collection(db, COL), where("productId", "==", productId), where("activo", "==", true), orderBy("precio"))
   );
@@ -19,7 +19,7 @@ export async function listarVariantesPorProducto(productId: string): Promise<Var
 export async function crearVariante(input: VarianteInput): Promise<string> {
   const errores = validarVariante(input);
   if (errores.length > 0) throw new Error(errores.join(". "));
-  const db = getDb();
+  const db = await getDb();
   const ref = await addDoc(collection(db, COL), {
     productId: input.productId,
     attributes: input.attributes,
@@ -36,7 +36,7 @@ export async function crearVariante(input: VarianteInput): Promise<string> {
 
 export async function actualizarVariante(id: string, input: Partial<VarianteInput>): Promise<void> {
   if (Object.keys(input).length === 0) return;
-  const db = getDb();
+  const db = await getDb();
   const updateData: Record<string, unknown> = { ...input, actualizadoEn: serverTimestamp() };
   const imagenes = (input as { imagenes?: VarianteInput["imagenes"] }).imagenes;
   if (imagenes !== undefined) updateData.imagenes = imagenes;
@@ -45,7 +45,7 @@ export async function actualizarVariante(id: string, input: Partial<VarianteInpu
 }
 
 export async function eliminarVariante(id: string): Promise<void> {
-  const db = getDb();
+  const db = await getDb();
   await deleteDoc(doc(db, COL, id));
   await avisarRevalidacion(["productos"]);
 }

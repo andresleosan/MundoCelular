@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
-import { Inter, Inter_Tight, JetBrains_Mono, Sora, Geist } from "next/font/google";
+import { Inter, Inter_Tight, JetBrains_Mono, Sora } from "next/font/google";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { ConfigProvider } from "@/components/auth/ConfigProvider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { BottomTabBar } from "@/components/layout/BottomTabBar";
 import { WebVitals } from "@/app/web-vitals";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
 const interTight = Inter_Tight({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-inter-tight-css" });
-const inter = Inter({ subsets: ["latin"], weight: ["300", "400", "500", "600"], variable: "--font-inter-css" });
+const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-inter-css" });
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-jetbrains-mono-css" });
 const sora = Sora({ subsets: ["latin"], weight: ["600", "700", "800"], variable: "--font-sora-css" });
 
@@ -34,18 +31,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es-CO" className={cn(interTight.variable, inter.variable, jetbrainsMono.variable, sora.variable, "font-sans", geist.variable)}>
+    <html lang="es-CO" className={cn(interTight.variable, inter.variable, jetbrainsMono.variable, sora.variable, "font-sans")}>
       <body className="pb-20 sm:pb-0">
-        <TooltipProvider>
-          <ConfigProvider>
-            <AuthProvider>
-              <Header />
-              {children}
-            </AuthProvider>
-          </ConfigProvider>
-          <Footer />
-          <BottomTabBar />
-        </TooltipProvider>
+        <ConfigProvider>
+          <AuthProvider>
+            <Header />
+            {children}
+          </AuthProvider>
+        </ConfigProvider>
+        <Footer />
+        <BottomTabBar />
         <WebVitals />
       </body>
     </html>

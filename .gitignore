@@ -4,7 +4,6 @@
 .env
 .env.*
 !.env.example
-!.env.local.example
 *.pem
 *.key
 *.p12
@@ -36,8 +35,6 @@ coverage/
 
 # Reportes de QA (browser-qa-e2e, v3.3.0) — se regeneran en cada corrida, no se versionan
 qa/reports/
-qa/backups/
-.playwright-mcp/
 playwright-report/
 test-results/
 
@@ -53,17 +50,3 @@ Thumbs.db
 
 # Backups que dejan los scripts de la agencia al actualizar
 *.bak-*
-
-# Scratch de ejecucion de planes (superpowers)
-.superpowers/
-
-# Next.js
-/.next/
-*.tsbuildinfo
-next-env.d.ts
-.vercel/
-docs/lighthouse-reports/
-.lighthouseci/
-
-# Scratch de graphify
-graphify-out/

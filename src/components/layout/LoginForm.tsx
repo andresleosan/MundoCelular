@@ -21,13 +21,17 @@ const labelClasses = "block text-[14px] font-semibold text-[#22335C] mb-2";
 
 export function LoginForm() {
   const router = useRouter();
-  const { usuario, esAdmin, cargando: authCargando } = useAuth();
+  const { usuario, esAdmin, cargando: authCargando, activarAuth } = useAuth();
   const [selectedRole, setSelectedRole] = useState<RoleSelection>(null);
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const solicitudAdminUidRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    activarAuth();
+  }, [activarAuth]);
 
   useEffect(() => {
     if (!usuario) {

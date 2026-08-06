@@ -1,18 +1,13 @@
-"use client";
-
 import { ProductGrid } from "@/components/storefront/ProductGrid";
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { ScrollReveal } from "@/components/storefront/ScrollReveal";
 import type { Producto } from "@/types";
 
 export function NuevosProductosSection({ productos }: { productos: Producto[] }) {
-  const { ref, visible } = useScrollAnimation<HTMLDivElement>();
-
   if (productos.length === 0) return null;
 
   return (
     <section
       id="nuevos"
-      ref={ref}
       className="mx-auto max-w-[1280px] px-4 py-12 sm:py-16"
       aria-label="Nuevos productos"
     >
@@ -25,9 +20,9 @@ export function NuevosProductosSection({ productos }: { productos: Producto[] })
         </p>
       </div>
 
-      <div className={visible ? "animate-fade-in" : "opacity-0"}>
+      <ScrollReveal className="scroll-reveal-container">
         <ProductGrid productos={productos} variant="compact" />
-      </div>
+      </ScrollReveal>
     </section>
   );
 }

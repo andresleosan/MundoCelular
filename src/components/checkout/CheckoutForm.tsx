@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCarrito } from "@/hooks/useCarrito";
@@ -10,8 +10,12 @@ import { Icon } from "@/components/ui/Icon";
 
 export function CheckoutForm() {
   const { items, total, vaciar } = useCarrito();
-  const { usuario } = useAuth();
+  const { usuario, activarAuth } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    activarAuth();
+  }, [activarAuth]);
 
   const [nombre, setNombre] = useState("");
   const [telefono, setTelefono] = useState("");

@@ -15,7 +15,7 @@ const { useAuth, loginConGoogle, loginConEmail, cerrarSesion, routerPush, onIdTo
 }));
 
 vi.mock("firebase/auth", () => ({ onIdTokenChanged }));
-vi.mock("@/lib/firebase", () => ({ auth: firebaseAuth }));
+vi.mock("@/lib/firebase", () => ({ getAuthClient: vi.fn(() => firebaseAuth) }));
 vi.mock("@/hooks/useAuth", () => ({ useAuth }));
 vi.mock("@/lib/auth-client", () => ({
   loginConGoogle,
@@ -35,6 +35,7 @@ type AuthState = {
   usuario: typeof usuario | null;
   esAdmin: boolean;
   cargando: boolean;
+  activarAuth: () => void;
 };
 
 let authState: AuthState;
@@ -46,14 +47,14 @@ describe("LoginForm", () => {
     vi.clearAllMocks();
     integrationMode = false;
     authListener = null;
-    authState = { usuario: null, esAdmin: false, cargando: false };
+    authState = { usuario: null, esAdmin: false, cargando: false, activarAuth: () => {} };
     useAuth.mockImplementation(() => integrationMode ? useAuthContext() : authState);
     loginConGoogle.mockImplementation(async () => {
-      authState = { usuario, esAdmin: false, cargando: true };
+      authState = { usuario, esAdmin: false, cargando: true, activarAuth: () => {} };
     });
     loginConEmail.mockResolvedValue(undefined);
     cerrarSesion.mockImplementation(async () => {
-      authState = { usuario: null, esAdmin: false, cargando: false };
+      authState = { usuario: null, esAdmin: false, cargando: false, activarAuth: () => {} };
     });
     onIdTokenChanged.mockImplementation((_auth: unknown, listener: typeof authListener) => {
       authListener = listener;
@@ -68,7 +69,7 @@ describe("LoginForm", () => {
   }
 
   function completarTransicionAuth(view: { rerender: (ui: ReactNode) => void }, esAdmin = false) {
-    authState = { usuario, esAdmin, cargando: false };
+    authState = { usuario, esAdmin, cargando: false, activarAuth: () => {} };
     view.rerender(<LoginForm />);
   }
 
@@ -187,7 +188,7 @@ describe("LoginForm", () => {
 
   it("redirige a admin cuando la cuenta autorizada completa la transicion de auth", async () => {
     loginConGoogle.mockImplementation(async () => {
-      authState = { usuario, esAdmin: true, cargando: true };
+      authState = { usuario, esAdmin: true, cargando: true, activarAuth: () => {} };
     });
     const view = render(<LoginForm />);
 
