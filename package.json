@@ -53,7 +53,6 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@firebase/rules-unit-testing": "^5.0.1",
-    "@lhci/cli": "0.15.1",
     "@playwright/mcp": "^0.0.78",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
@@ -76,8 +75,10 @@
     "vitest": "^4.1.10"
   },
   "overrides": {
+    "brace-expansion": "2.1.4",
     "glob": {
       "brace-expansion": "2.1.4"
-    }
+    },
+    "tmp": "0.2.7"
   }
 }
