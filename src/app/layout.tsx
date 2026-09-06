@@ -5,6 +5,7 @@ import { ConfigProvider } from "@/components/auth/ConfigProvider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { BottomTabBar } from "@/components/layout/BottomTabBar";
+import { ScrollProgress } from "@/components/layout/ScrollProgress";
 import { WebVitals } from "@/app/web-vitals";
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es-CO" className={cn(interTight.variable, inter.variable, jetbrainsMono.variable, sora.variable, "font-sans")}>
       <body className="pb-20 sm:pb-0">
+        <ScrollProgress />
         <ConfigProvider>
           <AuthProvider>
             <Header />

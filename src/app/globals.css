@@ -230,6 +230,41 @@
   border-radius: var(--radius-inputs);
 }
 
+/* ============================================================
+   SCROLL — barra nativa fuera del lienzo (solo storefront)
+   La scrollbar del navegador rompia el borde navy del sitio, asi que
+   se oculta (el scroll sigue funcionando con rueda/teclado/touch) y el
+   avance se comunica con <ScrollProgress /> en el layout raiz.
+   El panel /admin es herramienta de trabajo: alli se conserva la barra
+   nativa y se retira la de progreso. El marcador es [data-admin-shell]
+   del layout de admin, no .admin-light-scope, que tambien usan el modal
+   de acceso y /login del storefront.
+   ============================================================ */
+html {
+  overflow-x: clip;                 /* mata el scroll horizontal residual sin romper sticky */
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;         /* el header sticky no tapa los anclajes (#marcas, #destacados) */
+}
+
+html:not(:has([data-admin-shell])) {
+  scrollbar-width: none;            /* Firefox */
+  -ms-overflow-style: none;         /* Edge legacy */
+}
+
+html:not(:has([data-admin-shell]))::-webkit-scrollbar,
+html:not(:has([data-admin-shell])) body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+html:has([data-admin-shell]) [data-scroll-progress] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
 /* Scrollbar hide utility (mobile carousels) */
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }

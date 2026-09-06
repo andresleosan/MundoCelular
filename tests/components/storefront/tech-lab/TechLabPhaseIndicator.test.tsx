@@ -10,8 +10,10 @@ describe("TechLabPhaseIndicator", () => {
       </div>,
     );
     const root = container.firstElementChild as HTMLElement;
+    const pasoActual = () => container.querySelectorAll('[aria-current="step"]');
 
-    expect(screen.getByText("Sistema ensamblado")).toHaveAttribute("aria-current", "step");
+    expect(pasoActual()).toHaveLength(1);
+    expect(pasoActual()[0]).toHaveTextContent("Sistema ensamblado");
 
     act(() => {
       root.dataset.techPhase = "camera";
@@ -22,8 +24,8 @@ describe("TechLabPhaseIndicator", () => {
       );
     });
 
-    expect(screen.getByText("Sistema de cámaras")).toHaveAttribute("aria-current", "step");
-    expect(screen.getByText("Sistema ensamblado")).not.toHaveAttribute("aria-current", "step");
-
+    expect(pasoActual()).toHaveLength(1);
+    expect(pasoActual()[0]).toHaveTextContent("Sistema de cámaras");
+    expect(screen.getByText("Sistema de cámaras", { selector: "p" })).toBeInTheDocument();
   });
 });

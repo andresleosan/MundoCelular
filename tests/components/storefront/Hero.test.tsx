@@ -88,16 +88,19 @@ describe("Hero", () => {
 
     const hero = document.querySelector('[aria-label="Bienvenida a Mundo Celular"]');
 
-    expect(hero).toHaveClass("bg-navy-base");
+    // Sin fondo propio: hereda el navy del body para que la capa fija en -z-10
+    // siga visible detrás del contenido en vez de quedar tapada.
+    expect(hero?.className).not.toMatch(/bg-/);
     expect(hero?.querySelector(".bg-gradient-to-br")).toBeNull();
   });
 
-  it("mantiene las transformaciones de fondo con opacidad reducida", () => {
+  it("mantiene las transformaciones de fondo con opacidad reducida y detrás del contenido", () => {
     render(<Hero config={config} />);
 
     const backgroundLayer = document.querySelector('div[aria-hidden="true"].fixed');
 
     expect(backgroundLayer).toHaveClass("opacity-30");
+    expect(backgroundLayer).toHaveClass("-z-10");
   });
 
   it("sirve los fondos del hero con variantes responsive", () => {

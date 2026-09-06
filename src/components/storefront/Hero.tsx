@@ -128,13 +128,16 @@ export function Hero({ config }: HeroProps) {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[88vh] items-center overflow-hidden bg-navy-base py-20 sm:min-h-[92vh]"
+      className="relative flex min-h-[88vh] items-center overflow-hidden py-20 sm:min-h-[92vh]"
       aria-label="Bienvenida a Mundo Celular"
     >
+      {/* Telefono fantasma del Tech Repair Lab: acompana todo el scroll.
+          Va en -z-10 (y por eso la seccion no lleva fondo propio) para quedar
+          sobre el navy del body pero debajo de titulares y tarjetas. */}
       {(!mounted || !reducedMotion) && (
         <div
           aria-hidden="true"
-          className="pointer-events-none fixed inset-0 z-0 flex items-center justify-center opacity-30"
+          className="pointer-events-none fixed inset-0 -z-10 flex items-center justify-center opacity-30"
         >
           <picture>
             <source media="(max-width: 1023px)" srcSet="/Armado1-mobile.webp" />
@@ -191,6 +194,22 @@ export function Hero({ config }: HeroProps) {
         <div
           className="absolute -right-10 bottom-10 h-96 w-96 rounded-full opacity-20 blur-3xl"
           style={{ background: "radial-gradient(circle, #0035A8 0%, transparent 70%)" }}
+        />
+        {/* Lecho de lectura: el telefono fantasma queda intacto, pero deja de
+            restarle contraste al titular y al parrafo. */}
+        <div
+          className="absolute inset-0 lg:hidden"
+          style={{
+            background:
+              "radial-gradient(115% 62% at 50% 48%, color-mix(in srgb, var(--color-navy-base) 82%, transparent) 0%, color-mix(in srgb, var(--color-navy-base) 55%, transparent) 45%, transparent 78%)",
+          }}
+        />
+        <div
+          className="absolute inset-0 hidden lg:block"
+          style={{
+            background:
+              "linear-gradient(100deg, var(--color-navy-base) 0%, color-mix(in srgb, var(--color-navy-base) 88%, transparent) 30%, color-mix(in srgb, var(--color-navy-base) 34%, transparent) 56%, transparent 72%)",
+          }}
         />
         <div
           className="absolute inset-0 opacity-[0.03] mix-blend-overlay"

@@ -11,7 +11,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <TooltipProvider>
       <AdminGuard>
-        <div className="admin-light-scope min-h-dvh">
+        {/* data-admin-shell marca SOLO el panel: .admin-light-scope tambien la usan
+            el modal de acceso y /login del storefront, que no deben recuperar la
+            scrollbar nativa (ver globals.css). */}
+        <div data-admin-shell className="admin-light-scope min-h-dvh">
           <SidebarProvider
             style={
               {
