@@ -53,3 +53,7 @@ Thumbs.db
 
 # Backups que dejan los scripts de la agencia al actualizar
 *.bak-*
+
+# Next.js and TypeScript generated output
+.next/
+*.tsbuildinfo
